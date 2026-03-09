@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Container } from "@/components/ui/layout/container";
+import { Container } from "@/components/layout/container";
 import FormTestDrive from "@/components/test-drive/form";
 
 export default function TestDrivePage() {
