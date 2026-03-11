@@ -7,8 +7,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
+  --font-sans: var(--font-work-sans);
   --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-clash-display);
   --color-brand-dark: var(--brand-dark);
   --color-brand-dark-foreground: var(--brand-dark-foreground);
   --color-brand-lime: var(--brand-lime);
@@ -51,11 +52,9 @@
   --radius-4xl: calc(var(--radius) * 2.6);
   --text-fluid-sm: clamp(0.7rem, 0.13vi + 0.65rem, 0.75rem);
   --text-fluid-base: clamp(0.88rem, 0.31vi + 0.75rem, 1rem);
-  --text-fluid-md: clamp(1.09rem, 0.6vi + 0.85rem, 1.33rem);
-  --text-fluid-lg: clamp(1.37rem, 1.02vi + 0.96rem, 1.78rem);
-  --text-fluid-xl: clamp(1.71rem, 1.65vi + 1.05rem, 2.37rem);
-  --text-fluid-xxl: clamp(2.14rem, 2.55vi + 1.12rem, 3.16rem);
-  --text-fluid-xxxl: clamp(2.67rem, 3.85vi + 1.13rem, 4.21rem);
+  --text-fluid-lg: clamp(1rem, 1.25vi + 0.75rem, 1.75rem);
+  --text-fluid-xl: clamp(1.375rem, 1.5625vw + 1.0625rem, 2.3125rem);
+  --text-fluid-xxl: clamp(2.125rem, 1.25vi + 1.725rem, 2.875rem);
 }
 
 :root {
@@ -192,10 +191,25 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-work-sans), ui-sans-serif, system-ui, sans-serif;
   }
   html {
     @apply font-sans;
+    font-family: var(--font-work-sans), ui-sans-serif, system-ui, sans-serif;
   }
+  p, button, input, textarea, select, label {
+    font-family: var(--font-work-sans), ui-sans-serif, system-ui, sans-serif;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-clash-display);
+  }
+  h1 {
+    font-size: var(--text-fluid-xl);
+  }
+  h2 {
+    font-size: var(--text-fluid-lg);
+  }
+  
 }
 
 @utility text-fluid-sm {
@@ -220,8 +234,4 @@
 
 @utility display-xxl {
   font-size: var(--text-fluid-xxl);
-}
-
-@utility display-xxxl {
-  font-size: var(--text-fluid-xxxl);
 }

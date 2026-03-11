@@ -33,10 +33,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             const isLoggedIn = !!auth?.user
             const isOnDashboard = nextUrl.pathname.startsWith("/dashboard")
             if (isOnDashboard) {
-                if (isLoggedIn) return true
-                return false // Redirige a login
+                if (isLoggedIn) return true;
+                return false; // Redirige a login
             }
-            return true
+            return true;
         },
     },
 })

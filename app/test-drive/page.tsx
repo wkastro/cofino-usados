@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Container } from "@/components/layout/container";
-import FormTestDrive from "@/components/test-drive/form";
+import FormTestDrive from "@/features/test-drive/form";
 
 export default function TestDrivePage() {
   return (
@@ -21,11 +21,11 @@ export default function TestDrivePage() {
             <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent" />
             {/* Texto sobre la imagen */}
             <div className="absolute bottom-8 left-6 right-6">
-              <h2 className="font-bold leading-tight text-white display-xxl">
+              <p className="font-semibold leading-tight text-white text-fluid-xxl font-display">
                 ¡Conoce tu futuro auto
                 <br />
                 antes de comprarlo!
-              </h2>
+              </p>
             </div>
           </div>
 

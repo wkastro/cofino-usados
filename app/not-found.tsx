@@ -25,7 +25,7 @@ export default function NotFound() {
 
           {/* Copy */}
           <div className="space-y-3">
-            <h1 className="font-bold text-foreground text-fluid-xl">
+            <h1 className="font-bold text-foreground">
               Esta ruta no lleva a ningún lado
             </h1>
             <p className="mx-auto max-w-md text-fluid-base text-muted-foreground">
