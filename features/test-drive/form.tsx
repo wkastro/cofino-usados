@@ -40,7 +40,7 @@ interface TestDriveFormData {
 
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;
-  return <p className="text-sm text-destructive">{message}</p>;
+  return <p className="text-xs text-red-500 ml-4">{message}</p>;
 }
 
 const STEP_1_FIELDS = [

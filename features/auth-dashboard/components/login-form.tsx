@@ -69,7 +69,7 @@ export function LoginForm() {
             required
           />
         </div>
-        {error && <p className="text-sm text-red-500 text-center">{error}</p>}
+        {error && <p className="text-xs text-red-500 ml-4">{error}</p>}
         <Button type="submit" className="w-full" disabled={isPending}>
           {isPending ? "Iniciando sesión..." : "Entrar"}
         </Button>

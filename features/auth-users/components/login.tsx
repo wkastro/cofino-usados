@@ -140,7 +140,7 @@ export default function LoginForm() {
             </Link>
           </div>
 
-          {error && <p className="text-sm text-red-500 text-center">{error}</p>}
+          {error && <p className="text-xs text-red-500 ml-4">{error}</p>}
 
           {/* Submit */}
           <Button
