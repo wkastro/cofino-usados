@@ -61,7 +61,7 @@ export function Header() {
               />
             </Button>
             <Button variant="dark" asChild>
-              <Link href="/iniciar-sesion">
+              <Link href="/login">
                 <HugeiconsIcon
                   icon={UserIcon}
                   size={16}
@@ -110,7 +110,7 @@ export function Header() {
                 <HugeiconsIcon icon={FavouriteIcon} />
               </Button>
               <Button variant="dark" className="flex-1" asChild>
-                <Link href="/iniciar-sesion">
+                <Link href="/login">
                   <HugeiconsIcon
                     icon={UserIcon}
                     size={16}
