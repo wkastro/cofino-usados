@@ -33,6 +33,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     name: user.fullName,
                     email: user.email,
                     phone: user.phone,
+                    role: user.role,
                 }
             },
         }),
@@ -46,6 +47,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 token.id = user.id
                 token.fullName = user.name
                 token.phone = (user as { phone?: string }).phone
+                token.role = (user as { role?: string }).role
             }
             return token
         },
@@ -54,16 +56,31 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 session.user.id = token.id as string
                 session.user.fullName = token.fullName as string
                 session.user.phone = token.phone as string
+                session.user.role = token.role as string
             }
             return session
         },
         authorized({ auth, request: { nextUrl } }) {
             const isLoggedIn = !!auth?.user
-            const isOnDashboard = nextUrl.pathname.startsWith("/dashboard")
-            if (isOnDashboard) {
-                if (isLoggedIn) return true
-                return false
+            const pathname = nextUrl.pathname
+
+            // /auth es la página de login de admin — siempre accesible
+            if (pathname === "/auth") return true
+
+            // Rutas que requieren rol ADMIN
+            const adminRoutes = ["/dashboard"]
+
+            const isAdminRoute = adminRoutes.some((r) =>
+                pathname.startsWith(r)
+            )
+
+            if (isAdminRoute) {
+                if (!isLoggedIn || auth?.user?.role !== "ADMIN") {
+                    return Response.redirect(new URL("/auth", nextUrl))
+                }
+                return true
             }
+
             return true
         },
     },
