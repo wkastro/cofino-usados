@@ -18,23 +18,17 @@ import {
 } from "@/components/ui/select";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 
-const registerSchema = z
-  .object({
-    fullName: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
-    email: z.string().email("Ingresa un correo electrónico válido"),
-    phoneCode: z.string().min(1, "Selecciona un código"),
-    phone: z.string().min(8, "Ingresa un número de teléfono válido"),
-    password: z
-      .string()
-      .min(8, "La contraseña debe tener al menos 8 caracteres")
-      .regex(/[A-Z]/, "Debe contener al menos una letra mayúscula")
-      .regex(/\d/, "Debe contener al menos un número"),
-    confirmPassword: z.string().min(1, "Confirma tu contraseña"),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Las contraseñas no coinciden",
-    path: ["confirmPassword"],
-  });
+const registerSchema = z.object({
+  fullName: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
+  email: z.string().email("Ingresa un correo electrónico válido"),
+  phoneCode: z.string().min(1, "Selecciona un código"),
+  phone: z.string().min(8, "Ingresa un número de teléfono válido"),
+  password: z
+    .string()
+    .min(8, "La contraseña debe tener al menos 8 caracteres")
+    .regex(/[A-Z]/, "Debe contener al menos una letra mayúscula")
+    .regex(/\d/, "Debe contener al menos un número"),
+});
 
 type RegisterFormData = z.infer<typeof registerSchema>;
 
@@ -45,7 +39,6 @@ function FieldError({ message }: { message?: string }) {
 
 export default function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState("");
   const router = useRouter();
@@ -63,7 +56,6 @@ export default function RegisterForm() {
       email: "",
       phone: "",
       password: "",
-      confirmPassword: "",
     },
   });
 
@@ -204,37 +196,6 @@ export default function RegisterForm() {
             </button>
           </div>
           <FieldError message={errors.password?.message} />
-        </div>
-
-        {/* Confirm Password */}
-        <div className="space-y-1.5">
-          <Label
-            htmlFor="confirmPassword"
-            className="text-sm font-bold text-foreground"
-          >
-            Confirmar contraseña
-          </Label>
-          <div className="relative">
-            <Input
-              id="confirmPassword"
-              type={showConfirmPassword ? "text" : "password"}
-              placeholder="••••••••••••"
-              className="rounded-full border-foreground h-12 px-5 pr-12"
-              {...register("confirmPassword")}
-            />
-            <button
-              type="button"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-            >
-              {showConfirmPassword ? (
-                <EyeOffIcon className="size-5" />
-              ) : (
-                <EyeIcon className="size-5" />
-              )}
-            </button>
-          </div>
-          <FieldError message={errors.confirmPassword?.message} />
         </div>
 
         {error && <p className="text-sm text-red-500 text-center">{error}</p>}

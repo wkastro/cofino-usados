@@ -54,7 +54,7 @@
   --text-fluid-base: clamp(0.88rem, 0.31vi + 0.75rem, 1rem);
   --text-fluid-lg: clamp(1rem, 1.25vi + 0.75rem, 1.75rem);
   --text-fluid-xl: clamp(1.375rem, 1.5625vw + 1.0625rem, 2.3125rem);
-  --text-fluid-xxl: clamp(2.125rem, 1.25vi + 1.725rem, 2.875rem);
+  --text-fluid-xxl: clamp(2rem, 1.25vi + 1.725rem, 2.625rem);
 }
 
 :root {
