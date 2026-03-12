@@ -5,6 +5,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,13 +18,23 @@ import {
 } from "@/components/ui/select";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 
-const registerSchema = z.object({
-  fullName: z.string().min(3, "El nombre debe tener al menos 3 caracteres"),
-  email: z.string().email("Ingresa un correo electrónico válido"),
-  phoneCode: z.string().min(1, "Selecciona un código"),
-  phone: z.string().min(8, "Ingresa un número de teléfono válido"),
-  password: z.string().min(8, "La contraseña debe tener al menos 8 caracteres"),
-});
+const registerSchema = z
+  .object({
+    fullName: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
+    email: z.string().email("Ingresa un correo electrónico válido"),
+    phoneCode: z.string().min(1, "Selecciona un código"),
+    phone: z.string().min(8, "Ingresa un número de teléfono válido"),
+    password: z
+      .string()
+      .min(8, "La contraseña debe tener al menos 8 caracteres")
+      .regex(/[A-Z]/, "Debe contener al menos una letra mayúscula")
+      .regex(/\d/, "Debe contener al menos un número"),
+    confirmPassword: z.string().min(1, "Confirma tu contraseña"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Las contraseñas no coinciden",
+    path: ["confirmPassword"],
+  });
 
 type RegisterFormData = z.infer<typeof registerSchema>;
 
@@ -34,7 +45,10 @@ function FieldError({ message }: { message?: string }) {
 
 export default function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState("");
+  const router = useRouter();
 
   const {
     register,
@@ -49,14 +63,37 @@ export default function RegisterForm() {
       email: "",
       phone: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
   const onSubmit = (data: RegisterFormData) => {
+    setError("");
     startTransition(async () => {
-      console.log("Registering:", data);
-      // Simular registro
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      try {
+        const phone = `${data.phoneCode}${data.phone.replace(/\D/g, "")}`;
+        const res = await fetch("/api/auth/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            fullName: data.fullName,
+            email: data.email,
+            phone,
+            password: data.password,
+          }),
+        });
+
+        const result = await res.json();
+
+        if (!res.ok) {
+          setError(result.message || "Error al crear la cuenta");
+          return;
+        }
+
+        router.push("/login?registered=true");
+      } catch {
+        setError("Ocurrió un error inesperado. Intenta de nuevo.");
+      }
     });
   };
 
@@ -168,6 +205,39 @@ export default function RegisterForm() {
           </div>
           <FieldError message={errors.password?.message} />
         </div>
+
+        {/* Confirm Password */}
+        <div className="space-y-1.5">
+          <Label
+            htmlFor="confirmPassword"
+            className="text-sm font-bold text-foreground"
+          >
+            Confirmar contraseña
+          </Label>
+          <div className="relative">
+            <Input
+              id="confirmPassword"
+              type={showConfirmPassword ? "text" : "password"}
+              placeholder="••••••••••••"
+              className="rounded-full border-foreground h-12 px-5 pr-12"
+              {...register("confirmPassword")}
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {showConfirmPassword ? (
+                <EyeOffIcon className="size-5" />
+              ) : (
+                <EyeIcon className="size-5" />
+              )}
+            </button>
+          </div>
+          <FieldError message={errors.confirmPassword?.message} />
+        </div>
+
+        {error && <p className="text-sm text-red-500 text-center">{error}</p>}
 
         {/* Submit Button */}
         <Button

@@ -1,7 +1,12 @@
 import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
+import { PrismaAdapter } from "@auth/prisma-adapter"
+import bcrypt from "bcrypt"
+import { prisma } from "@/lib/prisma"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+    adapter: PrismaAdapter(prisma),
+    session: { strategy: "jwt" },
     providers: [
         Credentials({
             credentials: {
@@ -9,19 +14,26 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 password: { label: "Password", type: "password" },
             },
             authorize: async (credentials) => {
-                // En una implementación real, aquí buscarías en la base de datos
-                // Por ahora usamos credenciales fijas para demo según lo discutido
-                if (
-                    credentials?.email === "admin@example.com" &&
-                    credentials?.password === "password123"
-                ) {
-                    return {
-                        id: "1",
-                        name: "Admin User",
-                        email: "admin@example.com",
-                    }
+                const email = credentials?.email as string | undefined
+                const password = credentials?.password as string | undefined
+
+                if (!email || !password) return null
+
+                const user = await prisma.user.findUnique({
+                    where: { email },
+                })
+
+                if (!user) return null
+
+                const isValid = await bcrypt.compare(password, user.password)
+                if (!isValid) return null
+
+                return {
+                    id: user.id,
+                    name: user.fullName,
+                    email: user.email,
+                    phone: user.phone,
                 }
-                return null
             },
         }),
     ],
@@ -29,14 +41,30 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         signIn: "/login",
     },
     callbacks: {
+        async jwt({ token, user }) {
+            if (user) {
+                token.id = user.id
+                token.fullName = user.name
+                token.phone = (user as { phone?: string }).phone
+            }
+            return token
+        },
+        async session({ session, token }) {
+            if (session.user) {
+                session.user.id = token.id as string
+                session.user.fullName = token.fullName as string
+                session.user.phone = token.phone as string
+            }
+            return session
+        },
         authorized({ auth, request: { nextUrl } }) {
             const isLoggedIn = !!auth?.user
             const isOnDashboard = nextUrl.pathname.startsWith("/dashboard")
             if (isOnDashboard) {
-                if (isLoggedIn) return true;
-                return false; // Redirige a login
+                if (isLoggedIn) return true
+                return false
             }
-            return true;
+            return true
         },
     },
 })
