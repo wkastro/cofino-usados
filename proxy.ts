@@ -1,5 +1,7 @@
 export { auth as proxy } from "@/auth"
 
 export const config = {
-    matcher: ["/dashboard/:path*", "/auth/:path*"],
+    matcher: [
+        "/((?!_next/static|_next/image|favicon\\.ico|api/auth|.*\\..+).*)",
+    ],
 }

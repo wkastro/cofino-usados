@@ -6,15 +6,20 @@ import { prisma } from "@/lib/prisma"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
     adapter: PrismaAdapter(prisma),
-    session: { strategy: "jwt" },
+    session: {
+        strategy: "jwt",
+        maxAge: 30 * 24 * 60 * 60, // 30 días
+    },
     providers: [
         Credentials({
+            id: "user-login",
+            name: "User Login",
             credentials: {
                 email: { label: "Email", type: "email" },
                 password: { label: "Password", type: "password" },
             },
             authorize: async (credentials) => {
-                const email = credentials?.email as string | undefined
+                const email = (credentials?.email as string | undefined)?.trim().toLowerCase()
                 const password = credentials?.password as string | undefined
 
                 if (!email || !password) return null
@@ -27,6 +32,41 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
                 const isValid = await bcrypt.compare(password, user.password)
                 if (!isValid) return null
+
+                if (user.role !== "USER") return null
+
+                return {
+                    id: user.id,
+                    name: user.fullName,
+                    email: user.email,
+                    phone: user.phone,
+                    role: user.role,
+                }
+            },
+        }),
+        Credentials({
+            id: "admin-login",
+            name: "Admin Login",
+            credentials: {
+                email: { label: "Email", type: "email" },
+                password: { label: "Password", type: "password" },
+            },
+            authorize: async (credentials) => {
+                const email = (credentials?.email as string | undefined)?.trim().toLowerCase()
+                const password = credentials?.password as string | undefined
+
+                if (!email || !password) return null
+
+                const user = await prisma.user.findUnique({
+                    where: { email },
+                })
+
+                if (!user) return null
+
+                const isValid = await bcrypt.compare(password, user.password)
+                if (!isValid) return null
+
+                if (user.role !== "ADMIN") return null
 
                 return {
                     id: user.id,
@@ -62,20 +102,32 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         },
         authorized({ auth, request: { nextUrl } }) {
             const isLoggedIn = !!auth?.user
+            const role = auth?.user?.role
             const pathname = nextUrl.pathname
 
-            // /auth es la página de login de admin — siempre accesible
-            if (pathname === "/auth") return true
+            const userAuthRoutes = ["/login", "/registro"]
+            const adminAuthRoutes = ["/auth"]
+            const privateRoutes = ["/dashboard"]
 
-            // Rutas que requieren rol ADMIN
-            const adminRoutes = ["/dashboard"]
+            // USER autenticado en /login o /registro → redirigir a /
+            if (userAuthRoutes.some((r) => pathname.startsWith(r))) {
+                if (isLoggedIn && role === "USER") {
+                    return Response.redirect(new URL("/", nextUrl))
+                }
+                return true
+            }
 
-            const isAdminRoute = adminRoutes.some((r) =>
-                pathname.startsWith(r)
-            )
+            // ADMIN autenticado en /auth → redirigir a /dashboard
+            if (adminAuthRoutes.some((r) => pathname === r)) {
+                if (isLoggedIn && role === "ADMIN") {
+                    return Response.redirect(new URL("/dashboard", nextUrl))
+                }
+                return true
+            }
 
-            if (isAdminRoute) {
-                if (!isLoggedIn || auth?.user?.role !== "ADMIN") {
+            // /dashboard/* → solo ADMIN
+            if (privateRoutes.some((r) => pathname.startsWith(r))) {
+                if (!isLoggedIn || role !== "ADMIN") {
                     return Response.redirect(new URL("/auth", nextUrl))
                 }
                 return true

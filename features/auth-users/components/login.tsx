@@ -37,7 +37,7 @@ export default function LoginForm() {
     setError("");
     startTransition(async () => {
       try {
-        const result = await signIn("credentials", {
+        const result = await signIn("user-login", {
           email: data.email,
           password: data.password,
           redirect: false,
@@ -46,7 +46,7 @@ export default function LoginForm() {
         if (result?.error) {
           setError("Credenciales inválidas");
         } else {
-          router.push("/dashboard");
+          router.push("/");
           router.refresh();
         }
       } catch {

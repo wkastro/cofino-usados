@@ -18,8 +18,11 @@ export async function POST(request: Request) {
 
     const { fullName, email, phone, password } = result.data
 
+    const sanitizedEmail = email.trim().toLowerCase()
+    const sanitizedName = fullName.trim()
+
     const existingUser = await prisma.user.findUnique({
-      where: { email },
+      where: { email: sanitizedEmail },
     })
 
     if (existingUser) {
@@ -33,8 +36,8 @@ export async function POST(request: Request) {
 
     const user = await prisma.user.create({
       data: {
-        fullName,
-        email,
+        fullName: sanitizedName,
+        email: sanitizedEmail,
         phone,
         password: hashedPassword,
       },
