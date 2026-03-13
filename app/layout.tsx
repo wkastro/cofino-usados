@@ -3,7 +3,7 @@ import { Work_Sans } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import { Header } from "@/components/layout/header";
+import Header from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 
 const workSans = Work_Sans({ subsets: ["latin"], variable: "--font-work-sans" });
