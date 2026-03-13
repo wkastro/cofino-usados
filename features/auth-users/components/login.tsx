@@ -60,7 +60,7 @@ export default function LoginForm() {
       <div className="w-full max-w-md space-y-8">
         {/* Header */}
         <div className="text-center space-y-2">
-          <h1 className="font-bold text-foreground">
+          <h1 className="font-semibold text-foreground">
             ¡Hola de nuevo! <br /> Inicia sesión aquí
           </h1>
           <p className="text-gray-500">

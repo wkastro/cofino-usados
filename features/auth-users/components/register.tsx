@@ -93,7 +93,7 @@ export default function RegisterForm() {
     <div className="w-full max-w-100 space-y-8">
       {/* Header */}
       <div className="text-center space-y-2">
-        <h1 className="font-bold tracking-tight text-foreground">
+        <h1 className="font-semibold tracking-tight text-foreground">
           Bienvenido a Cofiño usados
         </h1>
         <p className="text-muted-foreground text-sm">

@@ -80,7 +80,7 @@ export default function FormTestDrive() {
       <div className="mx-auto w-full max-w-md space-y-6">
         {/* Title */}
         <div className="space-y-1 text-center">
-          <h1 className="font-bold text-foreground">Agenda aquí tu cita</h1>
+          <h1 className="font-semibold text-foreground">Agenda aquí tu cita</h1>
           <p className="text-fluid-base text-muted-foreground">
             Vive la experiencia de conocer y manejar el auto que desees.
           </p>

@@ -186,15 +186,10 @@
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
   body {
-    @apply bg-background text-foreground;
     font-family: var(--font-work-sans), ui-sans-serif, system-ui, sans-serif;
   }
   html {
-    @apply font-sans;
     font-family: var(--font-work-sans), ui-sans-serif, system-ui, sans-serif;
   }
   p, button, input, textarea, select, label {
@@ -202,6 +197,7 @@
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-clash-display);
+    @apply leading-9;
   }
   h1 {
     font-size: var(--text-fluid-xl);
