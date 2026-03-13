@@ -45,8 +45,8 @@ export default function Navbar() {
               <Image
                 src="/logo-cofino.svg"
                 alt="Cofiño"
-                width={180}
-                height={40}
+                width={200}
+                height={60}
                 className={cn(
                   "transition-all",
                   isHome ? "brightness-0 invert" : "brightness-0 dark:invert"

@@ -23,7 +23,7 @@ export default function Hero() {
         </div>
 
         {/* Overlay - adjusted for better readability across devices */}
-        <div className="absolute inset-0 w-full h-full bg-linear-to-t from-black/90 via-black/40 md:via-black/30 to-black/10 z-10" />
+        <div className="absolute inset-0 w-full h-full bg-linear-to-t from-black/95 via-black/60 md:via-black/50 to-black/50 z-10" />
 
         {/* Content - improved spacing and layout for mobile */}
         <div className="absolute inset-0 z-20 flex flex-col justify-end pb-20 sm:pb-24 md:pb-32 pt-28">
