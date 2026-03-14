@@ -1,0 +1,403 @@
+[
+  {
+    "id": "1",
+    "marca": "Honda",
+    "modelo": "CR-V",
+    "anio": 2021,
+    "precio": 450000,
+    "precioOriginal": 550000,
+    "precioMensual": 1200,
+    "imagen": "/car.png",
+    "badge": "Liquidación",
+    "isFavorito": false,
+    "esEntregaInmediata": true,
+    "agencia": "Calzada Roosevelt",
+    "specs": {
+      "transmision": "Manual",
+      "capacidad": 5,
+      "kilometraje": 11000,
+      "motor": "2.0",
+      "blindaje": true,
+      "traccion": "4X4"
+    }
+  },
+  {
+    "id": "2",
+    "marca": "Toyota",
+    "modelo": "Hilux",
+    "anio": 2023,
+    "precio": 320000,
+    "precioOriginal": 340000,
+    "precioMensual": 4500,
+    "imagen": "/car.png",
+    "esEntregaInmediata": false,
+    "agencia": "Z. 4",
+    "specs": {
+      "transmision": "Automática",
+      "capacidad": 5,
+      "kilometraje": 15000,
+      "motor": "2.8 Turbo Diésel",
+      "blindaje": false,
+      "traccion": "4X4"
+    }
+  },
+  {
+    "id": "3",
+    "marca": "Chevrolet",
+    "modelo": "Groove LT",
+    "anio": 2024,
+    "precio": 145000,
+    "precioMensual": 2350,
+    "imagen": "/car.png",
+    "badge": "Nuevo",
+    "esEntregaInmediata": true,
+    "agencia": "Majadas",
+    "specs": {
+      "transmision": "Automática",
+      "capacidad": 5,
+      "kilometraje": 0,
+      "motor": "1.5L",
+      "blindaje": false,
+      "traccion": "4X2"
+    }
+  },
+  {
+    "id": "4",
+    "marca": "Ford",
+    "modelo": "Explorer XLT",
+    "anio": 2022,
+    "precio": 310000,
+    "precioOriginal": 335000,
+    "precioMensual": 3800,
+    "imagen": "/car.png",
+    "esEntregaInmediata": true,
+    "agencia": "Pradera",
+    "specs": {
+      "transmision": "Automática",
+      "capacidad": 7,
+      "kilometraje": 32000,
+      "motor": "2.3L EcoBoost",
+      "blindaje": false,
+      "traccion": "AWD"
+    }
+  },
+  {
+    "id": "5",
+    "marca": "Nissan",
+    "modelo": "Kicks Advance",
+    "anio": 2021,
+    "precio": 135000,
+    "precioMensual": 1900,
+    "imagen": "/car.png",
+    "badge": "Destacado",
+    "esEntregaInmediata": true,
+    "agencia": "Z. 10",
+    "specs": {
+      "transmision": "CVT",
+      "capacidad": 5,
+      "kilometraje": 45000,
+      "motor": "1.6L",
+      "blindaje": false,
+      "traccion": "2WD"
+    }
+  },
+  {
+    "id": "6",
+    "marca": "Kia",
+    "modelo": "Sportage",
+    "anio": 2023,
+    "precio": 215000,
+    "precioMensual": 2900,
+    "imagen": "/car.png",
+    "esEntregaInmediata": false,
+    "agencia": "Condado Concepción",
+    "specs": {
+      "transmision": "Manual",
+      "capacidad": 5,
+      "kilometraje": 12000,
+      "motor": "2.0L",
+      "blindaje": false,
+      "traccion": "4X2"
+    }
+  },
+  {
+    "id": "7",
+    "marca": "Hyundai",
+    "modelo": "Tucson",
+    "anio": 2020,
+    "precio": 140000,
+    "precioOriginal": 160000,
+    "precioMensual": 2100,
+    "imagen": "/car.png",
+    "badge": "Oferta",
+    "esEntregaInmediata": true,
+    "agencia": "Z. 4",
+    "specs": {
+      "transmision": "Automática",
+      "capacidad": 5,
+      "kilometraje": 68000,
+      "motor": "2.0L",
+      "blindaje": false,
+      "traccion": "4X2"
+    }
+  },
+  {
+    "id": "8",
+    "marca": "BMW",
+    "modelo": "X3 xDrive30i",
+    "anio": 2022,
+    "precio": 450000,
+    "precioMensual": 6200,
+    "imagen": "/car.png",
+    "badge": "Premium",
+    "esEntregaInmediata": true,
+    "agencia": "Pradera",
+    "specs": {
+      "transmision": "Automática 8 vel",
+      "capacidad": 5,
+      "kilometraje": 20000,
+      "motor": "2.0 TwinPower Turbo",
+      "blindaje": false,
+      "traccion": "AWD"
+    }
+  },
+  {
+    "id": "9",
+    "marca": "Mercedes-Benz",
+    "modelo": "GLC 300",
+    "anio": 2021,
+    "precio": 430000,
+    "precioOriginal": 480000,
+    "precioMensual": 5800,
+    "imagen": "/car.png",
+    "esEntregaInmediata": true,
+    "agencia": "Z. 10",
+    "specs": {
+      "transmision": "Automática 9 vel",
+      "capacidad": 5,
+      "kilometraje": 28000,
+      "motor": "2.0L Turbo",
+      "blindaje": "Nivel 3",
+      "traccion": "4MATIC"
+    }
+  },
+  {
+    "id": "10",
+    "marca": "Volkswagen",
+    "modelo": "Amarok Highline",
+    "anio": 2023,
+    "precio": 360000,
+    "precioMensual": 4800,
+    "imagen": "/car.png",
+    "esEntregaInmediata": false,
+    "agencia": "Majadas",
+    "specs": {
+      "transmision": "Automática 8 vel",
+      "capacidad": 5,
+      "kilometraje": 18000,
+      "motor": "3.0L V6 TDI",
+      "blindaje": false,
+      "traccion": "4MOTION"
+    }
+  },
+  {
+    "id": "11",
+    "marca": "Mazda",
+    "modelo": "CX-5 Grand Touring",
+    "anio": 2022,
+    "precio": 240000,
+    "precioMensual": 3300,
+    "imagen": "/car.png",
+    "esEntregaInmediata": true,
+    "agencia": "Calzada Roosevelt",
+    "specs": {
+      "transmision": "Automática",
+      "capacidad": 5,
+      "kilometraje": 35000,
+      "motor": "2.5L",
+      "blindaje": false,
+      "traccion": "AWD"
+    }
+  },
+  {
+    "id": "12",
+    "marca": "Audi",
+    "modelo": "Q5 Luxury",
+    "anio": 2023,
+    "precio": 490000,
+    "precioOriginal": 520000,
+    "precioMensual": 6500,
+    "imagen": "/car.png",
+    "badge": "Premium",
+    "esEntregaInmediata": true,
+    "agencia": "Z. 10",
+    "specs": {
+      "transmision": "S tronic",
+      "capacidad": 5,
+      "kilometraje": 8000,
+      "motor": "2.0 TFSI",
+      "blindaje": false,
+      "traccion": "quattro"
+    }
+  },
+  {
+    "id": "13",
+    "marca": "Jeep",
+    "modelo": "Grand Cherokee",
+    "anio": 2021,
+    "precio": 380000,
+    "precioMensual": 4900,
+    "imagen": "/car.png",
+    "esEntregaInmediata": true,
+    "agencia": "Pradera",
+    "specs": {
+      "transmision": "Automática 8 vel",
+      "capacidad": 5,
+      "kilometraje": 42000,
+      "motor": "3.6L V6",
+      "blindaje": true,
+      "traccion": "4X4"
+    }
+  },
+  {
+    "id": "14",
+    "marca": "Peugeot",
+    "modelo": "3008 GT",
+    "anio": 2022,
+    "precio": 230000,
+    "precioOriginal": 250000,
+    "precioMensual": 3100,
+    "imagen": "/car.png",
+    "badge": "Liquidación",
+    "esEntregaInmediata": true,
+    "agencia": "Majadas",
+    "specs": {
+      "transmision": "Automática",
+      "capacidad": 5,
+      "kilometraje": 25000,
+      "motor": "1.6 Turbo",
+      "blindaje": false,
+      "traccion": "4X2"
+    }
+  },
+  {
+    "id": "15",
+    "marca": "Renault",
+    "modelo": "Duster Intens",
+    "anio": 2024,
+    "precio": 155000,
+    "precioMensual": 2100,
+    "imagen": "/car.png",
+    "badge": "Nuevo",
+    "esEntregaInmediata": true,
+    "agencia": "Z. 4",
+    "specs": {
+      "transmision": "Automática CVT",
+      "capacidad": 5,
+      "kilometraje": 500,
+      "motor": "1.3 Turbo",
+      "blindaje": false,
+      "traccion": "4X2"
+    }
+  },
+  {
+    "id": "16",
+    "marca": "Suzuki",
+    "modelo": "Jimny",
+    "anio": 2023,
+    "precio": 180000,
+    "precioOriginal": 195000,
+    "precioMensual": 2500,
+    "imagen": "/car.png",
+    "esEntregaInmediata": false,
+    "agencia": "Calzada Roosevelt",
+    "specs": {
+      "transmision": "Manual",
+      "capacidad": 4,
+      "kilometraje": 15000,
+      "motor": "1.5L",
+      "blindaje": false,
+      "traccion": "4X4"
+    }
+  },
+  {
+    "id": "17",
+    "marca": "Mitsubishi",
+    "modelo": "L200 Sportero",
+    "anio": 2022,
+    "precio": 270000,
+    "precioMensual": 3600,
+    "imagen": "/car.png",
+    "esEntregaInmediata": true,
+    "agencia": "Condado Concepción",
+    "specs": {
+      "transmision": "Automática",
+      "capacidad": 5,
+      "kilometraje": 45000,
+      "motor": "2.4 TD",
+      "blindaje": false,
+      "traccion": "4X4"
+    }
+  },
+  {
+    "id": "18",
+    "marca": "Honda",
+    "modelo": "City EX",
+    "anio": 2021,
+    "precio": 115000,
+    "precioOriginal": 130000,
+    "precioMensual": 1600,
+    "imagen": "/car.png",
+    "badge": "Oferta",
+    "esEntregaInmediata": true,
+    "agencia": "Z. 4",
+    "specs": {
+      "transmision": "Automática CVT",
+      "capacidad": 5,
+      "kilometraje": 55000,
+      "motor": "1.5L",
+      "blindaje": false,
+      "traccion": "2WD"
+    }
+  },
+  {
+    "id": "19",
+    "marca": "Toyota",
+    "modelo": "Yaris Cross",
+    "anio": 2023,
+    "precio": 195000,
+    "precioMensual": 2700,
+    "imagen": "/car.png",
+    "esEntregaInmediata": true,
+    "agencia": "Majadas",
+    "specs": {
+      "transmision": "Automática CVT",
+      "capacidad": 5,
+      "kilometraje": 12000,
+      "motor": "1.5L Híbrido",
+      "blindaje": false,
+      "traccion": "2WD"
+    }
+  },
+  {
+    "id": "20",
+    "marca": "Chevrolet",
+    "modelo": "Suburban",
+    "anio": 2022,
+    "precio": 520000,
+    "precioOriginal": 560000,
+    "precioMensual": 7200,
+    "imagen": "/car.png",
+    "badge": "Familiar",
+    "esEntregaInmediata": true,
+    "agencia": "Z. 10",
+    "specs": {
+      "transmision": "Automática 10 vel",
+      "capacidad": 8,
+      "kilometraje": 30000,
+      "motor": "5.3L V8",
+      "blindaje": "Nivel 4",
+      "traccion": "4WD"
+    }
+  }
+]

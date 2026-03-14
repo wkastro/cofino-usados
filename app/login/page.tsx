@@ -20,7 +20,7 @@ export default function SignIn() {
           />
           {/* Overlay Content */}
           <div className="absolute inset-0 flex flex-col items-end justify-start p-12 bg-linear-to-t from-black/40 via-transparent to-black/10">
-            <p className="text-left font-semibold leading-tight text-white text-fluid-xxl font-display">
+            <p className="text-left font-semibold leading-tight text-white text-display-2 font-display">
               Tu próximo vehículo, respaldado por Cofiño
             </p>
           </div>

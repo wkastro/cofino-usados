@@ -267,9 +267,8 @@ export default function FormTestDrive() {
                     <Button
                       type="button"
                       variant="outline"
-                      className={`w-full justify-start border-foreground bg-transparent text-left font-normal focus:border-transparent ${
-                        !field.value ? "text-muted-foreground" : ""
-                      }`}
+                      className={`w-full justify-start border-foreground bg-transparent text-left font-normal focus:border-transparent ${!field.value ? "text-muted-foreground" : ""
+                        }`}
                       aria-invalid={!!errors.testDate}
                     >
                       <HugeiconsIcon

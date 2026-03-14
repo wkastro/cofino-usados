@@ -24,7 +24,7 @@ export default function RegisterPage() {
               {/* Content over image */}
               <div className="relative h-full flex flex-col justify-between p-10">
                 <div className="space-y-12">
-                  <p className="font-semibold leading-tight text-white text-fluid-xxl font-display">
+                  <p className="font-semibold leading-tight text-white text-display-2 font-display">
                     Calidad y confianza en cada vehículo
                   </p>
                 </div>

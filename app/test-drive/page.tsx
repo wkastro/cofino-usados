@@ -21,7 +21,7 @@ export default function TestDrivePage() {
             <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent" />
             {/* Texto sobre la imagen */}
             <div className="absolute bottom-8 left-6 right-6">
-              <p className="font-semibold leading-tight text-white text-fluid-xxl font-display">
+              <p className="font-semibold leading-tight text-white text-display-2 font-display">
                 ¡Conoce tu futuro auto
                 <br />
                 antes de comprarlo!
