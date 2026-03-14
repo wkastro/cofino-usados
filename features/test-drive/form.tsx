@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-import { useForm, Controller } from "react-hook-form";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
@@ -23,57 +21,30 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-interface TestDriveFormData {
-  name: string;
-  email: string;
-  phoneCode: string;
-  phone: string;
-  contactMethod: string;
-  testDriveType: string;
-  testDate: Date;
-  startTime: string;
-  endTime: string;
-  branch: string;
-  acceptContact: boolean;
-}
-
-function FieldError({ message }: { message?: string }) {
-  if (!message) return null;
-  return <p className="text-xs text-red-500 ml-4">{message}</p>;
-}
-
-const STEP_1_FIELDS = [
-  "name",
-  "email",
-  "phoneCode",
-  "phone",
-  "contactMethod",
-] as const;
+import {
+  CONTACT_METHOD_OPTIONS,
+  TEST_DRIVE_TYPE_OPTIONS,
+  TEST_DRIVE_START_TIMES,
+  TEST_DRIVE_END_TIMES,
+  TEST_DRIVE_BRANCHES,
+} from "@/lib/constants/test-drive";
+import { AUTH_PHONE_CODES_EXTENDED } from "@/lib/constants/auth";
+import { FieldError } from "@/components/forms/field-error";
+import { PhoneField } from "@/components/forms/phone-field";
+import { useTestDriveForm } from "@/features/test-drive/hooks/useTestDriveForm";
+import { Controller } from "react-hook-form";
 
 export default function FormTestDrive() {
-  const [step, setStep] = useState(0);
-
   const {
     register,
     control,
     handleSubmit,
-    trigger,
-    formState: { errors },
-  } = useForm<TestDriveFormData>({
-    defaultValues: {
-      phoneCode: "+502",
-    },
-  });
-
-  async function handleNext() {
-    const valid = await trigger([...STEP_1_FIELDS]);
-    if (valid) setStep(1);
-  }
-
-  function onSubmit(data: TestDriveFormData) {
-    console.log("Form submitted:", data);
-  }
+    errors,
+    step,
+    setStep,
+    handleNext,
+    onSubmit,
+  } = useTestDriveForm();
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -153,44 +124,27 @@ export default function FormTestDrive() {
           </div>
 
           {/* Teléfono */}
-          <div className="space-y-2">
-            <Label htmlFor="phone">
-              Teléfono<span className="text-destructive">*</span>
-            </Label>
-            <div className="flex items-center gap-3">
-              <Controller
-                control={control}
-                name="phoneCode"
-                render={({ field }) => (
-                  <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger className="w-30 shrink-0">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="+502">🇬🇹 +502</SelectItem>
-                      <SelectItem value="+503">🇸🇻 +503</SelectItem>
-                      <SelectItem value="+504">🇭🇳 +504</SelectItem>
-                      <SelectItem value="+52">🇲🇽 +52</SelectItem>
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-              <Input
-                id="phone"
-                type="tel"
-                placeholder="5987 - 2409"
-                aria-invalid={!!errors.phone}
-                {...register("phone", {
-                  required: "El teléfono es obligatorio",
-                  pattern: {
-                    value: /^[\d\s\-+()]{7,15}$/,
-                    message: "Ingresa un número de teléfono válido",
-                  },
-                })}
-              />
-            </div>
-            <FieldError message={errors.phone?.message} />
-          </div>
+          <PhoneField
+            control={control}
+            register={register}
+            phoneCodeName="phoneCode"
+            phoneName="phone"
+            phoneRegisterOptions={{
+              required: "El teléfono es obligatorio",
+              pattern: {
+                value: /^[\d\s+()-]{7,15}$/,
+                message: "Ingresa un número de teléfono válido",
+              },
+            }}
+            phoneCodeOptions={AUTH_PHONE_CODES_EXTENDED}
+            label={
+              <>
+                Teléfono<span className="text-destructive">*</span>
+              </>
+            }
+            inputPlaceholder="5987 - 2409"
+            errorMessage={errors.phone?.message}
+          />
 
           {/* Método de contacto */}
           <div className="space-y-2">
@@ -211,9 +165,11 @@ export default function FormTestDrive() {
                     <SelectValue placeholder="Selecciona el método" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="whatsapp">WhatsApp</SelectItem>
-                    <SelectItem value="llamada">Llamada telefónica</SelectItem>
-                    <SelectItem value="correo">Correo electrónico</SelectItem>
+                    {CONTACT_METHOD_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               )}
@@ -243,8 +199,11 @@ export default function FormTestDrive() {
                     <SelectValue placeholder="Selecciona el método" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="presencial">Presencial</SelectItem>
-                    <SelectItem value="domicilio">A domicilio</SelectItem>
+                    {TEST_DRIVE_TYPE_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               )}
@@ -267,8 +226,9 @@ export default function FormTestDrive() {
                     <Button
                       type="button"
                       variant="outline"
-                      className={`w-full justify-start border-foreground bg-transparent text-left font-normal focus:border-transparent ${!field.value ? "text-muted-foreground" : ""
-                        }`}
+                      className={`w-full justify-start border-foreground bg-transparent text-left font-normal focus:border-transparent ${
+                        !field.value ? "text-muted-foreground" : ""
+                      }`}
                       aria-invalid={!!errors.testDate}
                     >
                       <HugeiconsIcon
@@ -316,15 +276,11 @@ export default function FormTestDrive() {
                       <SelectValue placeholder="Hora de inicio" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="08:00">08:00</SelectItem>
-                      <SelectItem value="09:00">09:00</SelectItem>
-                      <SelectItem value="10:00">10:00</SelectItem>
-                      <SelectItem value="11:00">11:00</SelectItem>
-                      <SelectItem value="12:00">12:00</SelectItem>
-                      <SelectItem value="13:00">13:00</SelectItem>
-                      <SelectItem value="14:00">14:00</SelectItem>
-                      <SelectItem value="15:00">15:00</SelectItem>
-                      <SelectItem value="16:00">16:00</SelectItem>
+                      {TEST_DRIVE_START_TIMES.map((time) => (
+                        <SelectItem key={time} value={time}>
+                          {time}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 )}
@@ -342,15 +298,11 @@ export default function FormTestDrive() {
                       <SelectValue placeholder="Hora final" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="09:00">09:00</SelectItem>
-                      <SelectItem value="10:00">10:00</SelectItem>
-                      <SelectItem value="11:00">11:00</SelectItem>
-                      <SelectItem value="12:00">12:00</SelectItem>
-                      <SelectItem value="13:00">13:00</SelectItem>
-                      <SelectItem value="14:00">14:00</SelectItem>
-                      <SelectItem value="15:00">15:00</SelectItem>
-                      <SelectItem value="16:00">16:00</SelectItem>
-                      <SelectItem value="17:00">17:00</SelectItem>
+                      {TEST_DRIVE_END_TIMES.map((time) => (
+                        <SelectItem key={time} value={time}>
+                          {time}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 )}
@@ -379,11 +331,11 @@ export default function FormTestDrive() {
                     <SelectValue placeholder="Selecciona una agencia" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="roosevelt">
-                      Agencia Calzada Roosevelt
-                    </SelectItem>
-                    <SelectItem value="yurrita">Agencia Yurrita</SelectItem>
-                    <SelectItem value="arrazola">Agencia Arrazola</SelectItem>
+                    {TEST_DRIVE_BRANCHES.map((branch) => (
+                      <SelectItem key={branch.value} value={branch.value}>
+                        {branch.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               )}

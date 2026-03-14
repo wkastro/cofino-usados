@@ -14,13 +14,7 @@ import {
   Cancel01Icon,
 } from "@hugeicons/core-free-icons";
 import { cn } from "@/lib/utils";
-
-const navLinks = [
-  { label: "Comprar", href: "/comprar" },
-  { label: "Intercambiar", href: "/intercambiar" },
-  { label: "Próximamente", href: "/proximamente" },
-  { label: "Certificados", href: "/certificados" },
-];
+import { navLinks } from "@/lib/constants/navigation";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);

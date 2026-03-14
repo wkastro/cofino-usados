@@ -15,6 +15,11 @@ import {
   CarFront
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  formatBlindaje,
+  formatCurrency,
+  formatKilometers,
+} from "@/lib/formatters/vehicle";
 
 export interface VehicleCardProps {
   id: string | number;
@@ -75,24 +80,6 @@ export function VehicleCard({
       e.preventDefault();
       onComprar(id);
     }
-  };
-
-  const formatCurrency = (value: number) => {
-    return `Q${new Intl.NumberFormat("en-US", {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(value)}`;
-  };
-
-  const formatKilometers = (value: number) => {
-    return `${new Intl.NumberFormat("en-US").format(value)} km`;
-  };
-
-  const renderBlindaje = (blindaje: string | boolean) => {
-    if (typeof blindaje === "boolean") {
-      return blindaje ? "Blindado" : "Sin blindaje";
-    }
-    return blindaje;
   };
 
   return (
@@ -159,7 +146,7 @@ export function VehicleCard({
         </div>
         <div className="flex items-center gap-2">
           <ShieldCheck className="h-[1.1rem] w-[1.1rem] stroke-[1.5] text-muted-foreground" />
-          <span className="text-[0.85rem] text-muted-foreground capitalize">{renderBlindaje(specs.blindaje)}</span>
+          <span className="text-[0.85rem] text-muted-foreground capitalize">{formatBlindaje(specs.blindaje)}</span>
         </div>
         <div className="flex items-center gap-2">
           <CarFront className="h-[1.1rem] w-[1.1rem] stroke-[1.5] text-muted-foreground" />

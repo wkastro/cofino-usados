@@ -1,42 +1,13 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/global/logo";
+import { useAdminLoginForm } from "@/features/auth-dashboard/hooks/useAdminLoginForm";
 
 export function LoginForm() {
-  const [error, setError] = useState("");
-  const [isPending, startTransition] = useTransition();
-  const router = useRouter();
-
-  const handleAction = (formData: FormData) => {
-    setError("");
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-
-    startTransition(async () => {
-      try {
-        const result = await signIn("admin-login", {
-          email,
-          password,
-          redirect: false,
-        });
-
-        if (result?.error) {
-          setError("Credenciales inválidas");
-        } else {
-          router.push("/dashboard");
-          router.refresh();
-        }
-      } catch {
-        setError("Ocurrió un error inesperado");
-      }
-    });
-  };
+  const { handleAction, error, isPending } = useAdminLoginForm();
 
   return (
     <div className="w-full max-w-md p-8 space-y-6 bg-card text-card-foreground rounded-lg shadow-md flex flex-col items-center">
