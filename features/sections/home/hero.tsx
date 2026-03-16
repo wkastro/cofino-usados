@@ -2,7 +2,7 @@ import { Container } from "@/components/layout/container";
 
 export default function Hero() {
   return (
-    <main className="relative w-full h-dvh min-h-[600px] overflow-hidden">
+    <main className="relative w-full h-dvh min-h-150 overflow-hidden [clip-path:ellipse(100%_100%_at_50%_0%)]">
       <section aria-label="Hero principal" className="absolute inset-0 w-full h-full">
         {/* Container for video and fallback */}
         <div className="absolute inset-0 w-full h-full bg-black">
