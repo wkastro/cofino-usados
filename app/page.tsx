@@ -9,8 +9,9 @@ export default function Home() {
 
   return (
     <>
-      <Hero />
-      <HomeSearchBar vehicles={vehicles} />
+      <Hero>
+        <HomeSearchBar vehicles={vehicles} />
+      </Hero>
       <VehicleGrid vehicles={vehicles} />
     </>
   );

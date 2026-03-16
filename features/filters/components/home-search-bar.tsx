@@ -86,7 +86,7 @@ export function HomeSearchBar({ vehicles }: HomeSearchBarProps) {
       onFilterChange={onFilterChange}
       onFiltersClick={() => {}}
       onSearch={handleSearch}
-      className="-mt-12 md:-mt-8"
+      className="absolute bottom-6 left-0 right-0 z-30"
     />
   );
 }
