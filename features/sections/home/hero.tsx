@@ -29,7 +29,7 @@ export default function Hero() {
         <div className="absolute inset-0 z-20 flex flex-col justify-end pb-20 sm:pb-24 md:pb-32 pt-28">
           <Container>
             <div className="max-w-3xl">
-              <h1 className="text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-semibold tracking-tight text-white mb-4 sm:mb-6 leading-[1.1] sm:leading-tight drop-shadow-sm">
+              <h1 className="text-display-1 font-medium tracking-tight text-white mb-4 sm:mb-6 leading-[1.1] sm:leading-tight drop-shadow-sm">
                 Tu nuevo auto con el respaldo que mereces
               </h1>
               <p className="text-lg sm:text-xl md:text-2xl text-white/90 font-medium max-w-2xl drop-shadow-sm">

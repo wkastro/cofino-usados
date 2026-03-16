@@ -6,7 +6,10 @@ import { cn } from "@/lib/utils";
 import Header from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 
-const workSans = Work_Sans({ subsets: ["latin"], variable: "--font-work-sans" });
+const workSans = Work_Sans({
+  subsets: ["latin"],
+  variable: "--font-work-sans",
+});
 const clashDisplay = localFont({
   src: [
     {
@@ -58,9 +61,7 @@ export default function RootLayout({
       lang="en"
       className={cn("font-sans", workSans.variable, clashDisplay.variable)}
     >
-      <body
-        className={`antialiased`}
-      >
+      <body className={`antialiased bg-secondary`}>
         <Header />
         {children}
         <Footer />

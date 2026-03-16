@@ -78,7 +78,7 @@
   --primary-foreground: oklch(0.2098 0.005 174.089);
 
   /* Secondary: #BFCBD0 (gris claro) con texto #122744 (navy) */
-  --secondary: oklch(0.8344 0.015 224.707);
+  --secondary: oklch(0.9821 0 129.63);
   --secondary-foreground: oklch(0.272 0.0606 256.903);
 
   /* Muted: gris suave */
@@ -245,4 +245,7 @@
 }
 @utility text-fs-xs{
   @apply text-fs-sm;
+}
+@utility font-clash-display {
+  @apply font-display;
 }
