@@ -243,3 +243,6 @@
 @utility text-display-2 {
   @apply text-fs-xxl;
 }
+@utility text-fs-xs{
+  @apply text-fs-sm;
+}

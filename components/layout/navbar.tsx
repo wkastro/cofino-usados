@@ -114,7 +114,7 @@ export default function Navbar() {
                   aria-label="Ver favoritos"
                   className="text-white hover:bg-white/10 hover:text-white"
                 >
-                  <HugeiconsIcon icon={FavouriteIcon} className="size-[22px]" />
+                  <HugeiconsIcon icon={FavouriteIcon} className="size-5.5" />
                 </Button>
               )}
               <Button
@@ -128,7 +128,7 @@ export default function Navbar() {
               >
                 <HugeiconsIcon
                   icon={mobileMenuOpen ? Cancel01Icon : Menu02Icon}
-                  className="size-[22px]"
+                  className="size-5.5"
                 />
               </Button>
             </div>

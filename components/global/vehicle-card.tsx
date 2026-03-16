@@ -15,6 +15,7 @@ import {
   CarFront
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   formatBlindaje,
   formatCurrency,
@@ -83,9 +84,9 @@ export function VehicleCard({
   };
 
   return (
-    <article className="group relative w-full max-w-[24rem] rounded-[1.25rem] bg-card text-card-foreground border border-border p-6 pb-4 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.06)] flex flex-col justify-between overflow-hidden">
+    <article className="group relative w-full max-w-[24rem] rounded-lg bg-card text-card-foreground border border-border p-6 pb-4 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.06)] flex flex-col justify-between overflow-hidden">
       {/* HEADER */}
-      <div className="flex items-start justify-between relative z-10 w-full mb-2.5">
+      <div className="flex items-start justify-between relative z-10 w-full">
         <div className="flex flex-col">
           <div className="flex items-center gap-3">
             <h2 className="text-fs-md font-semibold">
@@ -97,7 +98,7 @@ export function VehicleCard({
               </span>
             )}
           </div>
-          <p className="mt-1.5 text-muted-foreground">{marca}</p>
+          <p className="text-muted-foreground">{marca}</p>
         </div>
         <button
           onClick={handleFavoritoClick}
@@ -127,30 +128,30 @@ export function VehicleCard({
       </div>
 
       {/* ESPECIFICACIONES TÉCNICAS */}
-      <div className="mt-3 grid grid-cols-3 gap-y-4 gap-x-2">
+      <div className="mt-3 grid grid-cols-3 gap-2">
         <div className="flex items-center gap-2">
           <Settings2 className="h-[1.1rem] w-[1.1rem] stroke-[1.5] text-muted-foreground" />
-          <span className="text-[0.85rem] text-muted-foreground capitalize">{specs.transmision}</span>
+          <span className="text-fs-sm text-muted-foreground capitalize">{specs.transmision}</span>
         </div>
         <div className="flex items-center gap-2">
           <Users className="h-[1.1rem] w-[1.1rem] stroke-[1.5] text-muted-foreground" />
-          <span className="text-[0.85rem] text-muted-foreground">+{specs.capacidad} Personas</span>
+          <span className="text-fs-sm text-muted-foreground">+{specs.capacidad} Personas</span>
         </div>
         <div className="flex items-center gap-2">
           <Milestone className="h-[1.1rem] w-[1.1rem] stroke-[1.5] text-muted-foreground" />
-          <span className="text-[0.85rem] text-muted-foreground">{formatKilometers(specs.kilometraje)}</span>
+          <span className="text-fs-sm text-muted-foreground">{formatKilometers(specs.kilometraje)}</span>
         </div>
         <div className="flex items-center gap-2">
           <Gauge className="h-[1.1rem] w-[1.1rem] stroke-[1.5] text-muted-foreground" />
-          <span className="text-[0.85rem] text-muted-foreground">Motor {specs.motor}</span>
+          <span className="text-fs-sm text-muted-foreground">Motor {specs.motor}</span>
         </div>
         <div className="flex items-center gap-2">
           <ShieldCheck className="h-[1.1rem] w-[1.1rem] stroke-[1.5] text-muted-foreground" />
-          <span className="text-[0.85rem] text-muted-foreground capitalize">{formatBlindaje(specs.blindaje)}</span>
+          <span className="text-fs-sm text-muted-foreground capitalize">{formatBlindaje(specs.blindaje)}</span>
         </div>
         <div className="flex items-center gap-2">
           <CarFront className="h-[1.1rem] w-[1.1rem] stroke-[1.5] text-muted-foreground" />
-          <span className="text-[0.85rem] text-muted-foreground capitalize">{specs.traccion}</span>
+          <span className="text-fs-sm text-muted-foreground capitalize">{specs.traccion}</span>
         </div>
       </div>
 
@@ -184,18 +185,18 @@ export function VehicleCard({
         </div>
 
         {onComprar ? (
-          <button
+          <Button
             onClick={handleComprarClick}
             aria-label={`Comprar ${marca} ${modelo}`}
-            className="rounded-[2rem] bg-brand-dark px-7 py-2.5 text-[0.95rem] font-bold text-brand-dark-foreground transition-transform hover:scale-[1.02] active:scale-95 mb-0.5"
+            className="rounded-[2rem] bg-brand-dark px-7 py-2.5 text-[0.95rem] font-bold text-brand-dark-foreground transition-transform active:scale-95 mb-0.5"
           >
             ¡Compra ya!
-          </button>
+          </Button>
         ) : (
           <Link
             href={`/comprar/${id}`}
             aria-label={`Comprar ${marca} ${modelo}`}
-            className="rounded-[2rem] bg-brand-dark px-7 py-2.5 text-[0.95rem] font-bold text-brand-dark-foreground transition-transform hover:scale-[1.02] active:scale-95 mb-0.5"
+            className="rounded-[2rem] bg-brand-dark px-7 py-2.5 text-[0.95rem] font-bold text-brand-dark-foreground transition-transform active:scale-95 mb-0.5"
           >
             ¡Compra ya!
           </Link>
