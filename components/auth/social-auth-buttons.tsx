@@ -1,3 +1,6 @@
+"use client";
+
+import { signIn } from "next-auth/react";
 import { cn } from "@/lib/utils";
 
 interface SocialAuthButtonsProps {
@@ -14,6 +17,7 @@ export function SocialAuthButtons({
       <div className={cn("flex justify-center gap-6", className)}>
         <button
           type="button"
+          onClick={() => signIn("google", { redirectTo: "/" })}
           className="h-12 w-12 flex items-center justify-center rounded-full border border-gray-100 hover:bg-gray-50 transition-colors shadow-sm bg-white"
         >
           <svg className="h-6 w-6" viewBox="0 0 24 24">
@@ -37,6 +41,7 @@ export function SocialAuthButtons({
         </button>
         <button
           type="button"
+          onClick={() => signIn("apple", { redirectTo: "/" })}
           className="h-12 w-12 flex items-center justify-center rounded-full border border-gray-100 hover:bg-gray-50 transition-colors shadow-sm bg-black text-white"
         >
           <svg className="h-6 w-6 fill-current" viewBox="0 0 24 24">
@@ -59,6 +64,7 @@ export function SocialAuthButtons({
     <div className={cn("flex items-center justify-center gap-4", className)}>
       <button
         type="button"
+        onClick={() => signIn("google", { redirectTo: "/" })}
         className="h-12 w-12 flex items-center justify-center rounded-full border border-muted hover:bg-muted/10 transition-colors shadow-xs"
       >
         <svg
@@ -97,6 +103,7 @@ export function SocialAuthButtons({
       </button>
       <button
         type="button"
+        onClick={() => signIn("apple", { redirectTo: "/" })}
         className="h-12 w-12 flex items-center justify-center rounded-full border border-muted hover:bg-muted/10 transition-colors shadow-xs bg-black text-white"
       >
         <svg
