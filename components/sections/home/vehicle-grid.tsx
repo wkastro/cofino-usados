@@ -1,17 +1,10 @@
 "use client";
 
-import {
-  VehicleCard,
-  VehicleCardProps,
-} from "@/components/global/vehicle-card";
+import { VehicleCard } from "@/components/global/vehicle-card";
 import { useVehicleFavorites } from "@/lib/hooks/useVehicleFavorites";
+import type { VehicleResponse } from "@/types/vehiculo/vehiculo";
 
-interface VehicleGridProps {
-  vehicles: VehicleCardProps[];
-}
-
-export function VehicleGrid({ vehicles }: VehicleGridProps) {
-  const { favorites, toggleFavorite } = useVehicleFavorites(vehicles);
+export function VehicleGrid({ vehicles }: { vehicles: VehicleResponse }) {
 
   return (
     <section className="w-full py-12">
@@ -24,13 +17,9 @@ export function VehicleGrid({ vehicles }: VehicleGridProps) {
           aria-label="Vehículos disponibles"
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center"
         >
-          {vehicles.map((vehicle) => (
+          {vehicles.vehiculos.map((vehicle) => (
             <div key={vehicle.id} className="w-full flex justify-center">
-              <VehicleCard
-                {...vehicle}
-                isFavorito={!!favorites[vehicle.id]}
-                onFavoritoToggle={toggleFavorite}
-              />
+              <VehicleCard vehicle={vehicle}/>
             </div>
           ))}
         </div>
