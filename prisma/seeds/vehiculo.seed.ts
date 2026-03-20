@@ -89,7 +89,7 @@ export async function seedVehiculos(prisma: PrismaClient) {
       precio:         v.precio,
       preciosiniva:   v.preciosiniva,
       kilometraje:    v.kilometraje,
-      motor:          Number(v.motor),
+      motor:          String(v.motor),
       anio:           v.anio,
       traccion:       TRACCION_MAP[v.traccion] ?? Traccion.T4X2,
       color_interior: v.color_interior,

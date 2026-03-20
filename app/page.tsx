@@ -11,7 +11,7 @@ export default async function Home() {
   const vehicles = await getVehiculos();
   const categories = await getCategorias();
   const brands = await getMarcas();
-
+  
   return (
     <>
       <Hero />
