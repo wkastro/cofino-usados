@@ -2,25 +2,24 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
 import {
   Heart,
   Info,
   MapPin,
-  Users,
-  Settings2,
   Milestone,
+  Settings2,
+  Calendar1,
   Gauge,
-  ShieldCheck,
-  CarFront
+  CarFront,
+  EvCharger,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import {
   formatBlindaje,
   formatCurrency,
   formatKilometers,
 } from "@/lib/formatters/vehicle";
+import { Vehiculo } from "@/types/vehiculo/vehiculo";
 
 export interface VehicleCardProps {
   id: string | number;
@@ -47,41 +46,10 @@ export interface VehicleCardProps {
   };
 }
 
-export function VehicleCard({
-  id,
-  marca,
-  modelo,
-  anio,
-  precio,
-  precioOriginal,
-  precioMensual,
-  imagen,
-  badge,
-  isFavorito: externalIsFavorito,
-  onFavoritoToggle,
-  onComprar,
-  esEntregaInmediata = true,
-  agencia,
-  specs,
-}: VehicleCardProps) {
-  // Manejador interno en caso no se controle externamente
-  const [internalFavorito, setInternalFavorito] = useState(false);
-  const isHeartActive = externalIsFavorito !== undefined ? externalIsFavorito : internalFavorito;
-
-  const handleFavoritoClick = () => {
-    if (onFavoritoToggle) {
-      onFavoritoToggle(id);
-    } else {
-      setInternalFavorito(!internalFavorito);
-    }
-  };
-
-  const handleComprarClick = (e: React.MouseEvent) => {
-    if (onComprar) {
-      e.preventDefault();
-      onComprar(id);
-    }
-  };
+interface Props {
+  vehicle: Vehiculo;
+}
+export function VehicleCard({ vehicle }: Props) {
 
   return (
     <article className="group relative w-full max-w-[24rem] rounded-lg bg-card text-card-foreground border border-border p-6 pb-4 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.06)] flex flex-col justify-between overflow-hidden">
@@ -89,28 +57,30 @@ export function VehicleCard({
       <div className="flex items-start justify-between relative z-10 w-full">
         <div className="flex flex-col">
           <div className="flex items-center gap-3">
-            <h2 className="text-fs-md font-semibold">
-              {modelo} {anio}
+            <h2 className="text-fs-base font-semibold">
+              {vehicle.nombre} {vehicle.anio}
             </h2>
-            {badge && (
+            {vehicle.etiquetas.at(0)?.etiqueta && (
               <span className="inline-flex items-center rounded-full bg-destructive/10 px-2.5 py-0.5 text-[0.7rem] font-medium text-destructive">
-                {badge}
+                {vehicle.etiquetas.at(0)?.etiqueta.nombre}
               </span>
             )}
           </div>
-          <p className="text-muted-foreground">{marca}</p>
+          <p className="text-muted-foreground">{vehicle.marca.nombre}</p>
         </div>
         <button
-          onClick={handleFavoritoClick}
-          aria-label={isHeartActive ? "Quitar de favoritos" : "Agregar a favoritos"}
+          onClick={() => {}}
+          aria-label={true ? "Quitar de favoritos" : "Agregar a favoritos"}
           className="transition-transform hover:scale-110 active:scale-95 duration-200 mt-0.5"
         >
           <Heart
             className={cn(
               "h-6 w-6 transition-all",
-              isHeartActive ? "fill-destructive text-destructive" : "fill-transparent text-muted-foreground/50"
+              true
+                ? "fill-destructive text-destructive"
+                : "fill-transparent text-muted-foreground/50",
             )}
-            strokeWidth={isHeartActive ? 0 : 2}
+            strokeWidth={true ? 0 : 2}
           />
         </button>
       </div>
@@ -118,8 +88,8 @@ export function VehicleCard({
       {/* IMAGEN */}
       <div className="relative h-44 w-full mix-blend-multiply dark:mix-blend-normal my-2">
         <Image
-          src={imagen || "/car.png"}
-          alt={`Vehículo usado ${marca} ${modelo} del año ${anio} a la venta`}
+          src={"/car.png"}
+          alt={`Vehículo usado ${vehicle.marca} del año ${vehicle.anio} a la venta`}
           fill
           sizes="(max-width: 768px) 100vw, 384px"
           className="object-contain"
@@ -131,33 +101,45 @@ export function VehicleCard({
       <div className="mt-3 grid grid-cols-3 gap-2">
         <div className="flex items-center gap-2">
           <Settings2 className="h-[1.1rem] w-[1.1rem] stroke-[1.5] text-muted-foreground" />
-          <span className="text-fs-sm text-muted-foreground capitalize">{specs.transmision}</span>
+          <span className="text-fs-sm text-muted-foreground capitalize">
+            {vehicle.transmision.toLowerCase()}
+          </span>
         </div>
         <div className="flex items-center gap-2">
-          <Users className="h-[1.1rem] w-[1.1rem] stroke-[1.5] text-muted-foreground" />
-          <span className="text-fs-sm text-muted-foreground">+{specs.capacidad} Personas</span>
+          <Calendar1 className="h-[1.1rem] w-[1.1rem] stroke-[1.5] text-muted-foreground" />
+          <span className="text-fs-sm text-muted-foreground">
+            {vehicle.anio}
+          </span>
         </div>
         <div className="flex items-center gap-2">
           <Milestone className="h-[1.1rem] w-[1.1rem] stroke-[1.5] text-muted-foreground" />
-          <span className="text-fs-sm text-muted-foreground">{formatKilometers(specs.kilometraje)}</span>
+          <span className="text-fs-sm text-muted-foreground">
+            {formatKilometers(vehicle.kilometraje)}
+          </span>
         </div>
         <div className="flex items-center gap-2">
           <Gauge className="h-[1.1rem] w-[1.1rem] stroke-[1.5] text-muted-foreground" />
-          <span className="text-fs-sm text-muted-foreground">Motor {specs.motor}</span>
+          <span className="text-fs-sm text-muted-foreground">
+            Motor {(vehicle.motor / 1000).toFixed(1)}L
+          </span>
         </div>
         <div className="flex items-center gap-2">
-          <ShieldCheck className="h-[1.1rem] w-[1.1rem] stroke-[1.5] text-muted-foreground" />
-          <span className="text-fs-sm text-muted-foreground capitalize">{formatBlindaje(specs.blindaje)}</span>
+          <EvCharger className="h-[1.1rem] w-[1.1rem] stroke-[1.5] text-muted-foreground" />
+          <span className="text-fs-sm text-muted-foreground capitalize">
+            {formatBlindaje(vehicle.combustible)}
+          </span>
         </div>
         <div className="flex items-center gap-2">
           <CarFront className="h-[1.1rem] w-[1.1rem] stroke-[1.5] text-muted-foreground" />
-          <span className="text-fs-sm text-muted-foreground capitalize">{specs.traccion}</span>
+          <span className="text-fs-sm text-muted-foreground capitalize">
+            {vehicle.traccion}
+          </span>
         </div>
       </div>
 
       {/* DISPONIBILIDAD */}
       <div className="mt-5 mb-1 min-h-5">
-        {esEntregaInmediata && (
+        {true && (
           <p className="text-[0.85rem] text-muted-foreground/80 font-normal">
             Listo para entrega inmediata*
           </p>
@@ -169,45 +151,44 @@ export function VehicleCard({
         <div className="flex flex-col">
           <div className="flex items-baseline gap-2">
             <span className="text-fs-md font-semibold text-foreground tracking-tight leading-none">
-              {formatCurrency(precio)}
+              {formatCurrency(vehicle.preciosiniva)}
             </span>
-            {precioOriginal && (
+            {vehicle.preciosiniva && (
               <span className="text-[0.95rem] text-muted-foreground line-through font-medium">
-                {formatCurrency(precioOriginal)}
+                {formatCurrency(vehicle.precio)}
               </span>
             )}
           </div>
-          <div className="flex items-center gap-1 mt-1.5" title="Cuota incluye seguro y gastos administrativos según historial crediticio">
-            <span className="text-[0.85rem] text-muted-foreground/80">Desde</span>
-            <span className="text-[0.85rem] text-muted-foreground font-medium">{formatCurrency(precioMensual)} / mes</span>
+          <div
+            className="flex items-center gap-1 mt-1.5"
+            title="Cuota incluye seguro y gastos administrativos según historial crediticio"
+          >
+            <span className="text-[0.85rem] text-muted-foreground/80">
+              Desde
+            </span>
+            <span className="text-[0.85rem] text-muted-foreground font-medium">
+              {formatCurrency(vehicle.precio)} / mes
+            </span>
             <Info className="h-[0.8rem] w-[0.8rem] text-muted-foreground/60 transition-colors cursor-help ml-0.5 relative -top-px" />
           </div>
         </div>
 
-        {onComprar ? (
-          <Button
-            onClick={handleComprarClick}
-            aria-label={`Comprar ${marca} ${modelo}`}
-            className="rounded-[2rem] bg-brand-dark px-7 py-2.5 text-[0.95rem] font-bold text-brand-dark-foreground transition-transform active:scale-95 mb-0.5"
-          >
-            ¡Compra ya!
-          </Button>
-        ) : (
-          <Link
-            href={`/comprar/${id}`}
-            aria-label={`Comprar ${marca} ${modelo}`}
-            className="rounded-[2rem] bg-brand-dark px-7 py-2.5 text-[0.95rem] font-bold text-brand-dark-foreground transition-transform active:scale-95 mb-0.5"
-          >
-            ¡Compra ya!
-          </Link>
-        )}
+        <Link
+          href={`/catalogo/${vehicle.slug}`}
+          aria-label={`Comprar ${vehicle.marca}`}
+          className="rounded-[2rem] bg-brand-dark px-7 py-2.5 text-[0.95rem] font-bold text-brand-dark-foreground transition-transform active:scale-95 mb-0.5"
+        >
+          ¡Compra ya!
+        </Link>
       </div>
 
       {/* AGENCIA */}
       <div className="mt-6 border-t border-border -mx-6 px-6 pt-3 pb-1">
         <div className="flex items-center justify-center gap-1.5 text-muted-foreground">
           <MapPin className="h-[1.1rem] w-[1.1rem] stroke-[1.5]" />
-          <span className="text-[0.85rem] font-normal">Agencia {agencia}</span>
+          <span className="text-[0.85rem] font-normal">
+            Agencia {vehicle.sucursal.nombre}
+          </span>
         </div>
       </div>
     </article>

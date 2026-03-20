@@ -7,11 +7,44 @@ datasource db {
   provider = "mysql"
 }
 
+//////////////////////////////////////////////////////
+// ENUMS (evitamos tablas innecesarias)
+//////////////////////////////////////////////////////
+
+enum Traccion {
+  T4X4 @map("4x4")
+  T4X2 @map("4x2")
+  AWD
+  T4WD @map("4WD")
+}
+
+enum Transmision {
+  AUTOMATICO
+  MANUAL
+}
+
+enum Combustible {
+  GASOLINA
+  DIESEL
+  HIBRIDO
+  ELECTRICO
+}
+
+enum EstadoVenta {
+  VENDIDO
+  DISPONIBLE
+  RESERVADO
+  FACTURADO
+}
+
 enum Role {
   ADMIN
   USER
 }
 
+//////////////////////////////////////////////////////
+// MODELOS DE USUARIO Y AUTENTICACION
+//////////////////////////////////////////////////////
 model User {
   id            String    @id @default(uuid())
   fullName      String
@@ -45,6 +78,7 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@index([userId])
 }
 
 model Session {
@@ -54,6 +88,9 @@ model Session {
   expires      DateTime
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expires])
 }
 
 model VerificationToken {
@@ -62,4 +99,160 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+//////////////////////////////////////////////////////
+// MODELOS PRINCIPALES
+//////////////////////////////////////////////////////
+
+model Vehiculo {
+  id           String  @id @default(uuid()) @db.Char(36)
+  nombre       String
+  slug         String  @unique
+  codigo       String?
+  placa        String  @unique
+  precio       Decimal @db.Decimal(12, 2)
+  preciosiniva Decimal @db.Decimal(12, 2)
+  kilometraje  Int
+  motor        Int
+  anio         Int
+  traccion     Traccion
+  color_interior String?
+  color_exterior String?
+
+  // Relaciones
+  sucursalId  String @db.Char(36)
+  marcaId     String @db.Char(36)
+  categoriaId String @db.Char(36)
+
+  sucursal  Sucursal  @relation(fields: [sucursalId], references: [id])
+  marca     Marca     @relation(fields: [marcaId], references: [id])
+  categoria Categoria @relation(fields: [categoriaId], references: [id])
+
+  // ENUMS (sin tablas)
+  estado      EstadoVenta @default(DISPONIBLE)
+  transmision Transmision
+  combustible Combustible
+
+  // Galería y etiquetas
+  galeria   Galeria[]
+  etiquetas VehiculoEtiquetaComercial[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  //////////////////////////////////////////////////////
+  // ÍNDICES (CLAVE PARA FILTROS)
+  //////////////////////////////////////////////////////
+  @@index([estado])
+  @@index([precio])
+  @@index([kilometraje])
+  @@index([anio])
+  @@index([codigo])
+  @@index([sucursalId])
+  @@index([marcaId])
+  @@index([categoriaId])
+  @@index([combustible])
+  @@index([transmision])
+  @@index([traccion])
+  // Índices compuestos — estado como primer campo (filtro base de todo marketplace)
+  @@index([estado, precio])
+  @@index([estado, categoriaId])
+  @@index([estado, marcaId])
+  @@index([estado, combustible])
+  @@index([estado, transmision])
+  @@index([estado, traccion])
+  // Índices compuestos adicionales
+  @@index([sucursalId, precio])
+  @@index([categoriaId, combustible])
+}
+
+//////////////////////////////////////////////////////
+// ETIQUETAS COMERCIALES (many-to-many)
+//////////////////////////////////////////////////////
+
+model EtiquetaComercial {
+  id     String  @id @default(uuid()) @db.Char(36)
+  nombre String  @unique
+  slug   String  @unique
+  estado Boolean @default(true)
+
+  vehiculos VehiculoEtiquetaComercial[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VehiculoEtiquetaComercial {
+  vehiculoId String @db.Char(36)
+  etiquetaId String @db.Char(36)
+
+  vehiculo  Vehiculo          @relation(fields: [vehiculoId], references: [id], onDelete: Cascade)
+  etiqueta  EtiquetaComercial @relation(fields: [etiquetaId], references: [id], onDelete: Cascade)
+
+  @@id([vehiculoId, etiquetaId])
+  @@index([etiquetaId])
+  // @@index([vehiculoId]) — redundante: el PK compuesto ya cubre búsquedas por vehiculoId
+}
+
+//////////////////////////////////////////////////////
+// GALERÍA DE IMÁGENES
+//////////////////////////////////////////////////////
+
+model Galeria {
+  id         String @id @default(uuid()) @db.Char(36)
+  vehiculoId String @db.Char(36)
+  url        String
+  orden      Int    @default(0)
+
+  vehiculo Vehiculo @relation(fields: [vehiculoId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([vehiculoId])
+}
+
+//////////////////////////////////////////////////////
+// CATÁLOGOS NECESARIOS
+//////////////////////////////////////////////////////
+
+model Sucursal {
+  id          String  @id @default(uuid()) @db.Char(36)
+  nombre      String  @unique
+  codigoAs400 String? @unique // CODIGOAGENCIA del AS400, ej: "034"
+  direccion   String
+  latitud     Decimal @db.Decimal(10, 7)
+  longitud    Decimal @db.Decimal(10, 7)
+  maps        String?
+  waze        String?
+  estado      Boolean @default(true)
+
+  vehiculos Vehiculo[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Marca {
+  id     String  @id @default(uuid()) @db.Char(36)
+  nombre String  @unique
+  estado Boolean @default(true)
+
+  vehiculos Vehiculo[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Categoria {
+  id        String  @id @default(uuid()) @db.Char(36)
+  nombre    String  @unique
+  thumbnail String?
+  estado    Boolean @default(true)
+
+  vehiculos Vehiculo[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
