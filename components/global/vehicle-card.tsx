@@ -120,7 +120,7 @@ console.log(vehicle.etiquetas)
         <div className="flex items-center gap-2">
           <Gauge className="h-[1.1rem] w-[1.1rem] stroke-[1.5] text-muted-foreground" />
           <span className="text-fs-sm text-muted-foreground">
-            Motor {(vehicle.motor / 1000).toFixed(1)}L
+            Motor {(parseFloat(vehicle.motor ?? "0") / 1000).toFixed(1)}L
           </span>
         </div>
         <div className="flex items-center gap-2">

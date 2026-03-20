@@ -13,7 +13,7 @@ export interface Vehiculo {
   precio: number;
   preciosiniva: number;
   kilometraje: number;
-  motor: number;
+  motor: string | null;
   anio: number;
   traccion: string;
   color_exterior: string;
