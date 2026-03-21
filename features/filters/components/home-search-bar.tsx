@@ -1,32 +1,9 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
-import {
-  SearchFilterBar,
-  type SearchFilterValues,
-  type FilterOption,
-} from "./search-filter-bar";
-import type { VehicleCardProps } from "@/components/global/vehicle-card";
+import { useState, useCallback } from "react";
+import { SearchFilterBar, type SearchFilterValues, type FilterOption } from "./search-filter-bar";
 
-const MARCA_OPTIONS: FilterOption[] = [
-  { value: "honda", label: "Honda" },
-  { value: "toyota", label: "Toyota" },
-  { value: "chevrolet", label: "Chevrolet" },
-  { value: "ford", label: "Ford" },
-  { value: "nissan", label: "Nissan" },
-  { value: "kia", label: "Kia" },
-  { value: "hyundai", label: "Hyundai" },
-  { value: "bmw", label: "BMW" },
-  { value: "mercedes-benz", label: "Mercedes-Benz" },
-  { value: "volkswagen", label: "Volkswagen" },
-  { value: "mazda", label: "Mazda" },
-  { value: "audi", label: "Audi" },
-  { value: "jeep", label: "Jeep" },
-  { value: "peugeot", label: "Peugeot" },
-  { value: "renault", label: "Renault" },
-  { value: "suzuki", label: "Suzuki" },
-  { value: "mitsubishi", label: "Mitsubishi" },
-];
+import type { Brands, Category } from "@/types/filters/filters";
 
 const TRANSMISION_OPTIONS: FilterOption[] = [
   { value: "manual", label: "Manual" },
@@ -41,36 +18,19 @@ const INITIAL_VALUES: SearchFilterValues = {
 };
 
 interface HomeSearchBarProps {
-  vehicles: VehicleCardProps[];
+  brands: Brands[];
+  categories: Category[];
 }
 
-export function HomeSearchBar({ vehicles }: HomeSearchBarProps) {
+export function HomeSearchBar({ brands, categories }: HomeSearchBarProps) {
   const [values, setValues] = useState<SearchFilterValues>(INITIAL_VALUES);
 
   const onFilterChange = useCallback(
     (field: keyof SearchFilterValues, value: string) => {
-      setValues((prev) => {
-        const next = { ...prev, [field]: value };
-        if (field === "marca") {
-          next.modelo = "";
-        }
-        return next;
-      });
+      setValues((prev) => ({ ...prev, [field]: value }));
     },
     [],
   );
-
-  const modeloOptions: FilterOption[] = useMemo(() => {
-    if (!values.marca) return [];
-    const modelos = new Set<string>();
-    vehicles
-      .filter((v) => v.marca.toLowerCase() === values.marca)
-      .forEach((v) => modelos.add(v.modelo));
-    return Array.from(modelos).map((m) => ({
-      value: m.toLowerCase().replace(/\s+/g, "-"),
-      label: m,
-    }));
-  }, [values.marca, vehicles]);
 
   const handleSearch = () => {
     // TODO: conectar con navegacion o filtrado
@@ -79,8 +39,8 @@ export function HomeSearchBar({ vehicles }: HomeSearchBarProps) {
 
   return (
     <SearchFilterBar
-      marcaOptions={MARCA_OPTIONS}
-      modeloOptions={modeloOptions}
+      brands={brands}
+      categories={categories}
       transmisionOptions={TRANSMISION_OPTIONS}
       values={values}
       onFilterChange={onFilterChange}

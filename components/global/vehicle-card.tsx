@@ -50,7 +50,6 @@ interface Props {
   vehicle: Vehiculo;
 }
 export function VehicleCard({ vehicle }: Props) {
-console.log(vehicle.etiquetas)
   return (
     <article className="group relative w-full max-w-[24rem] rounded-lg bg-card text-card-foreground border border-border p-6 pb-4 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.06)] flex flex-col justify-between overflow-hidden">
       {/* HEADER */}

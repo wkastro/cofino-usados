@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/select";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { FilterHorizontalIcon, Car05Icon } from "@hugeicons/core-free-icons";
+import type { Brands, Category } from "@/types/filters/filters";
 
 export interface FilterOption {
   value: string;
@@ -26,8 +27,8 @@ export interface SearchFilterValues {
 }
 
 export interface SearchFilterBarProps {
-  marcaOptions: FilterOption[];
-  modeloOptions: FilterOption[];
+  brands: Brands[];
+  categories: Category[];
   transmisionOptions: FilterOption[];
   values: SearchFilterValues;
   onFilterChange: (field: keyof SearchFilterValues, value: string) => void;
@@ -37,8 +38,8 @@ export interface SearchFilterBarProps {
 }
 
 export function SearchFilterBar({
-  marcaOptions,
-  modeloOptions,
+  brands,
+  categories,
   transmisionOptions,
   values,
   onFilterChange,
@@ -63,31 +64,31 @@ export function SearchFilterBar({
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Selecciona la marca" />
                   </SelectTrigger>
-                  <SelectContent>
-                    {marcaOptions.map((opt) => (
-                      <SelectItem key={opt.value} value={opt.value}>
-                        {opt.label}
+                  <SelectContent position="popper">
+                    {brands.map((b) => (
+                      <SelectItem key={b.id} value={b.id}>
+                        {b.nombre}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
 
-              {/* Modelo */}
+              {/* Category */}
               <div className="flex flex-col gap-2">
-                <Label className="text-fs-base font-semibold font-clash-display">Modelo</Label>
+                <Label className="text-fs-base font-semibold font-clash-display">Tipo de auto</Label>
                 <Select
                   value={values.modelo}
                   onValueChange={(v) => onFilterChange("modelo", v)}
-                  disabled={modeloOptions.length === 0}
+                  disabled={categories.length === 0}
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Selecciona el modelo" />
+                    <SelectValue placeholder="Selecciona un tipo" />
                   </SelectTrigger>
-                  <SelectContent>
-                    {modeloOptions.map((opt) => (
-                      <SelectItem key={opt.value} value={opt.value}>
-                        {opt.label}
+                  <SelectContent position="popper">
+                    {categories.map((c) => (
+                      <SelectItem key={c.id} value={c.id}>
+                        {c.nombre}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -106,7 +107,7 @@ export function SearchFilterBar({
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Selecciona la transmisi&oacute;n" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent position="popper">
                     {transmisionOptions.map((opt) => (
                       <SelectItem key={opt.value} value={opt.value}>
                         {opt.label}

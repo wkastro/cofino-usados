@@ -4,8 +4,8 @@ import { Container } from "@/components/layout/container";
 
 export default function SignIn() {
   return (
-    <Container className="flex w-full bg-white overflow-hidden py-4">
-      <div className="flex flex-col-reverse lg:flex-row w-full overflow-hidden rounded-[40px] bg-white">
+    <Container className="flex w-full overflow-hidden py-4">
+      <div className="flex flex-col-reverse lg:flex-row w-full overflow-hidden rounded-[40px]">
         {/* Left Side: Form Column */}
         <LoginForm />
 

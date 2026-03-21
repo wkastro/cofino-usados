@@ -10,7 +10,7 @@ export function LoginForm() {
   const { handleAction, error, isPending } = useAdminLoginForm();
 
   return (
-    <div className="w-full max-w-md p-8 space-y-6 bg-card text-card-foreground rounded-lg shadow-md flex flex-col items-center">
+    <div className="w-full max-w-md p-8 space-y-6 text-card-foreground rounded-lg shadow-md flex flex-col items-center">
       <Logo className="text-foreground h-10 w-auto" />
       <h2 className="font-bold text-center w-full">Panel de Administración</h2>
       <form action={handleAction} className="space-y-4 w-full">

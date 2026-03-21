@@ -11,10 +11,12 @@ export default async function Home() {
   const vehicles = await getVehiculos();
   const categories = await getCategorias();
   const brands = await getMarcas();
-  
+  console.log(brands.length)
   return (
     <>
-      <Hero />
+      <Hero>
+        <HomeSearchBar brands={brands} categories={categories} />
+      </Hero>
       <VehicleGrid vehicles={vehicles} />
       <WrapperMarquee />
       <AnnouncementGrid />

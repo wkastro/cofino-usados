@@ -159,7 +159,7 @@ export function RegisterForm() {
                   <span className="w-full border-t border-gray-100"></span>
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-white px-4 text-gray-400 font-medium">
+                  <span className="px-4 text-gray-400 font-medium">
                     O continua con
                   </span>
                 </div>
