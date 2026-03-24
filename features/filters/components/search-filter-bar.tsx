@@ -17,7 +17,7 @@ import type { Brand, Category, Transmission } from "@/types/filters/filters";
 
 export interface SearchFilterValues {
   marca: string;
-  modelo: string;
+  categoria: string;
   transmision: string;
 }
 
@@ -73,8 +73,8 @@ export function SearchFilterBar({
               <div className="flex flex-col gap-2">
                 <Label className="text-fs-base font-semibold font-clash-display">Tipo de auto</Label>
                 <Select
-                  value={values.modelo}
-                  onValueChange={(value) => onFilterChange("modelo", value)}
+                  value={values.categoria}
+                  onValueChange={(value) => onFilterChange("categoria", value)}
                   disabled={categories.length === 0}
                 >
                   <SelectTrigger className="w-full">
@@ -82,7 +82,7 @@ export function SearchFilterBar({
                   </SelectTrigger>
                   <SelectContent position="popper">
                     {categories.map((category) => (
-                      <SelectItem key={category.id} value={category.id}>
+                      <SelectItem key={category.slug} value={category.slug}>
                         {category.nombre}
                       </SelectItem>
                     ))}

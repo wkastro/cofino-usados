@@ -8,7 +8,7 @@ export function useSearchFilters() {
 
   const values: SearchFilterValues = {
     marca: searchParams.get("marca") ?? "",
-    modelo: searchParams.get("modelo") ?? "",
+    categoria: searchParams.get("categoria") ?? "",
     transmision: searchParams.get("transmision") ?? "",
   };
 

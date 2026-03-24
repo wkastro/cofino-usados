@@ -5,7 +5,7 @@ import type { Transmision } from "@/generated/prisma/client";
 
 export async function getCategories() {
   return prisma.categoria.findMany({
-    select: { id: true, nombre: true },
+    select: { id: true, nombre: true, slug: true },
     orderBy: { nombre: "asc" },
   });
 }

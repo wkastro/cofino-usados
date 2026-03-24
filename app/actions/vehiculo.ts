@@ -14,6 +14,7 @@ export async function getVehiculos(
   const where = {
     estado: EstadoVenta.DISPONIBLE,
     ...(filters.marca && { marca: { slug: filters.marca } }),
+    ...(filters.categoria && { categoria: { slug: filters.categoria } }),
   };
 
   const [vehiculos, total] = await prisma.$transaction([

@@ -1,6 +1,7 @@
 export interface Category {
   id: string;
   nombre: string;
+  slug: string;
 }
 export interface Brand {
   id: string;

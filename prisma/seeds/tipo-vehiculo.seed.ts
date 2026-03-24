@@ -1,23 +1,33 @@
 import { PrismaClient } from "../../generated/prisma/client";
 
-const tipos = [
-  { nombre: "Hybrid",        thumbnail: null, estado: true },
-  { nombre: "Hatchback",      thumbnail: null, estado: true },
-  { nombre: "Pickup",     thumbnail: null, estado: true },
-  { nombre: "Panel",  thumbnail: null, estado: true },
-  { nombre: "Blindado",      thumbnail: null, estado: true },
-  { nombre: "Sedán",        thumbnail: null, estado: true },
-  { nombre: "Suv",  thumbnail: null, estado: true },
-  { nombre: "Camión",thumbnail: null, estado: false },
-];
+function toSlug(name: string): string {
+  return name
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-");
+}
+
+const categorias = [
+  { nombre: "Hybrid", estado: true },
+  { nombre: "Hatchback", estado: true },
+  { nombre: "Pickup", estado: true },
+  { nombre: "Panel", estado: true },
+  { nombre: "Blindado", estado: true },
+  { nombre: "Sedán", estado: true },
+  { nombre: "Suv", estado: true },
+  { nombre: "Camión", estado: false },
+].map((c) => ({ ...c, slug: toSlug(c.nombre), thumbnail: null }));
 
 export async function seedCategorias(prisma: PrismaClient) {
   let created = 0;
   let skipped = 0;
 
-  for (const tipo of tipos) {
+  for (const categoria of categorias) {
     const existing = await prisma.categoria.findFirst({
-      where: { nombre: tipo.nombre },
+      where: { nombre: categoria.nombre },
     });
 
     if (existing) {
@@ -25,7 +35,7 @@ export async function seedCategorias(prisma: PrismaClient) {
       continue;
     }
 
-    await prisma.categoria.create({ data: tipo });
+    await prisma.categoria.create({ data: categoria });
     created++;
   }
 
