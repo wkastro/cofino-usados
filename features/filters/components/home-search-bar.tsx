@@ -1,23 +1,23 @@
 "use client";
 
 import { SearchFilterBar } from "./search-filter-bar";
-import { useHomeSearchBar } from "../hooks/useHomeSearchBar";
-import type { Brands, Category, Transmision } from "@/types/filters/filters";
+import { useSearchFilters } from "../hooks/useSearchFilters";
+import type { Brand, Category, Transmission } from "@/types/filters/filters";
 
 interface HomeSearchBarProps {
-  brands: Brands[];
+  brands: Brand[];
   categories: Category[];
-  transmisions: Transmision[];
+  transmissions: Transmission[];
 }
 
-export function HomeSearchBar({ brands, categories, transmisions }: HomeSearchBarProps) {
-  const { values, onFilterChange, handleSearch, handleFiltersClick } = useHomeSearchBar();
+export function HomeSearchBar({ brands, categories, transmissions }: HomeSearchBarProps) {
+  const { values, onFilterChange, handleSearch, handleFiltersClick } = useSearchFilters();
 
   return (
     <SearchFilterBar
       brands={brands}
       categories={categories}
-      transmisions={transmisions}
+      transmissions={transmissions}
       values={values}
       onFilterChange={onFilterChange}
       onFiltersClick={handleFiltersClick}

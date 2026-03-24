@@ -7,7 +7,7 @@ const INITIAL_VALUES: SearchFilterValues = {
   transmision: "",
 };
 
-export function useHomeSearchBar() {
+export function useSearchFilters() {
   const [values, setValues] = useState<SearchFilterValues>(INITIAL_VALUES);
 
   const onFilterChange = useCallback(

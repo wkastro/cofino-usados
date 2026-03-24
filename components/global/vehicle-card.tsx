@@ -21,35 +21,11 @@ import {
 } from "@/lib/formatters/vehicle";
 import { Vehiculo } from "@/types/vehiculo/vehiculo";
 
-export interface VehicleCardProps {
-  id: string | number;
-  marca: string;
-  modelo: string;
-  anio: number;
-  precio: number;
-  precioOriginal?: number;
-  precioMensual: number;
-  imagen: string;
-  badge?: string;
-  isFavorito?: boolean;
-  onFavoritoToggle?: (id: string | number) => void;
-  onComprar?: (id: string | number) => void;
-  esEntregaInmediata?: boolean;
-  agencia: string;
-  specs: {
-    transmision: string;
-    capacidad: number;
-    kilometraje: number;
-    motor: string;
-    blindaje: string | boolean;
-    traccion: string;
-  };
-}
-
-interface Props {
+interface VehicleCardProps {
   vehicle: Vehiculo;
 }
-export function VehicleCard({ vehicle }: Props) {
+
+export function VehicleCard({ vehicle }: VehicleCardProps) {
   return (
     <article className="group relative w-full max-w-[24rem] rounded-lg bg-card text-card-foreground border border-border p-6 pb-4 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.06)] flex flex-col justify-between overflow-hidden">
       {/* HEADER */}

@@ -1,28 +1,13 @@
 import { useMemo, useState } from "react";
-import type { VehicleCardProps } from "@/components/global/vehicle-card";
+import type { Vehiculo } from "@/types/vehiculo/vehiculo";
 
-export function useVehicleFavorites(vehicles: VehicleCardProps[]) {
-  const baseFavorites = useMemo(() => {
-    const initialState: Record<string | number, boolean> = {};
-    vehicles.forEach((vehicle) => {
-      if (vehicle.isFavorito !== undefined) {
-        initialState[vehicle.id] = vehicle.isFavorito;
-      }
-    });
-    return initialState;
-  }, [vehicles]);
+export function useVehicleFavorites(vehicles: Vehiculo[]) {
+  const [favorites, setFavorites] = useState<Record<string, boolean>>({});
 
-  const [overrides, setOverrides] = useState<Record<string | number, boolean>>({});
-
-  const favorites = useMemo(
-    () => ({ ...baseFavorites, ...overrides }),
-    [baseFavorites, overrides]
-  );
-
-  const toggleFavorite = (id: string | number) => {
-    setOverrides((prev) => ({
+  const toggleFavorite = (id: string) => {
+    setFavorites((prev) => ({
       ...prev,
-      [id]: !favorites[id],
+      [id]: !prev[id],
     }));
   };
 

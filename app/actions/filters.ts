@@ -3,16 +3,16 @@
 import { prisma } from "@/lib/prisma";
 import type { Transmision } from "@/generated/prisma/client";
 
-export async function getCategorias() {
+export async function getCategories() {
   return prisma.categoria.findMany({
     select: { id: true, nombre: true },
     orderBy: { nombre: "asc" },
   });
 }
 
-export type CategoriasResult = Awaited<ReturnType<typeof getCategorias>>;
+export type CategoriesResult = Awaited<ReturnType<typeof getCategories>>;
 
-export async function getMarcas() {
+export async function getBrands() {
   return prisma.marca.findMany({
     where: { estado: true },
     select: { id: true, nombre: true },
@@ -20,15 +20,15 @@ export async function getMarcas() {
   });
 }
 
-export type MarcasResult = Awaited<ReturnType<typeof getMarcas>>;
+export type BrandsResult = Awaited<ReturnType<typeof getBrands>>;
 
-const transmisionValues: Transmision[] = ["AUTOMATICO", "MANUAL"];
+const TRANSMISSION_OPTIONS: Transmision[] = ["AUTOMATICO", "MANUAL"];
 
-export async function getTransmisiones() {
-  return transmisionValues.map((value) => ({
+export async function getTransmissions() {
+  return TRANSMISSION_OPTIONS.map((value) => ({
     id: value,
     nombre: value,
   }));
 }
 
-export type TransmisionesResult = Awaited<ReturnType<typeof getTransmisiones>>;
+export type TransmissionsResult = Awaited<ReturnType<typeof getTransmissions>>;

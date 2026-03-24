@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { FilterHorizontalIcon, Car05Icon } from "@hugeicons/core-free-icons";
-import type { Brands, Category, Transmision } from "@/types/filters/filters";
+import type { Brand, Category, Transmission } from "@/types/filters/filters";
 
 export interface SearchFilterValues {
   marca: string;
@@ -22,9 +22,9 @@ export interface SearchFilterValues {
 }
 
 export interface SearchFilterBarProps {
-  brands: Brands[];
+  brands: Brand[];
   categories: Category[];
-  transmisions: Transmision[];
+  transmissions: Transmission[];
   values: SearchFilterValues;
   onFilterChange: (field: keyof SearchFilterValues, value: string) => void;
   onFiltersClick?: () => void;
@@ -35,7 +35,7 @@ export interface SearchFilterBarProps {
 export function SearchFilterBar({
   brands,
   categories,
-  transmisions,
+  transmissions,
   values,
   onFilterChange,
   onFiltersClick,
@@ -54,58 +54,58 @@ export function SearchFilterBar({
                 <Label className="text-fs-base font-semibold font-clash-display">Marca</Label>
                 <Select
                   value={values.marca}
-                  onValueChange={(v) => onFilterChange("marca", v)}
+                  onValueChange={(value) => onFilterChange("marca", value)}
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Selecciona la marca" />
                   </SelectTrigger>
                   <SelectContent position="popper">
-                    {brands.map((b) => (
-                      <SelectItem key={b.id} value={b.id}>
-                        {b.nombre}
+                    {brands.map((brand) => (
+                      <SelectItem key={brand.id} value={brand.id}>
+                        {brand.nombre}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
 
-              {/* Category */}
+              {/* Categoría */}
               <div className="flex flex-col gap-2">
                 <Label className="text-fs-base font-semibold font-clash-display">Tipo de auto</Label>
                 <Select
                   value={values.modelo}
-                  onValueChange={(v) => onFilterChange("modelo", v)}
+                  onValueChange={(value) => onFilterChange("modelo", value)}
                   disabled={categories.length === 0}
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Selecciona un tipo" />
                   </SelectTrigger>
                   <SelectContent position="popper">
-                    {categories.map((c) => (
-                      <SelectItem key={c.id} value={c.id}>
-                        {c.nombre}
+                    {categories.map((category) => (
+                      <SelectItem key={category.id} value={category.id}>
+                        {category.nombre}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
 
-              {/* Transmision */}
+              {/* Transmisión */}
               <div className="flex flex-col gap-2">
                 <Label className="text-fs-base font-semibold font-clash-display">
                   Transmisión
                 </Label>
                 <Select
                   value={values.transmision}
-                  onValueChange={(v) => onFilterChange("transmision", v)}
+                  onValueChange={(value) => onFilterChange("transmision", value)}
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Selecciona la transmisión" />
                   </SelectTrigger>
                   <SelectContent position="popper">
-                    {transmisions.map((t) => (
-                      <SelectItem key={t.id} value={t.id}>
-                        {t.nombre}
+                    {transmissions.map((transmission) => (
+                      <SelectItem key={transmission.id} value={transmission.id}>
+                        {transmission.nombre}
                       </SelectItem>
                     ))}
                   </SelectContent>

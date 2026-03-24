@@ -38,7 +38,7 @@ export async function getVehiculos(page = 1): Promise<VehicleResponse> {
     prisma.vehiculo.count({ where: { estado: EstadoVenta.DISPONIBLE } }),
   ]);
 
-  const vehicleMaped = vehiculos.map((vehicle) => ({
+  const formattedVehicles = vehiculos.map((vehicle) => ({
     ...vehicle,
     precio: Number(vehicle.precio),
     preciosiniva: Number(vehicle.preciosiniva),
@@ -49,7 +49,7 @@ export async function getVehiculos(page = 1): Promise<VehicleResponse> {
   }));
 
   return {
-    vehiculos: vehicleMaped,
+    vehiculos: formattedVehicles,
     total,
     pages: Math.ceil(total / PAGE_SIZE),
     page,

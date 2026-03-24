@@ -2,11 +2,11 @@ export interface Category {
   id: string;
   nombre: string;
 }
-export interface Brands {
+export interface Brand {
   id: string;
   nombre: string;
 }
-export interface Transmision {
+export interface Transmission {
   id: string;
   nombre: string;
 }

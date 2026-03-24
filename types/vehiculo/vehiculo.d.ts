@@ -19,27 +19,22 @@ export interface Vehiculo {
   color_exterior: string;
   transmision: string;
   combustible: string;
-  sucursal: Categoria;
-  marca: Categoria;
-  categoria: Categoria;
-  etiquetas: EtiquetaElement[];
+  sucursal: VehicleRelation;
+  marca: VehicleRelation;
+  categoria: VehicleRelation;
+  etiquetas: VehicleTag[];
 }
 
-export interface Categoria {
+export interface VehicleRelation {
   id: string;
   nombre: string;
 }
 
-export interface EtiquetaElement {
-  etiqueta: EtiquetaEtiqueta;
+export interface VehicleTag {
+  etiqueta: TagDetail;
 }
 
-export interface EtiquetaEtiqueta {
+export interface TagDetail {
   nombre: string;
   slug: string;
-}
-
-export interface Galeria {
-  url: string;
-  orden: number;
 }
