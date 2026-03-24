@@ -15,7 +15,7 @@ export type CategoriesResult = Awaited<ReturnType<typeof getCategories>>;
 export async function getBrands() {
   return prisma.marca.findMany({
     where: { estado: true },
-    select: { id: true, nombre: true },
+    select: { id: true, nombre: true, slug: true },
     orderBy: { nombre: "asc" },
   });
 }

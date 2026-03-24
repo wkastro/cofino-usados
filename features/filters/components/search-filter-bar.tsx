@@ -61,7 +61,7 @@ export function SearchFilterBar({
                   </SelectTrigger>
                   <SelectContent position="popper">
                     {brands.map((brand) => (
-                      <SelectItem key={brand.id} value={brand.id}>
+                      <SelectItem key={brand.slug} value={brand.slug}>
                         {brand.nombre}
                       </SelectItem>
                     ))}

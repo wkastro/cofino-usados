@@ -2,14 +2,23 @@
 
 import { prisma } from "@/lib/prisma";
 import { EstadoVenta } from "@/generated/prisma/client";
-import { VehicleResponse } from "@/types/vehiculo/vehiculo";
+import type { VehicleResponse } from "@/types/vehiculo/vehiculo";
+import type { VehicleFilters } from "@/types/filters/filters";
 
 const PAGE_SIZE = 12;
 
-export async function getVehiculos(page = 1): Promise<VehicleResponse> {
+export async function getVehiculos(
+  page = 1,
+  filters: VehicleFilters = {},
+): Promise<VehicleResponse> {
+  const where = {
+    estado: EstadoVenta.DISPONIBLE,
+    ...(filters.marca && { marca: { slug: filters.marca } }),
+  };
+
   const [vehiculos, total] = await prisma.$transaction([
     prisma.vehiculo.findMany({
-      where: { estado: EstadoVenta.DISPONIBLE },
+      where,
       select: {
         id: true,
         nombre: true,
@@ -35,7 +44,7 @@ export async function getVehiculos(page = 1): Promise<VehicleResponse> {
       take: PAGE_SIZE,
     }),
 
-    prisma.vehiculo.count({ where: { estado: EstadoVenta.DISPONIBLE } }),
+    prisma.vehiculo.count({ where }),
   ]);
 
   const formattedVehicles = vehiculos.map((vehicle) => ({
