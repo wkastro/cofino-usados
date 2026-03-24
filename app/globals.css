@@ -250,6 +250,17 @@
   @apply font-display;
 }
 
+/* Hero clip-path responsive */
+.hero-visual-clip {
+  clip-path: url(#hero-clip-mobile);
+}
+
+@media (min-width: 640px) {
+  .hero-visual-clip {
+    clip-path: url(#hero-clip);
+  }
+}
+
 @keyframes marquee {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
