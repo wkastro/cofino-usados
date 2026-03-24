@@ -151,7 +151,7 @@ export function VehicleCard({ vehicle }: VehicleCardProps) {
         <Link
           href={`/catalogo/${vehicle.slug}`}
           aria-label={`Comprar ${vehicle.marca}`}
-          className="rounded-[2rem] bg-brand-dark px-7 py-2.5 text-[0.95rem] font-bold text-brand-dark-foreground transition-transform active:scale-95 mb-0.5"
+          className="bg-btn-black"
         >
           ¡Compra ya!
         </Link>

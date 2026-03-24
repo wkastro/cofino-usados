@@ -35,9 +35,9 @@ export function LoginForm() {
           />
         </div>
         {error && <p className="text-xs text-red-500 ml-4">{error}</p>}
-        <Button type="submit" className="w-full" disabled={isPending}>
+        <button type="submit" className="bg-btn-lime" disabled={isPending}>
           {isPending ? "Iniciando sesión..." : "Entrar"}
-        </Button>
+        </button>
       </form>
     </div>
   );

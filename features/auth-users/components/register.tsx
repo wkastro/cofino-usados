@@ -98,13 +98,13 @@ export default function RegisterForm() {
         {error && <p className="text-sm text-red-500 text-center">{error}</p>}
 
         {/* Submit Button */}
-        <Button
+        <button
           type="submit"
           disabled={isPending}
-          className="w-full h-12 bg-black text-white hover:bg-black/90 rounded-full font-bold text-base shadow-sm mt-2"
+          className="bg-btn-black"
         >
           {isPending ? "Registrando..." : "Registrarme"}
-        </Button>
+        </button>
       </form>
 
       {/* Social Register */}

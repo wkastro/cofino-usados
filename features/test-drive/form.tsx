@@ -375,28 +375,25 @@ export default function FormTestDrive() {
 
         {/* Action buttons */}
         {step === 0 ? (
-          <Button
+          <button
             type="button"
-            variant="dark"
-            size="lg"
-            className="w-full"
             onClick={handleNext}
+            className="bg-btn-black"
           >
             Siguiente
-          </Button>
+          </button>
         ) : (
           <div className="grid grid-cols-2 gap-3">
-            <Button
+            <button
               type="button"
-              variant="outline"
-              size="lg"
               onClick={() => setStep(0)}
+              className="bg-btn-black"
             >
               Anterior
-            </Button>
-            <Button type="submit" variant="dark" size="lg">
+            </button>
+            <button type="submit" className="bg-btn-black">
               Finalizar
-            </Button>
+            </button>
           </div>
         )}
       </div>

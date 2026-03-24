@@ -82,15 +82,13 @@ export default function LoginForm() {
           {error && <p className="text-xs text-red-500 ml-4">{error}</p>}
 
           {/* Submit */}
-          <Button
+          <button
             type="submit"
-            variant="dark"
-            size="lg"
-            className="w-full h-12 text-base"
+            className="bg-btn-black"
             disabled={isPending}
           >
             {isPending ? "Iniciando sesión..." : "Iniciar sesión"}
-          </Button>
+          </button>
         </form>
 
         {/* Social login */}

@@ -38,3 +38,14 @@ export interface TagDetail {
   nombre: string;
   slug: string;
 }
+
+export interface VehicleImage {
+  id: string;
+  url: string;
+  orden: number;
+}
+
+export interface VehicleDetail extends Vehiculo {
+  color_interior: string;
+  galeria: VehicleImage[];
+}

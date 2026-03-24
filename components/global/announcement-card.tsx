@@ -47,7 +47,7 @@ export function AnnouncementCard({
           <div className="mt-5">
             <Link
               href={href}
-              className="inline-flex items-center justify-center rounded-full bg-white px-6 py-2.5 text-sm font-semibold text-black transition-opacity hover:opacity-90 active:scale-95"
+              className="inline-flex items-center justify-center bg-btn-white"
             >
               {buttonText}
             </Link>

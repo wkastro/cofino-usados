@@ -143,13 +143,13 @@ export function RegisterForm() {
               />
 
               {/* Submit Button */}
-              <Button
+              <button
                 type="submit"
-                className="w-full h-12 bg-black text-white hover:bg-gray-800 rounded-full font-bold text-md shadow-lg transform transition active:scale-[0.98]"
+                className="bg-btn-black"
                 disabled={isPending}
               >
                 {isPending ? "Registrando..." : "Registrarme"}
-              </Button>
+              </button>
             </form>
 
             {/* Social Login */}

@@ -3,10 +3,10 @@
 import { prisma } from "@/lib/prisma";
 import { EstadoVenta } from "@/generated/prisma/client";
 import type { Transmision } from "@/generated/prisma/client";
-import type { VehicleResponse } from "@/types/vehiculo/vehiculo";
+import type { VehicleResponse, VehicleDetail } from "@/types/vehiculo/vehiculo";
 import type { VehicleFilters } from "@/types/filters/filters";
 
-const PAGE_SIZE = 12;
+const PAGE_SIZE = 6;
 
 export async function getVehiculos(
   page = 1,
@@ -65,5 +65,51 @@ export async function getVehiculos(
     total,
     pages: Math.ceil(total / PAGE_SIZE),
     page,
+  };
+}
+
+export async function getVehicleBySlug(
+  slug: string,
+): Promise<VehicleDetail | null> {
+  const vehicle = await prisma.vehiculo.findUnique({
+    where: { slug },
+    select: {
+      id: true,
+      nombre: true,
+      slug: true,
+      precio: true,
+      preciosiniva: true,
+      kilometraje: true,
+      motor: true,
+      anio: true,
+      traccion: true,
+      transmision: true,
+      combustible: true,
+      color_exterior: true,
+      color_interior: true,
+      marca: { select: { id: true, nombre: true } },
+      categoria: { select: { id: true, nombre: true } },
+      sucursal: { select: { id: true, nombre: true } },
+      etiquetas: {
+        select: { etiqueta: { select: { nombre: true, slug: true } } },
+      },
+      galeria: {
+        select: { id: true, url: true, orden: true },
+        orderBy: { orden: "asc" },
+      },
+    },
+  });
+
+  if (!vehicle) return null;
+
+  return {
+    ...vehicle,
+    precio: Number(vehicle.precio),
+    preciosiniva: Number(vehicle.preciosiniva),
+    color_exterior: vehicle.color_exterior ?? "",
+    color_interior: vehicle.color_interior ?? "",
+    traccion: vehicle.traccion as string,
+    transmision: vehicle.transmision as string,
+    combustible: vehicle.combustible as string,
   };
 }

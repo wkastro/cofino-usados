@@ -19,7 +19,7 @@ export default function Hero({ children }: { children?: React.ReactNode }) {
 
       {/* Capa visual con clip-path */}
       <div className="absolute inset-0 overflow-hidden hero-visual-clip">
-        <div className="absolute inset-0 w-full h-full bg-black">
+        <div className="absolute inset-0 w-full h-full">
           <video
             autoPlay
             muted
