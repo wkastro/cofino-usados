@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { EstadoVenta } from "@/generated/prisma/client";
+import type { Transmision } from "@/generated/prisma/client";
 import type { VehicleResponse } from "@/types/vehiculo/vehiculo";
 import type { VehicleFilters } from "@/types/filters/filters";
 
@@ -15,6 +16,7 @@ export async function getVehiculos(
     estado: EstadoVenta.DISPONIBLE,
     ...(filters.marca && { marca: { slug: filters.marca } }),
     ...(filters.categoria && { categoria: { slug: filters.categoria } }),
+    ...(filters.transmision && { transmision: filters.transmision as Transmision }),
   };
 
   const [vehiculos, total] = await prisma.$transaction([

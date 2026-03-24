@@ -9,15 +9,16 @@ import { HomeSearchBar } from "@/features/filters/components/home-search-bar";
 import type { VehicleFilters } from "@/types/filters/filters";
 
 interface HomeProps {
-  searchParams: Promise<{ marca?: string; categoria?: string }>;
+  searchParams: Promise<{ marca?: string; categoria?: string; transmision?: string }>;
 }
 
 export default async function Home({ searchParams }: HomeProps) {
-  const { marca, categoria } = await searchParams;
+  const { marca, categoria, transmision } = await searchParams;
 
   const filters: VehicleFilters = {
     ...(marca && { marca }),
     ...(categoria && { categoria }),
+    ...(transmision && { transmision }),
   };
 
   const [vehicles, categories, brands, transmissions] = await Promise.all([
