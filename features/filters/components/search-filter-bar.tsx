@@ -13,12 +13,7 @@ import {
 } from "@/components/ui/select";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { FilterHorizontalIcon, Car05Icon } from "@hugeicons/core-free-icons";
-import type { Brands, Category } from "@/types/filters/filters";
-
-export interface FilterOption {
-  value: string;
-  label: string;
-}
+import type { Brands, Category, Transmision } from "@/types/filters/filters";
 
 export interface SearchFilterValues {
   marca: string;
@@ -29,7 +24,7 @@ export interface SearchFilterValues {
 export interface SearchFilterBarProps {
   brands: Brands[];
   categories: Category[];
-  transmisionOptions: FilterOption[];
+  transmisions: Transmision[];
   values: SearchFilterValues;
   onFilterChange: (field: keyof SearchFilterValues, value: string) => void;
   onFiltersClick?: () => void;
@@ -40,7 +35,7 @@ export interface SearchFilterBarProps {
 export function SearchFilterBar({
   brands,
   categories,
-  transmisionOptions,
+  transmisions,
   values,
   onFilterChange,
   onFiltersClick,
@@ -98,19 +93,19 @@ export function SearchFilterBar({
               {/* Transmision */}
               <div className="flex flex-col gap-2">
                 <Label className="text-fs-base font-semibold font-clash-display">
-                  Transmisi&oacute;n
+                  Transmisión
                 </Label>
                 <Select
                   value={values.transmision}
                   onValueChange={(v) => onFilterChange("transmision", v)}
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Selecciona la transmisi&oacute;n" />
+                    <SelectValue placeholder="Selecciona la transmisión" />
                   </SelectTrigger>
                   <SelectContent position="popper">
-                    {transmisionOptions.map((opt) => (
-                      <SelectItem key={opt.value} value={opt.value}>
-                        {opt.label}
+                    {transmisions.map((t) => (
+                      <SelectItem key={t.id} value={t.id}>
+                        {t.nombre}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -145,7 +140,7 @@ export function SearchFilterBar({
                   strokeWidth={2}
                   className="size-4"
                 />
-                &iexcl;Encontrar mi auto!
+                ¡Encontrar mi auto!
               </Button>
             </div>
           </div>

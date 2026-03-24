@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import type { Transmision } from "@/generated/prisma/client";
 
 export async function getCategorias() {
   return prisma.categoria.findMany({
@@ -20,3 +21,14 @@ export async function getMarcas() {
 }
 
 export type MarcasResult = Awaited<ReturnType<typeof getMarcas>>;
+
+const transmisionValues: Transmision[] = ["AUTOMATICO", "MANUAL"];
+
+export async function getTransmisiones() {
+  return transmisionValues.map((value) => ({
+    id: value,
+    nombre: value,
+  }));
+}
+
+export type TransmisionesResult = Awaited<ReturnType<typeof getTransmisiones>>;
