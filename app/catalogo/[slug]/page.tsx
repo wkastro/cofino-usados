@@ -5,6 +5,8 @@ import { Container } from "@/components/layout/container";
 import { getVehicleBySlug } from "@/app/actions/vehiculo";
 import { VehicleGallery } from "@/features/vehicle-detail/components/vehicle-gallery";
 import { VehicleInfo } from "@/features/vehicle-detail/components/vehicle-info";
+import { VehicleSpecs } from "@/features/vehicle-detail/components/vehicle-specs";
+import { LoanCalculator } from "@/features/vehicle-detail/components/loan-calculator";
 import { VehicleImage } from "@/types/vehiculo/vehiculo";
 
 interface VehiclePageProps {
@@ -47,6 +49,12 @@ export default async function VehiclePage({ params }: VehiclePageProps) {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
         <VehicleGallery images={fallbackImages} vehicleName={vehicle.nombre} />
         <VehicleInfo vehicle={vehicle} />
+      </div>
+
+      {/* Specs + Calculator */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mt-10 lg:mt-14">
+        <VehicleSpecs vehicle={vehicle} />
+        <LoanCalculator vehiclePrice={vehicle.preciosiniva} />
       </div>
     </Container>
   );

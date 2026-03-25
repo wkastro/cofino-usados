@@ -26,7 +26,7 @@ export function VehicleGallery({ images, vehicleName }: VehicleGalleryProps) {
   return (
     <div className="flex flex-col gap-3">
       {/* Main image */}
-      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-muted">
+      <div className="relative aspect-4/3 w-full overflow-hidden rounded-2xl bg-muted">
         <Image
           src={selectedImage.url}
           alt={vehicleName}
@@ -45,7 +45,7 @@ export function VehicleGallery({ images, vehicleName }: VehicleGalleryProps) {
               key={image.id}
               onClick={() => selectImage(index)}
               className={cn(
-                "relative aspect-[4/3] overflow-hidden rounded-xl transition-all",
+                "relative aspect-4/3 overflow-hidden rounded-xl transition-all",
                 selectedIndex === index
                   ? "ring-[3px] ring-brand-lime ring-offset-2"
                   : "opacity-70 hover:opacity-100",

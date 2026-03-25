@@ -16,7 +16,7 @@ export function VehicleInfo({ vehicle }: VehicleInfoProps) {
   const monthlyPayment = Math.round(vehicle.preciosiniva * MONTHLY_RATE);
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-5 bg-white rounded-2xl p-4 md:p-8">
       {/* Header: name + favorite */}
       <div className="flex items-start justify-between">
         <div>
@@ -51,20 +51,16 @@ export function VehicleInfo({ vehicle }: VehicleInfoProps) {
       </div>
 
       {/* Description */}
-      <p className="text-muted-foreground text-fs-base leading-relaxed">
-        Vehículo {vehicle.marca.nombre} {vehicle.nombre} del año {vehicle.anio},
-        con transmisión {vehicle.transmision.toLowerCase()} y motor{" "}
-        {vehicle.motor
-          ? `${(parseFloat(vehicle.motor) / 1000).toFixed(1)}L`
-          : "N/A"}
-        . Disponible en color {vehicle.color_exterior.toLowerCase()} en nuestra
-        sucursal {vehicle.sucursal.nombre}.
-      </p>
+      {vehicle.descripcion && (
+        <p className="text-muted-foreground text-fs-base leading-relaxed">
+          {vehicle.descripcion}
+        </p>
+      )}
 
       {/* Pricing */}
       <div className="flex flex-col gap-2">
         <div className="flex items-baseline gap-3">
-          <span className="text-fs-xxl font-bold font-clash-display tracking-tight">
+          <span className="text-fs-xxl font-semibold font-clash-display tracking-tight">
             {formatCurrency(vehicle.preciosiniva)}
           </span>
           <span className="text-fs-base text-muted-foreground line-through">

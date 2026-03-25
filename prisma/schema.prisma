@@ -85,6 +85,7 @@ model Vehiculo {
   preciosiniva   Decimal                    @db.Decimal(12, 2)
   color_interior String?
   color_exterior String?
+  descripcion    String?                    @db.Text
   traccion       Traccion
   marca          Marca                      @relation(fields: [marcaId], references: [id])
   sucursal       Sucursal                   @relation(fields: [sucursalId], references: [id])

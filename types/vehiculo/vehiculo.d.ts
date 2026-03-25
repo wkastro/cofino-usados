@@ -46,6 +46,7 @@ export interface VehicleImage {
 }
 
 export interface VehicleDetail extends Vehiculo {
+  descripcion: string | null;
   color_interior: string;
   galeria: VehicleImage[];
 }

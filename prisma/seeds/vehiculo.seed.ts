@@ -97,6 +97,7 @@ export async function seedVehiculos(prisma: PrismaClient) {
       transmision:    TRANSMISION_MAP[v.transmision] ?? Transmision.MANUAL,
       combustible:    v.combustible as Combustible,
       estado:         ESTADO_MAP[v.estado] ?? EstadoVenta.DISPONIBLE,
+      descripcion:    `Vehículo ${v.nombre} en excelente estado, con ${v.kilometraje.toLocaleString()} km recorridos. Transmisión ${v.transmision.toLowerCase()}, motor ${v.motor} cc, tracción ${v.traccion}. Color exterior ${v.color_exterior.toLowerCase()}, interior ${v.color_interior.toLowerCase()}. Disponible en ${v.sucursal}.`,
       marcaId,
       categoriaId,
       sucursalId,
