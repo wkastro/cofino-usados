@@ -7,7 +7,7 @@ import {
   CarFront,
   MapPin,
 } from "lucide-react";
-import { formatKilometers } from "@/lib/formatters/vehicle";
+import { formatKilometers, formatMotor } from "@/lib/formatters/vehicle";
 import type { VehicleDetail } from "@/types/vehiculo/vehiculo";
 
 interface VehicleSpecsProps {
@@ -34,9 +34,7 @@ export function VehicleSpecs({ vehicle }: VehicleSpecsProps) {
     {
       icon: Gauge,
       label: "Motor",
-      value: vehicle.motor
-        ? `${(parseFloat(vehicle.motor) / 1000).toFixed(1)}L`
-        : "N/A",
+      value: formatMotor(vehicle.motor),
     },
     {
       icon: Calendar1,

@@ -4,16 +4,15 @@ import Link from "next/link";
 import { Heart, Star, Calculator } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/lib/formatters/vehicle";
+import { useMonthlyPayment } from "@/features/vehicle-detail/hooks/useMonthlyPayment";
 import type { VehicleDetail } from "@/types/vehiculo/vehiculo";
 
 interface VehicleInfoProps {
   vehicle: VehicleDetail;
 }
 
-const MONTHLY_RATE = 0.0025;
-
 export function VehicleInfo({ vehicle }: VehicleInfoProps) {
-  const monthlyPayment = Math.round(vehicle.preciosiniva * MONTHLY_RATE);
+  const { monthlyPayment } = useMonthlyPayment(vehicle.preciosiniva);
 
   return (
     <div className="flex flex-col gap-5 bg-white rounded-2xl p-4 md:p-8">
@@ -90,10 +89,7 @@ export function VehicleInfo({ vehicle }: VehicleInfoProps) {
         >
           Agendar cita
         </Link>
-        <Link
-          href="#reserva"
-          className="bg-btn-black flex-1 text-center"
-        >
+        <Link href="/comprar" className="bg-btn-black flex-1 text-center">
           Reserva ahora
         </Link>
       </div>

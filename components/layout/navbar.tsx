@@ -1,9 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
 import { Container } from "@/components/layout/container";
 import { Button } from "@/components/ui/button";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -15,12 +13,10 @@ import {
 } from "@hugeicons/core-free-icons";
 import { cn } from "@/lib/utils";
 import { navLinks } from "@/lib/constants/navigation";
+import { useNavbar } from "@/components/layout/hooks/useNavbar";
 
 export default function Navbar() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const pathname = usePathname();
-  
-  const isHome = pathname === "/";
+  const { mobileMenuOpen, isHome, toggleMobileMenu, closeMobileMenu, isActiveLink } = useNavbar();
 
   return (
     <header
@@ -35,7 +31,7 @@ export default function Navbar() {
         <Container>
           <div className="flex h-16 items-center justify-between lg:h-20">
             {/* Logo */}
-            <Link href="/" className="shrink-0" onClick={() => setMobileMenuOpen(false)}>
+            <Link href="/" className="shrink-0" onClick={closeMobileMenu}>
               <Image
                 src="/logo-cofino.svg"
                 alt="Cofiño"
@@ -52,7 +48,7 @@ export default function Navbar() {
             {/* Desktop Navigation */}
             <div className="hidden items-center gap-1 lg:flex">
               {navLinks.map((link) => {
-                const isActive = pathname === link.href;
+                const isActive = isActiveLink(link.href);
                 return (
                   <Link
                     key={link.href}
@@ -121,7 +117,7 @@ export default function Navbar() {
                 variant="ghost"
                 size="icon"
                 aria-label={mobileMenuOpen ? "Cerrar menú" : "Abrir menú"}
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                onClick={toggleMobileMenu}
                 className={cn(
                   isHome ? "text-white hover:bg-white/10 hover:text-white" : ""
                 )}
@@ -148,7 +144,7 @@ export default function Navbar() {
             <Container>
               <div className="flex flex-col gap-1 py-4">
                 {navLinks.map((link) => {
-                  const isActive = pathname === link.href;
+                  const isActive = isActiveLink(link.href);
                   return (
                     <Link
                       key={link.href}
@@ -167,7 +163,7 @@ export default function Navbar() {
                                 : "text-foreground/80 hover:bg-muted hover:text-foreground",
                             ]
                       )}
-                      onClick={() => setMobileMenuOpen(false)}
+                      onClick={closeMobileMenu}
                     >
                       {link.label}
                     </Link>
@@ -202,7 +198,7 @@ export default function Navbar() {
                     <Link
                       href="/login"
                       aria-label="Iniciar sesión en Cofiño"
-                      onClick={() => setMobileMenuOpen(false)}
+                      onClick={closeMobileMenu}
                     >
                       <HugeiconsIcon
                         icon={UserIcon}

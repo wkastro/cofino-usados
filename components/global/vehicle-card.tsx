@@ -18,6 +18,7 @@ import {
   formatBlindaje,
   formatCurrency,
   formatKilometers,
+  formatMotor,
 } from "@/lib/formatters/vehicle";
 import { Vehiculo } from "@/types/vehiculo/vehiculo";
 
@@ -95,7 +96,7 @@ export function VehicleCard({ vehicle }: VehicleCardProps) {
         <div className="flex items-center gap-2">
           <Gauge className="h-[1.1rem] w-[1.1rem] stroke-[1.5] text-muted-foreground" />
           <span className="text-fs-sm text-muted-foreground">
-            Motor {(parseFloat(vehicle.motor ?? "0") / 1000).toFixed(1)}L
+            Motor {formatMotor(vehicle.motor)}
           </span>
         </div>
         <div className="flex items-center gap-2">

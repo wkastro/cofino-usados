@@ -191,6 +191,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 return true
             }
 
+            // /comprar → solo USER autenticado
+            if (pathname.startsWith("/comprar")) {
+                if (!isLoggedIn || role !== "USER") {
+                    return Response.redirect(new URL("/login", nextUrl))
+                }
+                return true
+            }
+
             // /dashboard/* → solo ADMIN
             if (privateRoutes.some((r) => pathname.startsWith(r))) {
                 if (!isLoggedIn || role !== "ADMIN") {

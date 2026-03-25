@@ -9,6 +9,11 @@ export function formatKilometers(value: number) {
   return `${new Intl.NumberFormat("en-US").format(value)} km`;
 }
 
+export function formatMotor(motor: string | null) {
+  if (!motor) return "N/A";
+  return `${(parseFloat(motor) / 1000).toFixed(1)}L`;
+}
+
 export function formatBlindaje(blindaje: string | boolean) {
   if (typeof blindaje === "boolean") {
     return blindaje ? "Blindado" : "Sin blindaje";

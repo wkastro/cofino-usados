@@ -1,7 +1,6 @@
 "use client";
 
 import { VehicleCard } from "@/components/global/vehicle-card";
-import { useVehicleFavorites } from "@/lib/hooks/useVehicleFavorites";
 import type { VehicleResponse } from "@/types/vehiculo/vehiculo";
 
 export function VehicleGrid({ vehicles }: { vehicles: VehicleResponse }) {
