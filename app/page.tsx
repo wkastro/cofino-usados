@@ -3,7 +3,7 @@ import Hero from "@/features/sections/home/hero";
 import { VehicleGrid } from "@/components/sections/home/vehicle-grid";
 import AnnouncementGrid from "@/components/sections/home/announcement-grid";
 import WrapperMarquee from "@/components/sections/home/wrapper-marquee";
-import { getVehiculos } from "./actions/vehiculo";
+import { getCachedVehiculos } from "./actions/vehiculo.cached";
 import { getCategories, getBrands, getTransmissions } from "./actions/filters";
 import { HomeSearchBar } from "@/features/filters/components/home-search-bar";
 import type { VehicleFilters } from "@/types/filters/filters";
@@ -22,7 +22,7 @@ export default async function Home({ searchParams }: HomeProps) {
   };
 
   const [vehicles, categories, brands, transmissions] = await Promise.all([
-    getVehiculos(1, filters),
+    getCachedVehiculos(1, filters),
     getCategories(),
     getBrands(),
     getTransmissions(),

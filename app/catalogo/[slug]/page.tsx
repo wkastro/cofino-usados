@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { Container } from "@/components/layout/container";
-import { getVehicleBySlug } from "@/app/actions/vehiculo";
+import { getCachedVehicleBySlug } from "@/app/actions/vehiculo.cached";
 import { VehicleGallery } from "@/features/vehicle-detail/components/vehicle-gallery";
 import { VehicleInfo } from "@/features/vehicle-detail/components/vehicle-info";
 import { VehicleSpecs } from "@/features/vehicle-detail/components/vehicle-specs";
@@ -32,7 +32,7 @@ const fallbackImages: VehicleImage[] = [
 ];
 export default async function VehiclePage({ params }: VehiclePageProps) {
   const { slug } = await params;
-  const vehicle = await getVehicleBySlug(slug);
+  const vehicle = await getCachedVehicleBySlug(slug);
   if (!vehicle) notFound();
 
   return (

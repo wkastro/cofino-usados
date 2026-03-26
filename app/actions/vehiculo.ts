@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { revalidateTag } from "next/cache";
 import { EstadoVenta } from "@/generated/prisma/client";
 import type { Transmision } from "@/generated/prisma/client";
 import type { VehicleResponse, VehicleDetail } from "@/types/vehiculo/vehiculo";
@@ -114,4 +115,12 @@ export async function getVehicleBySlug(
     transmision: vehicle.transmision as string,
     combustible: vehicle.combustible as string,
   };
+}
+
+export async function revalidateVehicle(slug: string) {
+  revalidateTag(`vehicle-${slug}`);
+}
+
+export async function revalidateVehicleList() {
+  revalidateTag("vehicle-list");
 }
