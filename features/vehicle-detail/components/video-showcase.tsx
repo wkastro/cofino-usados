@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef, useEffect } from "react";
 import Image from "next/image";
 import { Play } from "lucide-react";
 import { useVideoPlayer, getVideoSource } from "../hooks/useVideoPlayer";
@@ -66,28 +67,54 @@ function ProgressBar() {
   );
 }
 
-function VideoPlayer({ source, onClose }: { source: VideoSource; onClose: () => void }) {
-  if (source.type === "youtube") {
-    return (
-      <iframe
-        src={`https://www.youtube.com/embed/${source.videoId}?autoplay=1&rel=0`}
-        title="Video"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowFullScreen
-        className="absolute inset-0 size-full"
-      />
-    );
-  }
+function YouTubePlayer({ videoId }: { videoId: string }) {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  useEffect(() => {
+    return () => {
+      iframeRef.current?.setAttribute("src", "");
+    };
+  }, []);
+
+  return (
+    <iframe
+      ref={iframeRef}
+      src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`}
+      title="Video"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowFullScreen
+      className="absolute inset-0 size-full"
+    />
+  );
+}
+
+function LocalVideoPlayer({ src, onClose }: { src: string; onClose: () => void }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    return () => {
+      videoRef.current?.pause();
+    };
+  }, []);
 
   return (
     <video
-      src={source.src}
+      ref={videoRef}
+      src={src}
       controls
       autoPlay
       className="absolute inset-0 size-full object-cover"
       onEnded={onClose}
     />
   );
+}
+
+function VideoPlayer({ source, onClose }: { source: VideoSource; onClose: () => void }) {
+  if (source.type === "youtube") {
+    return <YouTubePlayer videoId={source.videoId} />;
+  }
+
+  return <LocalVideoPlayer src={source.src} onClose={onClose} />;
 }
 
 export function VideoShowcase({

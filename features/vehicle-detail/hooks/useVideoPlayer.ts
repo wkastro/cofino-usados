@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 
 export type VideoSource =
   | { type: "youtube"; videoId: string }
@@ -23,6 +23,10 @@ export function useVideoPlayer() {
 
   const play = useCallback(() => setIsPlaying(true), []);
   const stop = useCallback(() => setIsPlaying(false), []);
+
+  useEffect(() => {
+    return () => setIsPlaying(false);
+  }, []);
 
   return { isPlaying, play, stop };
 }

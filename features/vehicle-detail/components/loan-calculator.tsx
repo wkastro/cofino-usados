@@ -81,7 +81,7 @@ export function LoanCalculator({ vehiclePrice }: LoanCalculatorProps) {
       {/* Result */}
       <div className="mt-8 flex items-center gap-4 flex-wrap justify-center">
         <span className="text-fs-base font-semibold">Total a financiar</span>
-        <span className="bg-btn-black inline-block !text-fs-base">
+        <span className="bg-btn-black inline-block text-fs-base">
           {monthlyPayment
             ? `Q ${currencyFormatter.format(monthlyPayment)}/mes`
             : `${formatCurrency(0)}/mes`}
