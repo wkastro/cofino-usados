@@ -44,8 +44,8 @@ export function useExchangeForm() {
     if (valid) setStep(1);
   }
 
-  function onSubmit(data: ExchangeFormData) {
-    console.log("Exchange form submitted:", data);
+  function onSubmit(_data: ExchangeFormData) {
+    // TODO: implement server action for exchange form submission
   }
 
   return {

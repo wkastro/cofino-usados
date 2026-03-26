@@ -31,11 +31,11 @@ function VideoOverlay({ title, subtitle }: { title: string; subtitle?: string })
   return (
     <div className="absolute inset-0 z-10 flex flex-col justify-end p-5 sm:p-8 lg:p-10">
       <div className="max-w-sm lg:max-w-md">
-        <h3 className="text-fs-lg lg:text-fs-xl font-bold text-white leading-tight">
+        <h3 className="text-fs-lg font-semibold text-white leading-tight">
           {title}
         </h3>
         {subtitle && (
-          <p className="mt-2 text-fs-sm lg:text-fs-base text-white/80 leading-relaxed">
+          <p className="mt-2 text-white/80 leading-relaxed">
             {subtitle}
           </p>
         )}

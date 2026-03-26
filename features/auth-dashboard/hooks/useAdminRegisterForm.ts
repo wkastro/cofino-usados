@@ -1,15 +1,18 @@
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import {
   authDashboardRegisterSchema,
   type AuthDashboardRegisterData,
 } from "@/lib/validations/auth-dashboard";
+import { registerAdmin } from "@/app/actions/auth";
 
 export function useAdminRegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState("");
+  const router = useRouter();
 
   const {
     register,
@@ -26,8 +29,24 @@ export function useAdminRegisterForm() {
   const onSubmit = (data: AuthDashboardRegisterData) => {
     setError("");
     startTransition(async () => {
-      console.log("Registering:", data);
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      try {
+        const phone = `${data.phoneCode}${data.phone.replace(/\D/g, "")}`;
+        const result = await registerAdmin({
+          fullName: data.fullName,
+          email: data.email,
+          phone,
+          password: data.password,
+        });
+
+        if (!result.success) {
+          setError(result.message);
+          return;
+        }
+
+        router.push("/auth?registered=true");
+      } catch {
+        setError("Ocurrió un error inesperado. Intenta de nuevo.");
+      }
     });
   };
 

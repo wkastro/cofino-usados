@@ -24,8 +24,8 @@ export function useTestDriveForm() {
     if (valid) setStep(1);
   }
 
-  function onSubmit(data: TestDriveFormData) {
-    console.log("Form submitted:", data);
+  function onSubmit(_data: TestDriveFormData) {
+    // TODO: implement server action for test drive form submission
   }
 
   return {

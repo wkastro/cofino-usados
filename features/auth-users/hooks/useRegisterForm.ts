@@ -6,6 +6,7 @@ import {
   authUserRegisterSchema,
   type AuthUserRegisterData,
 } from "@/lib/validations/auth-users";
+import { registerUser } from "@/app/actions/auth";
 
 export function useRegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -34,21 +35,15 @@ export function useRegisterForm() {
     startTransition(async () => {
       try {
         const phone = `${data.phoneCode}${data.phone.replace(/\D/g, "")}`;
-        const res = await fetch("/api/auth/register", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            fullName: data.fullName,
-            email: data.email,
-            phone,
-            password: data.password,
-          }),
+        const result = await registerUser({
+          fullName: data.fullName,
+          email: data.email,
+          phone,
+          password: data.password,
         });
 
-        const result = await res.json();
-
-        if (!res.ok) {
-          setError(result.message || "Error al crear la cuenta");
+        if (!result.success) {
+          setError(result.message);
           return;
         }
 

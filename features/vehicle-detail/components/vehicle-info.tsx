@@ -7,6 +7,8 @@ import { formatCurrency } from "@/lib/formatters/vehicle";
 import { useMonthlyPayment } from "@/features/vehicle-detail/hooks/useMonthlyPayment";
 import type { VehicleDetail } from "@/types/vehiculo/vehiculo";
 
+const STAR_INDICES = [0, 1, 2, 3, 4];
+
 interface VehicleInfoProps {
   vehicle: VehicleDetail;
 }
@@ -24,7 +26,7 @@ export function VehicleInfo({ vehicle }: VehicleInfoProps) {
           </h1>
           <div className="flex items-center gap-1.5 mt-1">
             <div className="flex items-center gap-0.5">
-              {Array.from({ length: 5 }).map((_, i) => (
+              {STAR_INDICES.map((i) => (
                 <Star
                   key={i}
                   className={cn(
@@ -73,7 +75,7 @@ export function VehicleInfo({ vehicle }: VehicleInfoProps) {
           </span>
           <Link
             href="#calculadora"
-            className="bg-btn-black inline-flex items-center gap-1.5 !px-4 !py-1.5 !text-fs-sm"
+            className="bg-btn-black inline-flex items-center gap-1.5 px-4 py-1.5 text-fs-sm"
           >
             <Calculator className="size-4" />
             Calculadora de cuotas

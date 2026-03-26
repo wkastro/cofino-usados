@@ -58,7 +58,7 @@ export function VehicleSpecs({ vehicle }: VehicleSpecsProps) {
       <h2 className="text-fs-lg font-semibold font-clash-display tracking-tight">
         Detalles del auto
       </h2>
-      <p className="text-fs-sm text-muted-foreground mt-1">
+      <p className="text-muted-foreground mt-1">
         Especificaciones técnicas y ubicación del vehículo.
       </p>
 

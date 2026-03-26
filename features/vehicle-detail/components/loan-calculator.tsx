@@ -11,6 +11,11 @@ import {
 import { formatCurrency } from "@/lib/formatters/vehicle";
 import { useLoanCalculator } from "../hooks/useLoanCalculator";
 
+const currencyFormatter = new Intl.NumberFormat("en-US", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+
 interface LoanCalculatorProps {
   vehiclePrice: number;
 }
@@ -31,7 +36,7 @@ export function LoanCalculator({ vehiclePrice }: LoanCalculatorProps) {
       <h2 className="text-fs-lg font-semibold font-clash-display tracking-tight">
         ¿Deseas calcular tus cuotas?
       </h2>
-      <p className="text-fs-sm text-muted-foreground mt-1">
+      <p className="text-muted-foreground mt-1">
         Ingresa la siguiente información para calcular.
       </p>
 
@@ -78,7 +83,7 @@ export function LoanCalculator({ vehiclePrice }: LoanCalculatorProps) {
         <span className="text-fs-base font-semibold">Total a financiar</span>
         <span className="bg-btn-black inline-block !text-fs-base">
           {monthlyPayment
-            ? `Q ${new Intl.NumberFormat("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(monthlyPayment)}/mes`
+            ? `Q ${currencyFormatter.format(monthlyPayment)}/mes`
             : `${formatCurrency(0)}/mes`}
         </span>
       </div>
