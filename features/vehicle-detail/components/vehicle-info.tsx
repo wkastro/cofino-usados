@@ -91,7 +91,7 @@ export function VehicleInfo({ vehicle }: VehicleInfoProps) {
         >
           Agendar cita
         </Link>
-        <Link href="/comprar" className="bg-btn-black flex-1 text-center">
+        <Link href={`/comprar/${vehicle.slug}`} className="bg-btn-black flex-1 text-center">
           Reserva ahora
         </Link>
       </div>
