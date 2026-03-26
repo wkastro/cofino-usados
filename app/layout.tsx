@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { Work_Sans } from "next/font/google";
 import localFont from "next/font/local";
@@ -62,7 +63,9 @@ export default function RootLayout({
       className={cn("font-sans", workSans.variable, clashDisplay.variable)}
     >
       <body className={`antialiased bg-secondary`}>
-        <Header />
+        <Suspense>
+          <Header />
+        </Suspense>
         {children}
         <Footer />
       </body>

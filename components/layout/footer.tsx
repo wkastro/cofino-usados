@@ -1,7 +1,9 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Container } from "@/components/layout/container";
 import { Button } from "@/components/ui/button";
+import { CurrentYear } from "@/components/layout/current-year";
 import {
   footerBranches,
   footerMenuLinks,
@@ -105,10 +107,9 @@ export function Footer() {
           <span>
             Powered by <span className="font-bold text-white">Aumenta</span>
           </span>
-          <span>
-            {new Date().getFullYear()}{" "}
-            <span className="font-bold text-white">Cofiño Usados</span>
-          </span>
+          <Suspense>
+            <CurrentYear />
+          </Suspense>
         </Container>
       </div>
     </footer>

@@ -118,9 +118,9 @@ export async function getVehicleBySlug(
 }
 
 export async function revalidateVehicle(slug: string) {
-  revalidateTag(`vehicle-${slug}`);
+  revalidateTag(`vehicle-${slug}`, "days");
 }
 
 export async function revalidateVehicleList() {
-  revalidateTag("vehicle-list");
+  revalidateTag("vehicle-list", "hours");
 }
