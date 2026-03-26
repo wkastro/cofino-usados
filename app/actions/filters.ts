@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { revalidateTag } from "next/cache";
 import type { Transmision } from "@/generated/prisma/client";
 
 export async function getCategories() {
@@ -32,3 +33,11 @@ export async function getTransmissions() {
 }
 
 export type TransmissionsResult = Awaited<ReturnType<typeof getTransmissions>>;
+
+export async function revalidateCategories() {
+  revalidateTag("categories", "weeks");
+}
+
+export async function revalidateBrands() {
+  revalidateTag("brands", "weeks");
+}

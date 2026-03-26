@@ -1,5 +1,6 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { getVehicleBySlug, getVehiculos } from "./vehiculo";
+import { getCategories, getBrands } from "./filters";
 import type { VehicleFilters } from "@/types/filters/filters";
 
 export async function getCachedVehicleBySlug(slug: string) {
@@ -19,4 +20,20 @@ export async function getCachedVehiculos(
   cacheTag("vehicle-list");
 
   return getVehiculos(page, filters);
+}
+
+export async function getCachedCategories() {
+  "use cache";
+  cacheLife("weeks");
+  cacheTag("categories");
+
+  return getCategories();
+}
+
+export async function getCachedBrands() {
+  "use cache";
+  cacheLife("weeks");
+  cacheTag("brands");
+
+  return getBrands();
 }
