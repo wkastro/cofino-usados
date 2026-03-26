@@ -1,11 +1,11 @@
 import {
   Settings2,
-  Users,
   Milestone,
   Gauge,
   Calendar1,
   CarFront,
   MapPin,
+  EvCharger,
 } from "lucide-react";
 import { formatKilometers, formatMotor } from "@/lib/formatters/vehicle";
 import type { VehicleDetail } from "@/types/vehiculo/vehiculo";
@@ -22,7 +22,7 @@ export function VehicleSpecs({ vehicle }: VehicleSpecsProps) {
       value: vehicle.transmision,
     },
     {
-      icon: Users,
+      icon: EvCharger,
       label: "Combustible",
       value: vehicle.combustible,
     },

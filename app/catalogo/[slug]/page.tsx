@@ -7,6 +7,7 @@ import { VehicleGallery } from "@/features/vehicle-detail/components/vehicle-gal
 import { VehicleInfo } from "@/features/vehicle-detail/components/vehicle-info";
 import { VehicleSpecs } from "@/features/vehicle-detail/components/vehicle-specs";
 import { LoanCalculator } from "@/features/vehicle-detail/components/loan-calculator";
+import { VideoShowcase } from "@/features/vehicle-detail/components/video-showcase";
 import { VehicleImage } from "@/types/vehiculo/vehiculo";
 
 interface VehiclePageProps {
@@ -55,6 +56,16 @@ export default async function VehiclePage({ params }: VehiclePageProps) {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mt-10 lg:mt-14">
         <VehicleSpecs vehicle={vehicle} />
         <LoanCalculator vehiclePrice={vehicle.preciosiniva} />
+      </div>
+
+      {/* Video showcase */}
+      <div className="mt-10 lg:mt-14">
+        <VideoShowcase
+          videoUrl="https://www.youtube.com/watch?v=3ks4cK3lKjE"
+          coverImage="/mechanic_video_cover.jpg"
+          title="¿Porqué comprar con Cofiño Stahl?"
+          subtitle="Aprovechá descuentos exclusivos, financiamiento flexible y garantía certificada."
+        />
       </div>
     </Container>
   );
