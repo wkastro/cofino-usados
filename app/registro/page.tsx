@@ -1,8 +1,9 @@
+import type React from "react";
 import Image from "next/image";
 import RegisterForm from "@/features/auth-users/components/register";
 import { Container } from "@/components/layout/container";
 
-export default function RegisterPage() {
+export default function RegisterPage(): React.ReactElement {
   return (
     <main className="py-4">
       <Container>

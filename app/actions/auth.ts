@@ -3,11 +3,7 @@
 import bcrypt from "bcrypt";
 import { prisma } from "@/lib/prisma";
 import { registerSchema } from "@/lib/validations/auth";
-
-interface ActionResult {
-  success: boolean;
-  message: string;
-}
+import type { ActionResult } from "@/types/auth";
 
 export async function registerUser(data: {
   fullName: string;

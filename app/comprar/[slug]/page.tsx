@@ -1,3 +1,4 @@
+import type React from "react";
 import { Suspense } from "react";
 import { Container } from "@/components/layout/container";
 import { PurchaseContent } from "./purchase-content";
@@ -6,7 +7,7 @@ interface BuyPageProps {
   params: Promise<{ slug: string }>;
 }
 
-export default async function BuyPage({ params }: BuyPageProps) {
+export default async function BuyPage({ params }: BuyPageProps): Promise<React.ReactElement> {
   return (
     <Container className="py-4">
       <Suspense

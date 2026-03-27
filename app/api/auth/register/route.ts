@@ -3,9 +3,9 @@ import bcrypt from "bcrypt"
 import { prisma } from "@/lib/prisma"
 import { registerSchema } from "@/lib/validations/auth"
 
-export async function POST(request: Request) {
+export async function POST(request: Request): Promise<NextResponse> {
   try {
-    const body = await request.json()
+    const body: unknown = await request.json()
 
     const result = registerSchema.safeParse(body)
     if (!result.success) {
@@ -54,7 +54,7 @@ export async function POST(request: Request) {
       { message: "Cuenta creada exitosamente", user },
       { status: 201 }
     )
-  } catch {
+  } catch (error: unknown) {
     return NextResponse.json(
       { message: "Error interno del servidor" },
       { status: 500 }

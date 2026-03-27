@@ -1,3 +1,4 @@
+import type React from "react";
 import { Suspense } from "react";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
@@ -9,7 +10,7 @@ interface VehiclePageProps {
   params: Promise<{ slug: string }>;
 }
 
-export default async function VehiclePage({ params }: VehiclePageProps) {
+export default async function VehiclePage({ params }: VehiclePageProps): Promise<React.ReactElement> {
   return (
     <Container className="py-6 lg:py-10">
       {/* Back link — static shell */}

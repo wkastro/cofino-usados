@@ -1,3 +1,4 @@
+import type React from "react";
 import { notFound } from "next/navigation";
 import { getCachedVehicleBySlug } from "@/app/actions/vehiculo.cached";
 import { VehicleGallery } from "@/features/vehicle-detail/components/vehicle-gallery";
@@ -16,7 +17,7 @@ interface VehicleDetailProps {
   params: Promise<{ slug: string }>;
 }
 
-export async function VehicleDetail({ params }: VehicleDetailProps) {
+export async function VehicleDetail({ params }: VehicleDetailProps): Promise<React.ReactElement> {
   const { slug } = await params;
   const vehicle = await getCachedVehicleBySlug(slug);
   if (!vehicle) notFound();

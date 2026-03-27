@@ -1,8 +1,9 @@
+import type React from "react";
 import LoginForm from "@/features/auth-users/components/login";
 import Image from "next/image";
 import { Container } from "@/components/layout/container";
 
-export default function SignIn() {
+export default function SignIn(): React.ReactElement {
   return (
     <Container className="flex w-full overflow-hidden py-4">
       <div className="flex flex-col-reverse lg:flex-row w-full overflow-hidden rounded-[40px]">

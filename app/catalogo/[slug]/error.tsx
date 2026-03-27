@@ -1,5 +1,6 @@
 "use client";
 
+import type React from "react";
 import Link from "next/link";
 
 interface ErrorProps {
@@ -7,7 +8,7 @@ interface ErrorProps {
   reset: () => void;
 }
 
-export default function VehicleError({ error, reset }: ErrorProps) {
+export default function VehicleError({ error, reset }: ErrorProps): React.ReactElement {
   return (
     <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4 px-4 text-center">
       <h2 className="text-fs-xl font-semibold font-clash-display tracking-tight">
