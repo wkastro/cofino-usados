@@ -7,16 +7,16 @@ export const purchaseSchema = z
   .object({
     paymentMethod: z.enum(["card", "transfer"]),
     // Card fields
-    cardNumber: z.string(),
-    cardName: z.string(),
-    expMonth: z.string(),
-    expYear: z.string(),
-    cvv: z.string(),
-    nit: z.string(),
+    cardNumber: z.string().max(19),
+    cardName: z.string().max(100),
+    expMonth: z.string().max(2),
+    expYear: z.string().max(4),
+    cvv: z.string().max(4),
+    nit: z.string().max(20),
     // Transfer fields
-    bankName: z.string(),
-    accountNumber: z.string(),
-    authNumber: z.string(),
+    bankName: z.string().max(100),
+    accountNumber: z.string().max(30),
+    authNumber: z.string().max(30),
     receipt: z
       .union([z.instanceof(File), z.undefined()])
       .optional(),

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { TEST_DRIVE_STEP_1_FIELDS } from "@/lib/constants/test-drive";
-import type { TestDriveFormData } from "@/lib/validations/test-drive";
+import { testDriveSchema, type TestDriveFormData } from "@/lib/validations/test-drive";
 
 export function useTestDriveForm() {
   const [step, setStep] = useState(0);
@@ -13,9 +14,9 @@ export function useTestDriveForm() {
     trigger,
     formState: { errors },
   } = useForm<TestDriveFormData>({
+    resolver: zodResolver(testDriveSchema),
     defaultValues: {
       phoneCode: "+502",
-      acceptContact: false,
     },
   });
 
