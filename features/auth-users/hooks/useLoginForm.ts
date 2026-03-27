@@ -1,5 +1,5 @@
 import { useState, useTransition } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, type UseFormHandleSubmit, type UseFormRegister, type FieldErrors } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -8,7 +8,18 @@ import {
   type AuthUserLoginData,
 } from "@/lib/validations/auth-users";
 
-export function useLoginForm() {
+interface UseLoginFormReturn {
+  register: UseFormRegister<AuthUserLoginData>;
+  handleSubmit: UseFormHandleSubmit<AuthUserLoginData>;
+  errors: FieldErrors<AuthUserLoginData>;
+  onSubmit: (data: AuthUserLoginData) => void;
+  error: string;
+  isPending: boolean;
+  showPassword: boolean;
+  togglePassword: () => void;
+}
+
+export function useLoginForm(): UseLoginFormReturn {
   const [showPassword, setShowPassword] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState("");

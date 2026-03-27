@@ -1,5 +1,5 @@
 import { useState, useTransition } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, type UseFormHandleSubmit, type UseFormRegister, type FieldErrors, type Control } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import {
@@ -8,7 +8,19 @@ import {
 } from "@/lib/validations/auth-users";
 import { registerUser } from "@/app/actions/auth";
 
-export function useRegisterForm() {
+interface UseRegisterFormReturn {
+  register: UseFormRegister<AuthUserRegisterData>;
+  control: Control<AuthUserRegisterData>;
+  handleSubmit: UseFormHandleSubmit<AuthUserRegisterData>;
+  errors: FieldErrors<AuthUserRegisterData>;
+  onSubmit: (data: AuthUserRegisterData) => void;
+  error: string;
+  isPending: boolean;
+  showPassword: boolean;
+  togglePassword: () => void;
+}
+
+export function useRegisterForm(): UseRegisterFormReturn {
   const [showPassword, setShowPassword] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState("");

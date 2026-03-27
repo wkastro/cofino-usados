@@ -3,7 +3,15 @@
 import { useState, useCallback } from "react";
 import { usePathname } from "next/navigation";
 
-export function useNavbar() {
+interface UseNavbarReturn {
+  mobileMenuOpen: boolean;
+  isHome: boolean;
+  toggleMobileMenu: () => void;
+  closeMobileMenu: () => void;
+  isActiveLink: (href: string) => boolean;
+}
+
+export function useNavbar(): UseNavbarReturn {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
 

@@ -1,12 +1,13 @@
 import { useState, useCallback } from "react";
+import type { VehicleImage } from "@/types/vehiculo/vehiculo";
 
-interface GalleryImage {
-  id: string;
-  url: string;
-  orden: number;
+interface UseGalleryReturn {
+  selectedImage: VehicleImage;
+  selectedIndex: number;
+  selectImage: (index: number) => void;
 }
 
-export function useGallery(images: GalleryImage[]) {
+export function useGallery(images: VehicleImage[]): UseGalleryReturn {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const selectedImage = images[selectedIndex] ?? images[0];

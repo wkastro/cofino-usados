@@ -1,6 +1,11 @@
 import { useState, useMemo, useCallback } from "react";
 
-const BANKS = [
+interface Bank {
+  readonly id: string;
+  readonly nombre: string;
+}
+
+const BANKS: readonly Bank[] = [
   { id: "bi", nombre: "Banco Industrial" },
   { id: "banrural", nombre: "Banrural" },
   { id: "bac", nombre: "BAC Credomatic" },
@@ -8,11 +13,21 @@ const BANKS = [
   { id: "interbanco", nombre: "Interbanco" },
 ];
 
-const INSTALLMENT_OPTIONS = [12, 24, 36, 48, 60, 72];
+const INSTALLMENT_OPTIONS = [12, 24, 36, 48, 60, 72] as const;
 
 const ANNUAL_RATE = 0.12;
 
-export function useLoanCalculator(vehiclePrice: number) {
+interface UseLoanCalculatorReturn {
+  bank: string;
+  installments: string;
+  monthlyPayment: number | null;
+  banks: readonly Bank[];
+  installmentOptions: typeof INSTALLMENT_OPTIONS;
+  onBankChange: (value: string) => void;
+  onInstallmentsChange: (value: string) => void;
+}
+
+export function useLoanCalculator(vehiclePrice: number): UseLoanCalculatorReturn {
   const [bank, setBank] = useState("");
   const [installments, setInstallments] = useState("");
 

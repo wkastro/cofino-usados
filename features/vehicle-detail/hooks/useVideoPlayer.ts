@@ -18,7 +18,13 @@ export function getVideoSource(url: string): VideoSource {
   return { type: "local", src: url };
 }
 
-export function useVideoPlayer() {
+interface UseVideoPlayerReturn {
+  isPlaying: boolean;
+  play: () => void;
+  stop: () => void;
+}
+
+export function useVideoPlayer(): UseVideoPlayerReturn {
   const [isPlaying, setIsPlaying] = useState(false);
 
   const play = useCallback(() => setIsPlaying(true), []);

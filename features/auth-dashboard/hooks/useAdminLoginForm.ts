@@ -2,7 +2,13 @@ import { useState, useTransition } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
-export function useAdminLoginForm() {
+interface UseAdminLoginFormReturn {
+  handleAction: (formData: FormData) => void;
+  error: string;
+  isPending: boolean;
+}
+
+export function useAdminLoginForm(): UseAdminLoginFormReturn {
   const [error, setError] = useState("");
   const [isPending, startTransition] = useTransition();
   const router = useRouter();

@@ -1,10 +1,20 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, type UseFormHandleSubmit, type UseFormRegister, type FieldErrors, type Control } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { purchaseSchema, type PurchaseFormData } from "@/lib/validations/purchase";
 
-export function usePurchaseForm() {
+interface UsePurchaseFormReturn {
+  register: UseFormRegister<PurchaseFormData>;
+  control: Control<PurchaseFormData>;
+  handleSubmit: UseFormHandleSubmit<PurchaseFormData>;
+  errors: FieldErrors<PurchaseFormData>;
+  isSubmitting: boolean;
+  paymentMethod: PurchaseFormData["paymentMethod"];
+  onSubmit: (data: PurchaseFormData) => void;
+}
+
+export function usePurchaseForm(): UsePurchaseFormReturn {
   const {
     register,
     control,

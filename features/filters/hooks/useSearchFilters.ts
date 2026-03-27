@@ -2,7 +2,14 @@ import { useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { SearchFilterValues } from "../components/search-filter-bar";
 
-export function useSearchFilters() {
+interface UseSearchFiltersReturn {
+  values: SearchFilterValues;
+  onFilterChange: (field: keyof SearchFilterValues, value: string) => void;
+  handleSearch: () => void;
+  handleFiltersClick: () => void;
+}
+
+export function useSearchFilters(): UseSearchFiltersReturn {
   const router = useRouter();
   const searchParams = useSearchParams();
 

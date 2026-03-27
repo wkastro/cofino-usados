@@ -1,5 +1,5 @@
 import { useState, useTransition } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, type UseFormHandleSubmit, type UseFormRegister, type FieldErrors, type Control } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import {
@@ -8,7 +8,19 @@ import {
 } from "@/lib/validations/auth-dashboard";
 import { registerAdmin } from "@/app/actions/auth";
 
-export function useAdminRegisterForm() {
+interface UseAdminRegisterFormReturn {
+  register: UseFormRegister<AuthDashboardRegisterData>;
+  control: Control<AuthDashboardRegisterData>;
+  handleSubmit: UseFormHandleSubmit<AuthDashboardRegisterData>;
+  errors: FieldErrors<AuthDashboardRegisterData>;
+  onSubmit: (data: AuthDashboardRegisterData) => void;
+  error: string;
+  isPending: boolean;
+  showPassword: boolean;
+  togglePassword: () => void;
+}
+
+export function useAdminRegisterForm(): UseAdminRegisterFormReturn {
   const [showPassword, setShowPassword] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState("");

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useState, type Dispatch, type SetStateAction } from "react";
+import { useForm, type UseFormHandleSubmit, type UseFormRegister, type FieldErrors, type Control } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   exchangeSchema,
@@ -7,7 +7,20 @@ import {
 } from "@/lib/validations/exchange";
 import type { ExchangeFormData } from "@/lib/validations/exchange";
 
-export function useExchangeForm() {
+interface UseExchangeFormReturn {
+  register: UseFormRegister<ExchangeFormData>;
+  control: Control<ExchangeFormData>;
+  handleSubmit: UseFormHandleSubmit<ExchangeFormData>;
+  errors: FieldErrors<ExchangeFormData>;
+  step: number;
+  setStep: Dispatch<SetStateAction<number>>;
+  wantsExchange: boolean;
+  selectedBrand: string;
+  handleNext: () => Promise<void>;
+  onSubmit: (data: ExchangeFormData) => void;
+}
+
+export function useExchangeForm(): UseExchangeFormReturn {
   const [step, setStep] = useState(0);
 
   const {

@@ -1,10 +1,21 @@
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useState, type Dispatch, type SetStateAction } from "react";
+import { useForm, type UseFormHandleSubmit, type UseFormRegister, type FieldErrors, type Control } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TEST_DRIVE_STEP_1_FIELDS } from "@/lib/constants/test-drive";
 import { testDriveSchema, type TestDriveFormData } from "@/lib/validations/test-drive";
 
-export function useTestDriveForm() {
+interface UseTestDriveFormReturn {
+  register: UseFormRegister<TestDriveFormData>;
+  control: Control<TestDriveFormData>;
+  handleSubmit: UseFormHandleSubmit<TestDriveFormData>;
+  errors: FieldErrors<TestDriveFormData>;
+  step: number;
+  setStep: Dispatch<SetStateAction<number>>;
+  handleNext: () => Promise<void>;
+  onSubmit: (data: TestDriveFormData) => void;
+}
+
+export function useTestDriveForm(): UseTestDriveFormReturn {
   const [step, setStep] = useState(0);
 
   const {
