@@ -3,6 +3,8 @@ import Hero from "@/features/sections/home/hero";
 import AnnouncementGrid from "@/components/sections/home/announcement-grid";
 import WrapperMarquee from "@/components/sections/home/wrapper-marquee";
 import { HomeSearchBarContent, HomeVehicleGrid } from "./home-content";
+import { VehicleCardSkeletonGrid } from "@/components/global/vehicle-card-skeleton";
+import { FilterLoadingProvider } from "@/features/filters/context/filter-loading-context";
 import type { SearchParams } from "@/types/filters/filters";
 
 interface HomeProps {
@@ -11,7 +13,7 @@ interface HomeProps {
 
 export default async function Home({ searchParams }: HomeProps): Promise<React.ReactElement> {
   return (
-    <>
+    <FilterLoadingProvider>
       {/* Hero is static — renders instantly */}
       <Hero>
         <Suspense>
@@ -20,13 +22,13 @@ export default async function Home({ searchParams }: HomeProps): Promise<React.R
       </Hero>
 
       {/* Vehicle grid streams in */}
-      <Suspense>
+      <Suspense fallback={<VehicleCardSkeletonGrid />}>
         <HomeVehicleGrid searchParams={searchParams} />
       </Suspense>
 
       {/* Static sections */}
       <WrapperMarquee />
       <AnnouncementGrid />
-    </>
+    </FilterLoadingProvider>
   );
 }

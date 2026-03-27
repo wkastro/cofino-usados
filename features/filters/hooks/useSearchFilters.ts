@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useFilterLoading } from "@/features/filters/context/filter-loading-context";
 import type { SearchFilterValues } from "@/types/filters/filters";
 
 interface UseSearchFiltersReturn {
@@ -13,6 +14,7 @@ interface UseSearchFiltersReturn {
 export function useSearchFilters(): UseSearchFiltersReturn {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { startTransition } = useFilterLoading();
 
   const values: SearchFilterValues = {
     marca: searchParams.get("marca") ?? "",
@@ -34,14 +36,18 @@ export function useSearchFilters(): UseSearchFiltersReturn {
         params.delete(field);
       }
 
-      router.push(`/?${params.toString()}`, { scroll: false });
+      startTransition(() => {
+        router.push(`/?${params.toString()}`, { scroll: false });
+      });
     },
-    [router, searchParams],
+    [router, searchParams, startTransition],
   );
 
   const clearFilters = useCallback(() => {
-    router.push("/", { scroll: false });
-  }, [router]);
+    startTransition(() => {
+      router.push("/", { scroll: false });
+    });
+  }, [router, startTransition]);
 
   const handleFiltersClick = useCallback(() => {
     // TODO: abrir panel de filtros avanzados

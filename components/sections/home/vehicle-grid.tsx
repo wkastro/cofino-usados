@@ -2,6 +2,8 @@
 
 import { VehicleCard } from "@/components/global/vehicle-card";
 import { NoResults } from "@/components/global/no-results";
+import { VehicleCardSkeletonGrid } from "@/components/global/vehicle-card-skeleton";
+import { useFilterLoading } from "@/features/filters/context/filter-loading-context";
 import type { VehicleResponse } from "@/types/vehiculo/vehiculo";
 
 interface VehicleGridProps {
@@ -9,6 +11,12 @@ interface VehicleGridProps {
 }
 
 export function VehicleGrid({ vehicles }: VehicleGridProps): React.ReactElement {
+  const { isPending } = useFilterLoading();
+
+  if (isPending) {
+    return <VehicleCardSkeletonGrid />;
+  }
+
   return (
     <section className="w-full py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
