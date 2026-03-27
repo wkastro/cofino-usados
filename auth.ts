@@ -18,10 +18,8 @@ const extendedAdapter = {
                 email: data.email,
                 emailVerified: data.emailVerified,
                 image: data.image,
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                phone: undefined as any,
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                password: undefined as any,
+                phone: null,
+                password: null,
             },
         })
         return {
@@ -55,8 +53,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 password: { label: "Password", type: "password" },
             },
             authorize: async (credentials) => {
-                const email = (credentials?.email as string | undefined)?.trim().toLowerCase()
-                const password = credentials?.password as string | undefined
+                const email = typeof credentials?.email === "string" ? credentials.email.trim().toLowerCase() : undefined
+                const password = typeof credentials?.password === "string" ? credentials.password : undefined
 
                 if (!email || !password) return null
 
@@ -89,8 +87,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 password: { label: "Password", type: "password" },
             },
             authorize: async (credentials) => {
-                const email = (credentials?.email as string | undefined)?.trim().toLowerCase()
-                const password = credentials?.password as string | undefined
+                const email = typeof credentials?.email === "string" ? credentials.email.trim().toLowerCase() : undefined
+                const password = typeof credentials?.password === "string" ? credentials.password : undefined
 
                 if (!email || !password) return null
 
@@ -132,10 +130,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         async jwt({ token, user, account }) {
             // Credentials: enrich from the authorize return value
             if (user && account?.provider === "credentials") {
-                token.id = user.id
-                token.fullName = user.name
-                token.phone = (user as { phone?: string | null }).phone ?? undefined
-                token.role = (user as { role?: string }).role
+                token.id = user.id!
+                token.fullName = user.name ?? ""
+                token.phone = user.phone ?? undefined
+                token.role = user.role ?? "USER"
             }
 
             // OAuth: on first sign-in (account is present), look up DB user
@@ -159,14 +157,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         },
         async session({ session, token }) {
             if (session.user) {
-                session.user.id = token.id as string
-                session.user.fullName = token.fullName as string
-                session.user.phone = token.phone as string
-                session.user.role = token.role as string
+                session.user.id = token.id
+                session.user.fullName = token.fullName
+                session.user.phone = token.phone ?? ""
+                session.user.role = token.role
             }
             return session
         },
-        authorized({ auth, request: { nextUrl } }) {
+        authorized({ auth, request: { nextUrl } }): boolean | Response {
             const isLoggedIn = !!auth?.user
             const role = auth?.user?.role
             const pathname = nextUrl.pathname
