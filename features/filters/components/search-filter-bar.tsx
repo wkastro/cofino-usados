@@ -13,13 +13,7 @@ import {
 } from "@/components/ui/select";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { FilterHorizontalIcon, Car05Icon } from "@hugeicons/core-free-icons";
-import type { Brand, Category, Transmission } from "@/types/filters/filters";
-
-export interface SearchFilterValues {
-  marca: string;
-  categoria: string;
-  transmision: string;
-}
+import type { Brand, Category, Transmission, SearchFilterValues } from "@/types/filters/filters";
 
 export interface SearchFilterBarProps {
   brands: Brand[];

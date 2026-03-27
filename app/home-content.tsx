@@ -3,12 +3,13 @@ import { getCachedVehiculos, getCachedCategories, getCachedBrands } from "./acti
 import { getTransmissions } from "./actions/filters";
 import { HomeSearchBar } from "@/features/filters/components/home-search-bar";
 import type { VehicleFilters } from "@/types/filters/filters";
+import type { SearchParams } from "@/types/filters/filters";
 
 interface HomeContentProps {
-  searchParams: Promise<{ marca?: string; categoria?: string; transmision?: string }>;
+  searchParams: Promise<SearchParams>;
 }
 
-export async function HomeSearchBarContent({ searchParams }: HomeContentProps) {
+export async function HomeSearchBarContent({ searchParams }: HomeContentProps): Promise<React.ReactElement> {
   const { marca, categoria, transmision } = await searchParams;
 
   const [categories, brands, transmissions] = await Promise.all([
@@ -22,7 +23,7 @@ export async function HomeSearchBarContent({ searchParams }: HomeContentProps) {
   );
 }
 
-export async function HomeVehicleGrid({ searchParams }: HomeContentProps) {
+export async function HomeVehicleGrid({ searchParams }: HomeContentProps): Promise<React.ReactElement> {
   const { marca, categoria, transmision } = await searchParams;
 
   const filters: VehicleFilters = {

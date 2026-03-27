@@ -3,7 +3,11 @@
 import { VehicleCard } from "@/components/global/vehicle-card";
 import type { VehicleResponse } from "@/types/vehiculo/vehiculo";
 
-export function VehicleGrid({ vehicles }: { vehicles: VehicleResponse }) {
+interface VehicleGridProps {
+  vehicles: VehicleResponse;
+}
+
+export function VehicleGrid({ vehicles }: VehicleGridProps): React.ReactElement {
 
   return (
     <section className="w-full py-12">

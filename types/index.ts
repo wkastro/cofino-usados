@@ -14,4 +14,6 @@ export type {
   Brand,
   Transmission,
   VehicleFilters,
+  SearchFilterValues,
+  SearchParams,
 } from "./filters/filters"

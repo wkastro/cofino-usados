@@ -1,9 +1,10 @@
 import * as React from "react";
 import {
-  Control,
-  FieldValues,
-  Path,
-  UseFormRegister,
+  type Control,
+  type FieldValues,
+  type Path,
+  type UseFormRegister,
+  type RegisterOptions,
 } from "react-hook-form";
 import { Controller } from "react-hook-form";
 import {
@@ -28,7 +29,7 @@ interface PhoneFieldProps<T extends FieldValues> {
   register: UseFormRegister<T>;
   phoneCodeName: Path<T>;
   phoneName: Path<T>;
-  phoneRegisterOptions?: Parameters<UseFormRegister<T>>[1];
+  phoneRegisterOptions?: RegisterOptions<T, Path<T>>;
   phoneCodeOptions: PhoneCodeOption[];
   label?: React.ReactNode;
   labelClassName?: string;
@@ -55,7 +56,7 @@ export function PhoneField<T extends FieldValues>({
   inputPlaceholder,
   errorMessage,
   errorClassName,
-}: PhoneFieldProps<T>) {
+}: PhoneFieldProps<T>): React.ReactElement {
   return (
     <div className={cn("space-y-2", containerClassName)}>
       {label ? (

@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import type { SearchFilterValues } from "../components/search-filter-bar";
+import type { SearchFilterValues } from "@/types/filters/filters";
 
 interface UseSearchFiltersReturn {
   values: SearchFilterValues;

@@ -18,3 +18,15 @@ export interface VehicleFilters {
   categoria?: string;
   transmision?: string;
 }
+
+export interface SearchFilterValues {
+  marca: string;
+  categoria: string;
+  transmision: string;
+}
+
+export interface SearchParams {
+  marca?: string;
+  categoria?: string;
+  transmision?: string;
+}

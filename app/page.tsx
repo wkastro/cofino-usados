@@ -3,12 +3,13 @@ import Hero from "@/features/sections/home/hero";
 import AnnouncementGrid from "@/components/sections/home/announcement-grid";
 import WrapperMarquee from "@/components/sections/home/wrapper-marquee";
 import { HomeSearchBarContent, HomeVehicleGrid } from "./home-content";
+import type { SearchParams } from "@/types/filters/filters";
 
 interface HomeProps {
-  searchParams: Promise<{ marca?: string; categoria?: string; transmision?: string }>;
+  searchParams: Promise<SearchParams>;
 }
 
-export default async function Home({ searchParams }: HomeProps) {
+export default async function Home({ searchParams }: HomeProps): Promise<React.ReactElement> {
   return (
     <>
       {/* Hero is static — renders instantly */}

@@ -20,13 +20,13 @@ import {
   formatKilometers,
   formatMotor,
 } from "@/lib/formatters/vehicle";
-import { Vehiculo } from "@/types/vehiculo/vehiculo";
+import type { Vehiculo } from "@/types/vehiculo/vehiculo";
 
 interface VehicleCardProps {
   vehicle: Vehiculo;
 }
 
-export function VehicleCard({ vehicle }: VehicleCardProps) {
+export function VehicleCard({ vehicle }: VehicleCardProps): React.ReactElement {
   return (
     <article className="group relative w-full max-w-[24rem] rounded-lg bg-card text-card-foreground border border-border p-6 pb-4 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.06)] flex flex-col justify-between overflow-hidden">
       {/* HEADER */}
