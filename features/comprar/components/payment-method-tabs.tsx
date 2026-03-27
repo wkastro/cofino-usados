@@ -19,7 +19,7 @@ export function PaymentMethodTabs({ control }: PaymentMethodTabsProps) {
       control={control}
       name="paymentMethod"
       render={({ field }) => (
-        <div className="flex rounded-full bg-gray-100 p-1">
+        <div className="flex rounded-full bg-gray-200 p-1">
           {TABS.map((tab) => {
             const isActive = field.value === tab.value;
             return (
@@ -27,7 +27,7 @@ export function PaymentMethodTabs({ control }: PaymentMethodTabsProps) {
                 key={tab.value}
                 type="button"
                 onClick={() => field.onChange(tab.value)}
-                className={`flex flex-1 items-center justify-center gap-2 rounded-full px-4 py-3 text-fs-sm font-medium transition-colors ${
+                className={`flex flex-1 items-center justify-center gap-2 rounded-full px-4 py-3 font-medium transition-colors ${
                   isActive
                     ? "bg-brand-dark text-white"
                     : "text-gray-600 hover:text-gray-900"

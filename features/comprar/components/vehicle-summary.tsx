@@ -1,22 +1,27 @@
 import Image from "next/image";
 import { MapPin, Calendar } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 interface VehicleSummaryProps {
   nombre: string;
   marca: string;
   sucursal: string;
   imagen: string;
+  submitLabel?: string;
 }
 
 const RESERVATION_PRICE = 20000;
-const IVA_RATE = 0.12;
+const IVA_RATE = 0.025;
 
-function formatPrice(value: number) {
+function formatPriceWhole(value: number) {
   return new Intl.NumberFormat("en-US", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
   }).format(value);
+}
+
+function getDecimals(value: number) {
+  const parts = value.toFixed(2).split(".");
+  return parts[1];
 }
 
 function formatDate() {
@@ -27,19 +32,29 @@ function formatDate() {
   return `${day} / ${month} / ${year}`;
 }
 
+function PriceSuperscript({ value }: { value: number }) {
+  return (
+    <span className="text-fs-md font-semibold">
+      Q {formatPriceWhole(value)}
+      <sup className="text-fs-xs align-super">{getDecimals(value)}</sup>
+    </span>
+  );
+}
+
 export function VehicleSummary({
   nombre,
   marca,
   sucursal,
   imagen,
+  submitLabel = "Confirmar y pagar ahora",
 }: VehicleSummaryProps) {
   const iva = RESERVATION_PRICE * IVA_RATE;
   const total = RESERVATION_PRICE + iva;
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col bg-white rounded-4xl border border-gray-200 overflow-hidden">
       {/* Vehicle image with overlay */}
-      <div className="relative aspect-video w-full overflow-hidden rounded-2xl">
+      <div className="relative aspect-video lg:aspect-16/7 w-full overflow-hidden">
         <Image
           src={imagen}
           alt={nombre}
@@ -47,71 +62,72 @@ export function VehicleSummary({
           sizes="(max-width: 1024px) 100vw, 40vw"
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-        <div className="absolute bottom-4 left-4">
+        <div className="absolute inset-0 bg-linear-to-b from-black/50 via-transparent to-transparent" />
+        <div className="absolute top-4 left-4 md:top-6 md:left-6">
           <h2 className="text-fs-md font-semibold text-white">{nombre}</h2>
-          <p className="text-fs-sm text-white/80">{marca}</p>
+          <p className=" text-white/80">{marca}</p>
         </div>
       </div>
 
-      {/* Location & Date */}
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-1">
-          <p className="text-fs-sm font-medium text-gray-500">Ubicacion</p>
-          <div className="flex items-center gap-1.5">
-            <MapPin className="size-4 text-gray-400" />
-            <span className="text-fs-sm font-medium">{sucursal}</span>
+      <div className="p-6 md:p-8 space-y-6">
+        {/* Location & Date */}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-1.5">
+            <p className="font-semibold">Ubicación</p>
+            <div className="flex items-center gap-1.5">
+              <MapPin className="size-4 text-gray-400" />
+              <span className="text-fs-sm">{sucursal}</span>
+            </div>
+          </div>
+          <div className="space-y-1.5">
+            <p className="font-semibold">Fecha</p>
+            <div className="flex items-center gap-1.5">
+              <Calendar className="size-4 text-gray-400" />
+              <span className="text-fs-sm">{formatDate()}</span>
+            </div>
           </div>
         </div>
-        <div className="space-y-1">
-          <p className="text-fs-sm font-medium text-gray-500">Fecha</p>
-          <div className="flex items-center gap-1.5">
-            <Calendar className="size-4 text-gray-400" />
-            <span className="text-fs-sm font-medium">{formatDate()}</span>
+
+        <hr className="border-gray-200" />
+
+        {/* Price breakdown */}
+        <div className="space-y-4">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="font-semibold">Reserva de automóvil</p>
+              <p className="text-fs-sm">{nombre}</p>
+            </div>
+            <PriceSuperscript value={RESERVATION_PRICE} />
           </div>
-        </div>
-      </div>
 
-      {/* Price breakdown */}
-      <div className="space-y-4">
-        <div className="flex items-start justify-between">
-          <div>
-            <p className="text-fs-sm font-medium">Reserva de automovil</p>
-            <p className="text-fs-sm font-medium">{nombre}</p>
-          </div>
-          <p className="text-fs-md font-semibold">
-            Q {formatPrice(RESERVATION_PRICE)}
-          </p>
-        </div>
-
-        <div className="flex items-center justify-between">
-          <p className="text-fs-sm">
-            IVA <span className="text-gray-500">(impuesto al valor agregado)</span>
-          </p>
-          <p className="text-fs-md font-semibold">
-            Q {formatPrice(iva)}
-          </p>
-        </div>
-
-        <div className="border-t-2 border-dashed border-gray-200 pt-4">
-          <div className="flex items-center justify-between">
-            <p className="text-fs-sm font-medium tracking-widest uppercase">Total</p>
-            <p className="text-fs-lg font-bold">
-              Q {formatPrice(total)}
+          <div className="flex items-center justify-between gap-4">
+            <p className="font-semibold">
+              IVA{" "}
+              <span className="text-fs-xs text-gray-400">
+                (impuesto al valor agregado)
+              </span>
             </p>
+            <PriceSuperscript value={iva} />
           </div>
         </div>
-      </div>
 
-      {/* Submit button */}
-      <Button
-        type="submit"
-        variant="dark"
-        size="lg"
-        className="w-full rounded-full py-6 text-fs-base font-semibold"
-      >
-        Confirmar y pagar ahora
-      </Button>
+        <div className="border-t-2 border-dashed border-gray-200 pt-6">
+          <div className="flex flex-wrap items-center justify-center gap-1">
+            <p className="font-semibold tracking-widest uppercase">Total</p>
+            <span className="text-fs-xl font-semibold">
+              Q {formatPriceWhole(total)}
+              <sup className="text-fs-sm align-super">{getDecimals(total)}</sup>
+            </span>
+          </div>
+        </div>
+
+        {/* Submit button */}
+        <div className="flex justify-center">
+          <button type="submit" className="bg-btn-black">
+          {submitLabel}
+        </button>
+        </div>
+      </div>
     </div>
   );
 }

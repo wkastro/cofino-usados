@@ -1,30 +1,31 @@
-import { notFound } from "next/navigation";
-import { getCachedVehicleBySlug } from "@/app/actions/vehiculo.cached";
+import { Suspense } from "react";
 import { Container } from "@/components/layout/container";
-import { PurchaseCheckout } from "@/features/comprar/components/purchase-checkout";
+import { PurchaseContent } from "./purchase-content";
 
-export default async function BuyPage({
-  params,
-}: {
+interface BuyPageProps {
   params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await params;
-  const vehicle = await getCachedVehicleBySlug(slug);
+}
 
-  if (!vehicle) return notFound();
-
-  const firstImage = vehicle.galeria?.[0]?.url ?? "/compra.jpg";
-
+export default async function BuyPage({ params }: BuyPageProps) {
   return (
-    <Container className="py-8 lg:py-12">
-      <PurchaseCheckout
-        vehicle={{
-          nombre: vehicle.nombre,
-          marca: vehicle.marca.nombre,
-          sucursal: vehicle.sucursal.nombre,
-          imagen: firstImage,
-        }}
-      />
+    <Container className="py-4">
+      <Suspense
+        fallback={
+          <div className="grid gap-8 lg:grid-cols-[1fr_400px] lg:gap-12 animate-pulse">
+            <div className="space-y-6">
+              <div className="h-12 w-full rounded-full bg-muted" />
+              <div className="h-96 w-full rounded-2xl bg-muted" />
+            </div>
+            <div className="space-y-4">
+              <div className="aspect-video w-full rounded-2xl bg-muted" />
+              <div className="h-6 w-1/2 rounded bg-muted" />
+              <div className="h-6 w-3/4 rounded bg-muted" />
+            </div>
+          </div>
+        }
+      >
+        <PurchaseContent params={params} />
+      </Suspense>
     </Container>
   );
 }

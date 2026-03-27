@@ -3,6 +3,7 @@
 import { usePurchaseForm } from "../hooks/usePurchaseForm";
 import { PaymentMethodTabs } from "./payment-method-tabs";
 import { CardForm } from "./card-form";
+import { TransferForm } from "./transfer-form";
 import { VehicleSummary } from "./vehicle-summary";
 
 interface PurchaseCheckoutProps {
@@ -15,28 +16,23 @@ interface PurchaseCheckoutProps {
 }
 
 export function PurchaseCheckout({ vehicle }: PurchaseCheckoutProps) {
-  const { register, control, handleSubmit, errors, isSubmitting, paymentMethod, onSubmit } =
+  const { register, control, handleSubmit, errors, paymentMethod, onSubmit } =
     usePurchaseForm();
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="grid gap-8 lg:grid-cols-[1fr_400px] lg:gap-12"
+      className="grid gap-8 lg:grid-cols-[1fr_500]"
     >
       {/* Left: Payment form */}
       <div className="space-y-6">
         <PaymentMethodTabs control={control} />
 
-        <div className="rounded-2xl border border-gray-200 p-5 sm:p-8">
+        <div className="rounded-4xl border border-gray-200 p-5 sm:p-8 bg-white">
           {paymentMethod === "card" ? (
             <CardForm register={register} control={control} errors={errors} />
           ) : (
-            <div className="space-y-4 py-8 text-center">
-              <p className="text-fs-md font-medium">Transferencia bancaria</p>
-              <p className="text-fs-sm text-gray-500">
-                Instrucciones de transferencia seran enviadas a tu correo.
-              </p>
-            </div>
+            <TransferForm register={register} control={control} errors={errors} />
           )}
         </div>
       </div>
@@ -48,6 +44,11 @@ export function PurchaseCheckout({ vehicle }: PurchaseCheckoutProps) {
           marca={vehicle.marca}
           sucursal={vehicle.sucursal}
           imagen={vehicle.imagen}
+          submitLabel={
+            paymentMethod === "card"
+              ? "Confirmar y pagar ahora"
+              : "Confirmar y enviar recibo"
+          }
         />
       </div>
     </form>

@@ -31,13 +31,13 @@ const YEARS = Array.from({ length: 10 }, (_, i) =>
 export function CardForm({ register, control, errors }: CardFormProps) {
   return (
     <div className="space-y-5">
-      <h3 className="text-fs-md font-semibold italic">
+      <h3 className="text-fs-md font-semibold">
         Informacion de la tarjeta
       </h3>
 
       {/* Card Number */}
       <div className="space-y-2">
-        <Label htmlFor="cardNumber">Numero de la tarjeta</Label>
+        <Label htmlFor="cardNumber">Número de la tarjeta</Label>
         <Input
           id="cardNumber"
           placeholder="0000 0000 0000 0000"
@@ -63,7 +63,7 @@ export function CardForm({ register, control, errors }: CardFormProps) {
       {/* Expiration + CVV */}
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label>Expiracion</Label>
+          <Label>Expiración</Label>
           <div className="flex gap-2">
             <Controller
               control={control}
@@ -87,7 +87,7 @@ export function CardForm({ register, control, errors }: CardFormProps) {
               render={({ field }) => (
                 <Select value={field.value} onValueChange={field.onChange}>
                   <SelectTrigger aria-invalid={!!errors.expYear}>
-                    <SelectValue placeholder="Ano" />
+                    <SelectValue placeholder="Año" />
                   </SelectTrigger>
                   <SelectContent>
                     {YEARS.map((y) => (
