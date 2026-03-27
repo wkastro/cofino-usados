@@ -12,7 +12,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { FilterHorizontalIcon, Car05Icon } from "@hugeicons/core-free-icons";
+import { FilterHorizontalIcon, FilterRemoveIcon } from "@hugeicons/core-free-icons";
 import type { Brand, Category, Transmission, SearchFilterValues } from "@/types/filters/filters";
 
 export interface SearchFilterBarProps {
@@ -20,9 +20,10 @@ export interface SearchFilterBarProps {
   categories: Category[];
   transmissions: Transmission[];
   values: SearchFilterValues;
+  hasActiveFilters: boolean;
   onFilterChange: (field: keyof SearchFilterValues, value: string) => void;
   onFiltersClick?: () => void;
-  onSearch: () => void;
+  onClearFilters: () => void;
   className?: string;
 }
 
@@ -31,9 +32,10 @@ export function SearchFilterBar({
   categories,
   transmissions,
   values,
+  hasActiveFilters,
   onFilterChange,
   onFiltersClick,
-  onSearch,
+  onClearFilters,
   className,
 }: SearchFilterBarProps) {
   return (
@@ -125,16 +127,17 @@ export function SearchFilterBar({
 
               <Button
                 variant="dark"
-                onClick={onSearch}
+                onClick={onClearFilters}
+                disabled={!hasActiveFilters}
                 className="flex-1 lg:flex-none rounded-lg"
               >
                 <HugeiconsIcon
-                  icon={Car05Icon}
+                  icon={FilterRemoveIcon}
                   data-icon="inline-start"
                   strokeWidth={2}
                   className="size-4"
                 />
-                ¡Encontrar mi auto!
+                Limpiar filtros
               </Button>
             </div>
           </div>

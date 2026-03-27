@@ -1,6 +1,7 @@
 "use client";
 
 import { VehicleCard } from "@/components/global/vehicle-card";
+import { NoResults } from "@/components/global/no-results";
 import type { VehicleResponse } from "@/types/vehiculo/vehiculo";
 
 interface VehicleGridProps {
@@ -8,7 +9,6 @@ interface VehicleGridProps {
 }
 
 export function VehicleGrid({ vehicles }: VehicleGridProps): React.ReactElement {
-
   return (
     <section className="w-full py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -16,16 +16,20 @@ export function VehicleGrid({ vehicles }: VehicleGridProps): React.ReactElement 
           Autos recomendados
         </h2>
 
-        <div
-          aria-label="Vehículos disponibles"
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center"
-        >
-          {vehicles.vehiculos.map((vehicle) => (
-            <div key={vehicle.id} className="w-full flex justify-center">
-              <VehicleCard vehicle={vehicle}/>
-            </div>
-          ))}
-        </div>
+        {vehicles.vehiculos.length === 0 ? (
+          <NoResults />
+        ) : (
+          <div
+            aria-label="Vehículos disponibles"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center"
+          >
+            {vehicles.vehiculos.map((vehicle) => (
+              <div key={vehicle.id} className="w-full flex justify-center">
+                <VehicleCard vehicle={vehicle}/>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

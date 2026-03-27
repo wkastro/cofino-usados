@@ -11,7 +11,7 @@ interface HomeSearchBarProps {
 }
 
 export function HomeSearchBar({ brands, categories, transmissions }: HomeSearchBarProps) {
-  const { values, onFilterChange, handleSearch, handleFiltersClick } = useSearchFilters();
+  const { values, hasActiveFilters, onFilterChange, clearFilters, handleFiltersClick } = useSearchFilters();
 
   return (
     <SearchFilterBar
@@ -19,9 +19,10 @@ export function HomeSearchBar({ brands, categories, transmissions }: HomeSearchB
       categories={categories}
       transmissions={transmissions}
       values={values}
+      hasActiveFilters={hasActiveFilters}
       onFilterChange={onFilterChange}
       onFiltersClick={handleFiltersClick}
-      onSearch={handleSearch}
+      onClearFilters={clearFilters}
       className="absolute bottom-6 left-0 right-0 z-30"
     />
   );

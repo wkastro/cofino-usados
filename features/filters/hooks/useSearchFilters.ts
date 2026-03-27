@@ -4,8 +4,9 @@ import type { SearchFilterValues } from "@/types/filters/filters";
 
 interface UseSearchFiltersReturn {
   values: SearchFilterValues;
+  hasActiveFilters: boolean;
   onFilterChange: (field: keyof SearchFilterValues, value: string) => void;
-  handleSearch: () => void;
+  clearFilters: () => void;
   handleFiltersClick: () => void;
 }
 
@@ -18,6 +19,10 @@ export function useSearchFilters(): UseSearchFiltersReturn {
     categoria: searchParams.get("categoria") ?? "",
     transmision: searchParams.get("transmision") ?? "",
   };
+
+  const hasActiveFilters = Boolean(
+    values.marca || values.categoria || values.transmision,
+  );
 
   const onFilterChange = useCallback(
     (field: keyof SearchFilterValues, value: string) => {
@@ -34,10 +39,9 @@ export function useSearchFilters(): UseSearchFiltersReturn {
     [router, searchParams],
   );
 
-  const handleSearch = useCallback(() => {
-    // Filters are already applied via URL params on change
-    // This can be used for explicit search navigation in the future
-  }, []);
+  const clearFilters = useCallback(() => {
+    router.push("/", { scroll: false });
+  }, [router]);
 
   const handleFiltersClick = useCallback(() => {
     // TODO: abrir panel de filtros avanzados
@@ -45,8 +49,9 @@ export function useSearchFilters(): UseSearchFiltersReturn {
 
   return {
     values,
+    hasActiveFilters,
     onFilterChange,
-    handleSearch,
+    clearFilters,
     handleFiltersClick,
   };
 }
