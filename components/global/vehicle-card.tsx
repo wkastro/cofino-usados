@@ -20,6 +20,7 @@ import {
   formatKilometers,
   formatMotor,
 } from "@/lib/formatters/vehicle";
+import { useFavorites } from "@/features/favoritos/context/favorites-context";
 import type { Vehiculo } from "@/types/vehiculo/vehiculo";
 
 interface VehicleCardProps {
@@ -27,6 +28,9 @@ interface VehicleCardProps {
 }
 
 export function VehicleCard({ vehicle }: VehicleCardProps): React.ReactElement {
+  const { isFavorite, toggleFavorite } = useFavorites();
+  const favorited = isFavorite(vehicle.id);
+
   return (
     <article className="group relative w-full max-w-[24rem] rounded-lg bg-card text-card-foreground border border-border p-6 pb-4 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.06)] flex flex-col justify-between overflow-hidden">
       {/* HEADER */}
@@ -45,18 +49,18 @@ export function VehicleCard({ vehicle }: VehicleCardProps): React.ReactElement {
           <p className="text-muted-foreground">{vehicle.marca.nombre}</p>
         </div>
         <button
-          onClick={() => {}}
-          aria-label={true ? "Quitar de favoritos" : "Agregar a favoritos"}
+          onClick={() => toggleFavorite(vehicle.id)}
+          aria-label={favorited ? "Quitar de favoritos" : "Agregar a favoritos"}
           className="transition-transform hover:scale-110 active:scale-95 duration-200 mt-0.5"
         >
           <Heart
             className={cn(
               "h-6 w-6 transition-all",
-              true
+              favorited
                 ? "fill-destructive text-destructive"
                 : "fill-transparent text-muted-foreground/50",
             )}
-            strokeWidth={true ? 0 : 2}
+            strokeWidth={favorited ? 0 : 2}
           />
         </button>
       </div>

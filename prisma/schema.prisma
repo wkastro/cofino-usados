@@ -22,6 +22,7 @@ model User {
   role          Role      @default(USER)
   accounts      Account[]
   sessions      Session[]
+  favoritos     Favorito[]
 }
 
 model Account {
@@ -92,6 +93,7 @@ model Vehiculo {
   categoria      Categoria                  @relation(fields: [categoriaId], references: [id])
   etiquetas      VehiculoEtiquetaComercial[]
   galeria        Galeria[]
+  favoritos      Favorito[]
 
   @@index([precio])
   @@index([kilometraje])
@@ -179,6 +181,22 @@ model Galeria {
   updatedAt  DateTime @updatedAt
   vehiculo   Vehiculo @relation(fields: [vehiculoId], references: [id], onDelete: Cascade)
 
+  @@index([vehiculoId])
+}
+
+// ─── FAVORITOS ──────────────────────────────────────────────────────────────
+
+model Favorito {
+  id         String   @id @default(uuid()) @db.Char(36)
+  userId     String
+  vehiculoId String   @db.Char(36)
+  createdAt  DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vehiculo Vehiculo @relation(fields: [vehiculoId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, vehiculoId])
+  @@index([userId])
   @@index([vehiculoId])
 }
 

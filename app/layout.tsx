@@ -6,6 +6,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import Header from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { FavoritesProvider } from "@/features/favoritos/context/favorites-context";
 
 const workSans = Work_Sans({
   subsets: ["latin"],
@@ -63,11 +64,13 @@ export default function RootLayout({
       className={cn("font-sans", workSans.variable, clashDisplay.variable)}
     >
       <body className={`antialiased bg-secondary`}>
-        <Suspense>
-          <Header />
-        </Suspense>
-        {children}
-        <Footer />
+        <FavoritesProvider>
+          <Suspense>
+            <Header />
+          </Suspense>
+          {children}
+          <Footer />
+        </FavoritesProvider>
       </body>
     </html>
   );
