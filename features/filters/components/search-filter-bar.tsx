@@ -12,8 +12,16 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { FilterHorizontalIcon, FilterRemoveIcon } from "@hugeicons/core-free-icons";
-import type { Brand, Category, Transmission, SearchFilterValues } from "@/types/filters/filters";
+import {
+  FilterHorizontalIcon,
+  FilterRemoveIcon,
+} from "@hugeicons/core-free-icons";
+import type {
+  Brand,
+  Category,
+  Transmission,
+  SearchFilterValues,
+} from "@/types/filters/filters";
 
 export interface SearchFilterBarProps {
   brands: Brand[];
@@ -45,29 +53,11 @@ export function SearchFilterBar({
           <div className="flex flex-col lg:flex-row lg:items-end gap-4 lg:gap-3">
             {/* Selects */}
             <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-3">
-              {/* Marca */}
-              <div className="flex flex-col gap-2">
-                <Label className="text-fs-base font-semibold font-clash-display">Marca</Label>
-                <Select
-                  value={values.marca}
-                  onValueChange={(value) => onFilterChange("marca", value)}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Selecciona la marca" />
-                  </SelectTrigger>
-                  <SelectContent position="popper">
-                    {brands.map((brand) => (
-                      <SelectItem key={brand.slug} value={brand.slug}>
-                        {brand.nombre}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
               {/* Categoría */}
               <div className="flex flex-col gap-2">
-                <Label className="text-fs-base font-semibold font-clash-display">Tipo de auto</Label>
+                <Label className="text-fs-base font-semibold font-clash-display">
+                  Tipo de auto
+                </Label>
                 <Select
                   value={values.categoria}
                   onValueChange={(value) => onFilterChange("categoria", value)}
@@ -86,6 +76,28 @@ export function SearchFilterBar({
                 </Select>
               </div>
 
+              {/* Marca */}
+              <div className="flex flex-col gap-2">
+                <Label className="text-fs-base font-semibold font-clash-display">
+                  Marca
+                </Label>
+                <Select
+                  value={values.marca}
+                  onValueChange={(value) => onFilterChange("marca", value)}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Selecciona la marca" />
+                  </SelectTrigger>
+                  <SelectContent position="popper">
+                    {brands.map((brand) => (
+                      <SelectItem key={brand.slug} value={brand.slug}>
+                        {brand.nombre}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
               {/* Transmisión */}
               <div className="flex flex-col gap-2">
                 <Label className="text-fs-base font-semibold font-clash-display">
@@ -93,7 +105,9 @@ export function SearchFilterBar({
                 </Label>
                 <Select
                   value={values.transmision}
-                  onValueChange={(value) => onFilterChange("transmision", value)}
+                  onValueChange={(value) =>
+                    onFilterChange("transmision", value)
+                  }
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Selecciona la transmisión" />
@@ -112,8 +126,10 @@ export function SearchFilterBar({
             {/* Buttons */}
             <div className="flex items-center gap-3 shrink-0">
               {onFiltersClick && (
-                <Button variant="outline" onClick={onFiltersClick}
-                className="rounded-lg"
+                <Button
+                  variant="outline"
+                  onClick={onFiltersClick}
+                  className="rounded-lg"
                 >
                   <HugeiconsIcon
                     icon={FilterHorizontalIcon}

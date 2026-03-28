@@ -19,18 +19,24 @@ export default function Navbar() {
   const {
     mobileMenuOpen,
     isHome,
+    isScrolled,
     toggleMobileMenu,
     closeMobileMenu,
     isActiveLink,
   } = useNavbar();
 
+  // En home sin scroll: estilo transparente con texto blanco
+  // En home con scroll o en cualquier otra página: estilo sólido con fondo blanco
+  const transparent = isHome && !isScrolled;
+
   return (
     <header
       className={cn(
-        "top-0 w-full z-50 transition-colors duration-200",
-        isHome
-          ? "fixed bg-transparent"
-          : "sticky border-b border-border bg-background/95 backdrop-blur-sm",
+        "top-0 w-full z-50 transition-all duration-300",
+        isHome ? "fixed" : "sticky",
+        transparent
+          ? "bg-transparent"
+          : "bg-background/95 backdrop-blur-sm border-b border-border",
       )}
     >
       <nav aria-label="Navegación principal">
@@ -44,8 +50,8 @@ export default function Navbar() {
                 width={200}
                 height={60}
                 className={cn(
-                  "transition-all",
-                  isHome ? "brightness-0 invert" : "brightness-0 dark:invert",
+                  "transition-all duration-300",
+                  transparent ? "brightness-0 invert" : "brightness-0 dark:invert",
                 )}
                 priority
               />
@@ -61,7 +67,7 @@ export default function Navbar() {
                     href={link.href}
                     className={cn(
                       "rounded-lg px-4 py-2 text-sm font-medium transition-colors",
-                      isHome
+                      transparent
                         ? [
                             isActive
                               ? "text-white font-semibold"
@@ -85,21 +91,24 @@ export default function Navbar() {
               <Button
                 variant="ghost"
                 size="icon"
+                asChild
                 aria-label="Ver favoritos"
                 className={cn(
-                  isHome ? "text-white hover:bg-white/10 hover:text-white" : "",
+                  transparent ? "text-white hover:bg-white/10 hover:text-white" : "",
                 )}
               >
-                <HugeiconsIcon
-                  icon={FavouriteIcon}
-                  style={{ width: 20, height: 20 }}
-                />
+                <Link href="/favoritos">
+                  <HugeiconsIcon
+                    icon={FavouriteIcon}
+                    style={{ width: 20, height: 20 }}
+                  />
+                </Link>
               </Button>
               <Button
-                variant={isHome ? "default" : "dark"}
+                variant={transparent ? "default" : "dark"}
                 asChild
                 className={cn(
-                  isHome
+                  transparent
                     ? "bg-black text-white hover:bg-black/90 rounded-full box-border"
                     : "",
                 )}
@@ -122,10 +131,17 @@ export default function Navbar() {
                 <Button
                   variant="ghost"
                   size="icon"
+                  asChild
                   aria-label="Ver favoritos"
-                  className="text-white hover:bg-white/10 hover:text-white"
+                  className={cn(
+                    transparent
+                      ? "text-white hover:bg-white/10 hover:text-white"
+                      : "",
+                  )}
                 >
-                  <HugeiconsIcon icon={FavouriteIcon} className="size-5.5" />
+                  <Link href="/favoritos">
+                    <HugeiconsIcon icon={FavouriteIcon} className="size-5.5" />
+                  </Link>
                 </Button>
               )}
               <Button
@@ -134,7 +150,7 @@ export default function Navbar() {
                 aria-label={mobileMenuOpen ? "Cerrar menú" : "Abrir menú"}
                 onClick={toggleMobileMenu}
                 className={cn(
-                  isHome ? "text-white hover:bg-white/10 hover:text-white" : "",
+                  transparent ? "text-white hover:bg-white/10 hover:text-white" : "",
                 )}
               >
                 <HugeiconsIcon
@@ -151,7 +167,7 @@ export default function Navbar() {
           <div
             className={cn(
               "absolute top-full left-0 w-full lg:hidden border-t",
-              isHome
+              transparent
                 ? "bg-black/95 backdrop-blur-md border-white/10"
                 : "bg-background border-border",
             )}
@@ -166,7 +182,7 @@ export default function Navbar() {
                       href={link.href}
                       className={cn(
                         "rounded-lg px-4 py-3.5 text-base font-medium transition-colors",
-                        isHome
+                        transparent
                           ? [
                               isActive
                                 ? "bg-white/10 text-white"
@@ -187,29 +203,32 @@ export default function Navbar() {
                 <div
                   className={cn(
                     "flex flex-col gap-3 mt-4 pt-4 border-t",
-                    isHome ? "border-white/10" : "border-border",
+                    transparent ? "border-white/10" : "border-border",
                   )}
                 >
                   <Button
                     variant="ghost"
                     size="lg"
+                    asChild
                     aria-label="Favoritos"
                     className={cn(
                       "w-full flex justify-start gap-2",
-                      isHome
+                      transparent
                         ? "text-white/80 hover:text-white hover:bg-white/10"
                         : "",
                     )}
                   >
-                    <HugeiconsIcon icon={FavouriteIcon} />
-                    Favoritos
+                    <Link href="/favoritos" onClick={closeMobileMenu}>
+                      <HugeiconsIcon icon={FavouriteIcon} />
+                      Favoritos
+                    </Link>
                   </Button>
                   <Button
-                    variant={isHome ? "default" : "dark"}
+                    variant={transparent ? "default" : "dark"}
                     asChild
                     className={cn(
                       "w-full h-12 flex-1",
-                      isHome ? "bg-white text-black hover:bg-neutral-200" : "",
+                      transparent ? "bg-white text-black hover:bg-neutral-200" : "",
                     )}
                   >
                     <Link

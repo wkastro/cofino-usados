@@ -15,6 +15,7 @@ interface SocialLink extends NavLink {
 }
 
 export const navLinks = [
+  { label: "Comprar", href: "/comprar" },
   { label: "Intercambiar", href: "/intercambiar" },
   { label: "Próximamente", href: "/proximamente" },
   { label: "Certificados", href: "/certificados" },
