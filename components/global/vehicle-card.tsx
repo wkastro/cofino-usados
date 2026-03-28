@@ -73,7 +73,7 @@ export function VehicleCard({ vehicle }: VehicleCardProps): React.ReactElement {
           fill
           sizes="(max-width: 768px) 100vw, 384px"
           className="object-contain"
-          priority
+          loading="lazy"
         />
       </div>
 

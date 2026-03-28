@@ -1,6 +1,20 @@
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import { Container } from "@/components/layout/container";
-import FormTestDrive from "@/features/test-drive/form";
+
+const FormTestDrive = dynamic(() => import("@/features/test-drive/form"), {
+  loading: () => (
+    <div className="space-y-6 animate-pulse">
+      <div className="h-8 w-48 rounded bg-muted" />
+      <div className="space-y-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="h-12 w-full rounded-lg bg-muted" />
+        ))}
+      </div>
+      <div className="h-12 w-full rounded-full bg-muted" />
+    </div>
+  ),
+});
 
 export default function TestDrivePage() {
   return (
