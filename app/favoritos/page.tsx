@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { Heart } from "lucide-react";
-import { FavoritesContent } from "./favorites-content";
+import { FavoritesContent } from "@/features/favoritos/component/favorites-content";
 
 export default function FavoritesPage() {
   return (
@@ -16,7 +16,7 @@ export default function FavoritesPage() {
             {Array.from({ length: 3 }).map((_, i) => (
               <div
                 key={i}
-                className="w-full max-w-[24rem] h-[28rem] rounded-lg bg-card border border-border animate-pulse"
+                className="w-full max-w-[24rem] h-112 rounded-lg bg-card border border-border animate-pulse"
               />
             ))}
           </div>
