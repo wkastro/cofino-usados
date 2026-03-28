@@ -262,7 +262,7 @@ export default function FormTestDrive() {
               Horario del test
               <span className="text-destructive">*</span>
             </Label>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Controller
                 control={control}
                 name="startTime"

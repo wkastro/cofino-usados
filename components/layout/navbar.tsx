@@ -16,7 +16,13 @@ import { navLinks } from "@/lib/constants/navigation";
 import { useNavbar } from "@/components/layout/hooks/useNavbar";
 
 export default function Navbar() {
-  const { mobileMenuOpen, isHome, toggleMobileMenu, closeMobileMenu, isActiveLink } = useNavbar();
+  const {
+    mobileMenuOpen,
+    isHome,
+    toggleMobileMenu,
+    closeMobileMenu,
+    isActiveLink,
+  } = useNavbar();
 
   return (
     <header
@@ -24,7 +30,7 @@ export default function Navbar() {
         "top-0 w-full z-50 transition-colors duration-200",
         isHome
           ? "fixed bg-transparent"
-          : "sticky border-b border-border bg-background/95 backdrop-blur-sm"
+          : "sticky border-b border-border bg-background/95 backdrop-blur-sm",
       )}
     >
       <nav aria-label="Navegación principal">
@@ -39,7 +45,7 @@ export default function Navbar() {
                 height={60}
                 className={cn(
                   "transition-all",
-                  isHome ? "brightness-0 invert" : "brightness-0 dark:invert"
+                  isHome ? "brightness-0 invert" : "brightness-0 dark:invert",
                 )}
                 priority
               />
@@ -57,11 +63,15 @@ export default function Navbar() {
                       "rounded-lg px-4 py-2 text-sm font-medium transition-colors",
                       isHome
                         ? [
-                            isActive ? "text-white font-semibold" : "text-white/80 hover:text-white hover:bg-white/10",
+                            isActive
+                              ? "text-white font-semibold"
+                              : "text-white/80 hover:text-white hover:bg-white/10",
                           ]
                         : [
-                            isActive ? "text-foreground font-semibold bg-muted" : "text-foreground/80 hover:text-foreground hover:bg-muted",
-                          ]
+                            isActive
+                              ? "text-foreground font-semibold bg-muted"
+                              : "text-foreground/80 hover:text-foreground hover:bg-muted",
+                          ],
                     )}
                   >
                     {link.label}
@@ -77,16 +87,21 @@ export default function Navbar() {
                 size="icon"
                 aria-label="Ver favoritos"
                 className={cn(
-                  isHome ? "text-white hover:bg-white/10 hover:text-white" : ""
+                  isHome ? "text-white hover:bg-white/10 hover:text-white" : "",
                 )}
               >
-                <HugeiconsIcon icon={FavouriteIcon} style={{ width: 20, height: 20 }} />
+                <HugeiconsIcon
+                  icon={FavouriteIcon}
+                  style={{ width: 20, height: 20 }}
+                />
               </Button>
               <Button
                 variant={isHome ? "default" : "dark"}
                 asChild
                 className={cn(
-                  isHome ? "bg-black text-white hover:bg-black/90 rounded-full box-border" : ""
+                  isHome
+                    ? "bg-black text-white hover:bg-black/90 rounded-full box-border"
+                    : "",
                 )}
               >
                 <Link href="/login" aria-label="Iniciar sesión en Cofiño">
@@ -119,7 +134,7 @@ export default function Navbar() {
                 aria-label={mobileMenuOpen ? "Cerrar menú" : "Abrir menú"}
                 onClick={toggleMobileMenu}
                 className={cn(
-                  isHome ? "text-white hover:bg-white/10 hover:text-white" : ""
+                  isHome ? "text-white hover:bg-white/10 hover:text-white" : "",
                 )}
               >
                 <HugeiconsIcon
@@ -138,7 +153,7 @@ export default function Navbar() {
               "absolute top-full left-0 w-full lg:hidden border-t",
               isHome
                 ? "bg-black/95 backdrop-blur-md border-white/10"
-                : "bg-background border-border"
+                : "bg-background border-border",
             )}
           >
             <Container>
@@ -150,7 +165,7 @@ export default function Navbar() {
                       key={link.href}
                       href={link.href}
                       className={cn(
-                        "rounded-lg px-4 py-3 text-base font-medium transition-colors",
+                        "rounded-lg px-4 py-3.5 text-base font-medium transition-colors",
                         isHome
                           ? [
                               isActive
@@ -161,7 +176,7 @@ export default function Navbar() {
                               isActive
                                 ? "bg-muted text-foreground"
                                 : "text-foreground/80 hover:bg-muted hover:text-foreground",
-                            ]
+                            ],
                       )}
                       onClick={closeMobileMenu}
                     >
@@ -172,7 +187,7 @@ export default function Navbar() {
                 <div
                   className={cn(
                     "flex flex-col gap-3 mt-4 pt-4 border-t",
-                    isHome ? "border-white/10" : "border-border"
+                    isHome ? "border-white/10" : "border-border",
                   )}
                 >
                   <Button
@@ -181,7 +196,9 @@ export default function Navbar() {
                     aria-label="Favoritos"
                     className={cn(
                       "w-full flex justify-start gap-2",
-                      isHome ? "text-white/80 hover:text-white hover:bg-white/10" : ""
+                      isHome
+                        ? "text-white/80 hover:text-white hover:bg-white/10"
+                        : "",
                     )}
                   >
                     <HugeiconsIcon icon={FavouriteIcon} />
@@ -192,7 +209,7 @@ export default function Navbar() {
                     asChild
                     className={cn(
                       "w-full h-12 flex-1",
-                      isHome ? "bg-white text-black hover:bg-neutral-200" : ""
+                      isHome ? "bg-white text-black hover:bg-neutral-200" : "",
                     )}
                   >
                     <Link

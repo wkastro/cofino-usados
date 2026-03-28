@@ -25,7 +25,7 @@ export function AnnouncementCard({
         src={image}
         alt={alt}
         fill
-        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 100vw"
+        sizes="(max-width: 768px) 100vw, (max-width: 1280px) 90vw, 1200px"
         className="object-cover object-center"
         loading="lazy"
       />

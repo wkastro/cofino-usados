@@ -22,7 +22,7 @@ export function PurchaseCheckout({ vehicle }: PurchaseCheckoutProps) {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="grid gap-8 lg:grid-cols-[1fr_500]"
+      className="grid gap-8 lg:grid-cols-[1fr_400px] xl:grid-cols-[1fr_500px]"
     >
       {/* Left: Payment form */}
       <div className="space-y-6">
