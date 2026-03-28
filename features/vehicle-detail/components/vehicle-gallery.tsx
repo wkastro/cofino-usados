@@ -5,23 +5,23 @@ import { cn } from "@/lib/utils";
 import { useGallery } from "../hooks/useGallery";
 import type { VehicleImage } from "@/types/vehiculo/vehiculo";
 
+// rendering-hoist-jsx: static fallback data hoisted outside component
+const DEFAULT_IMAGES: VehicleImage[] = [
+  { id: "1", url: "/single/cover_single_vehicle1.jpg", orden: 0 },
+  { id: "2", url: "/single/cover_single_vehicle2.jpg", orden: 1 },
+  { id: "3", url: "/single/cover_single_vehicle3.jpg", orden: 2 },
+];
+
 interface VehicleGalleryProps {
   images: VehicleImage[];
   vehicleName: string;
 }
 
 export function VehicleGallery({ images, vehicleName }: VehicleGalleryProps) {
-  const fallbackImages: VehicleImage[] =
-    images.length > 0
-      ? images
-      : [
-          { id: "1", url: "/single/cover_single_vehicle1.jpg", orden: 0 },
-          { id: "2", url: "/single/cover_single_vehicle2.jpg", orden: 1 },
-          { id: "3", url: "/single/cover_single_vehicle3.jpg", orden: 2 },
-        ];
+  const galleryImages = images.length > 0 ? images : DEFAULT_IMAGES;
 
   const { selectedImage, selectedIndex, selectImage } =
-    useGallery(fallbackImages);
+    useGallery(galleryImages);
 
   return (
     <div className="flex flex-col gap-3">
@@ -38,9 +38,9 @@ export function VehicleGallery({ images, vehicleName }: VehicleGalleryProps) {
       </div>
 
       {/* Thumbnails */}
-      {fallbackImages.length > 1 && (
+      {galleryImages.length > 1 && (
         <div className="grid grid-cols-3 gap-3">
-          {fallbackImages.map((image, index) => (
+          {galleryImages.map((image, index) => (
             <button
               key={image.id}
               onClick={() => selectImage(index)}

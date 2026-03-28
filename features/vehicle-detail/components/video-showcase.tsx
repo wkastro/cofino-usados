@@ -68,17 +68,8 @@ function ProgressBar() {
 }
 
 function YouTubePlayer({ videoId }: { videoId: string }) {
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-
-  useEffect(() => {
-    return () => {
-      iframeRef.current?.setAttribute("src", "");
-    };
-  }, []);
-
   return (
     <iframe
-      ref={iframeRef}
       src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`}
       title="Video"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -89,13 +80,6 @@ function YouTubePlayer({ videoId }: { videoId: string }) {
 }
 
 function LocalVideoPlayer({ src, onClose }: { src: string; onClose: () => void }) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    return () => {
-      videoRef.current?.pause();
-    };
-  }, []);
 
   return (
     <video

@@ -8,48 +8,62 @@ import {
   EvCharger,
 } from "lucide-react";
 import { formatKilometers, formatMotor } from "@/lib/formatters/vehicle";
-import type { VehicleDetail } from "@/types/vehiculo/vehiculo";
 
+// server-serialization: accept only needed fields instead of full VehicleDetail
 interface VehicleSpecsProps {
-  vehicle: VehicleDetail;
+  transmision: string;
+  combustible: string;
+  kilometraje: number;
+  motor: string | null;
+  anio: number;
+  traccion: string;
+  sucursalNombre: string;
 }
 
-export function VehicleSpecs({ vehicle }: VehicleSpecsProps) {
+export function VehicleSpecs({
+  transmision,
+  combustible,
+  kilometraje,
+  motor,
+  anio,
+  traccion,
+  sucursalNombre,
+}: VehicleSpecsProps) {
   const specs = [
     {
       icon: Settings2,
       label: "Transmisión",
-      value: vehicle.transmision,
+      value: transmision,
     },
     {
       icon: EvCharger,
       label: "Combustible",
-      value: vehicle.combustible,
+      value: combustible,
     },
     {
       icon: Milestone,
       label: "Kilometraje",
-      value: formatKilometers(vehicle.kilometraje),
+      value: formatKilometers(kilometraje),
     },
     {
       icon: Gauge,
       label: "Motor",
-      value: formatMotor(vehicle.motor),
+      value: formatMotor(motor),
     },
     {
       icon: Calendar1,
       label: "Año",
-      value: String(vehicle.anio),
+      value: String(anio),
     },
     {
       icon: CarFront,
       label: "Tracción",
-      value: vehicle.traccion,
+      value: traccion,
     },
     {
       icon: MapPin,
       label: "Ubicación",
-      value: vehicle.sucursal.nombre,
+      value: sucursalNombre,
     },
   ];
 

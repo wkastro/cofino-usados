@@ -4,10 +4,12 @@ export type VideoSource =
   | { type: "youtube"; videoId: string }
   | { type: "local"; src: string };
 
+// js-hoist-regexp: hoist regex to module level to avoid recreation per call
+const YOUTUBE_ID_REGEX =
+  /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([^&?\s]+)/;
+
 function extractYouTubeId(url: string): string {
-  const match = url.match(
-    /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([^&?\s]+)/,
-  );
+  const match = url.match(YOUTUBE_ID_REGEX);
   return match?.[1] ?? url;
 }
 

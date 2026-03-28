@@ -7,6 +7,7 @@ import { VehicleSpecs } from "@/features/vehicle-detail/components/vehicle-specs
 import { LoanCalculator } from "@/features/vehicle-detail/components/loan-calculator";
 import type { VehicleImage } from "@/types/vehiculo/vehiculo";
 
+// rendering-hoist-jsx: static data hoisted to module level
 const fallbackImages: VehicleImage[] = [
   { id: "img-001", url: "/single/cover_single_vehicle1.jpg", orden: 1 },
   { id: "img-002", url: "/single/cover_single_vehicle2.jpg", orden: 1 },
@@ -22,17 +23,32 @@ export async function VehicleDetail({ params }: VehicleDetailProps): Promise<Rea
   const vehicle = await getCachedVehicleBySlug(slug);
   if (!vehicle) notFound();
 
+  // server-serialization: pass only needed fields to client components instead of full vehicle object
   return (
     <>
       {/* Main content */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
         <VehicleGallery images={fallbackImages} vehicleName={vehicle.nombre} />
-        <VehicleInfo vehicle={vehicle} />
+        <VehicleInfo
+          nombre={vehicle.nombre}
+          slug={vehicle.slug}
+          precio={vehicle.precio}
+          preciosiniva={vehicle.preciosiniva}
+          descripcion={vehicle.descripcion}
+        />
       </div>
 
       {/* Specs + Calculator */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mt-10 lg:mt-14">
-        <VehicleSpecs vehicle={vehicle} />
+        <VehicleSpecs
+          transmision={vehicle.transmision}
+          combustible={vehicle.combustible}
+          kilometraje={vehicle.kilometraje}
+          motor={vehicle.motor}
+          anio={vehicle.anio}
+          traccion={vehicle.traccion}
+          sucursalNombre={vehicle.sucursal.nombre}
+        />
         <LoanCalculator vehiclePrice={vehicle.preciosiniva} />
       </div>
     </>

@@ -270,6 +270,12 @@
   }
 }
 
+/* rendering-content-visibility: defer off-screen rendering for vehicle cards */
+.vehicle-card-item {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 520px;
+}
+
 @keyframes marquee {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }

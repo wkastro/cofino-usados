@@ -5,16 +5,20 @@ import { Heart, Star, Calculator } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/lib/formatters/vehicle";
 import { useMonthlyPayment } from "@/features/vehicle-detail/hooks/useMonthlyPayment";
-import type { VehicleDetail } from "@/types/vehiculo/vehiculo";
 
 const STAR_INDICES = [0, 1, 2, 3, 4];
 
+// server-serialization: accept only the fields needed instead of full VehicleDetail
 interface VehicleInfoProps {
-  vehicle: VehicleDetail;
+  nombre: string;
+  slug: string;
+  precio: number;
+  preciosiniva: number;
+  descripcion: string | null;
 }
 
-export function VehicleInfo({ vehicle }: VehicleInfoProps) {
-  const { monthlyPayment } = useMonthlyPayment(vehicle.preciosiniva);
+export function VehicleInfo({ nombre, slug, precio, preciosiniva, descripcion }: VehicleInfoProps) {
+  const { monthlyPayment } = useMonthlyPayment(preciosiniva);
 
   return (
     <div className="flex flex-col gap-5 bg-white rounded-2xl p-4 md:p-8">
@@ -22,7 +26,7 @@ export function VehicleInfo({ vehicle }: VehicleInfoProps) {
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-fs-xl font-semibold tracking-tight">
-            {vehicle.nombre}
+            {nombre}
           </h1>
           <div className="flex items-center gap-1.5 mt-1">
             <div className="flex items-center gap-0.5">
@@ -52,20 +56,20 @@ export function VehicleInfo({ vehicle }: VehicleInfoProps) {
       </div>
 
       {/* Description */}
-      {vehicle.descripcion && (
+      {descripcion ? (
         <p className="text-muted-foreground text-fs-base leading-relaxed">
-          {vehicle.descripcion}
+          {descripcion}
         </p>
-      )}
+      ) : null}
 
       {/* Pricing */}
       <div className="flex flex-col gap-2">
         <div className="flex items-baseline gap-3">
           <span className="text-fs-xxl font-semibold font-clash-display tracking-tight">
-            {formatCurrency(vehicle.preciosiniva)}
+            {formatCurrency(preciosiniva)}
           </span>
           <span className="text-fs-base text-muted-foreground line-through">
-            {formatCurrency(vehicle.precio)}
+            {formatCurrency(precio)}
           </span>
         </div>
 
@@ -86,12 +90,12 @@ export function VehicleInfo({ vehicle }: VehicleInfoProps) {
       {/* CTAs */}
       <div className="flex flex-col sm:flex-row gap-3 mt-2">
         <Link
-          href={`/test-drive?vehiculo=${vehicle.slug}`}
+          href={`/test-drive?vehiculo=${slug}`}
           className="bg-btn-lime flex-1 text-center"
         >
           Agendar cita
         </Link>
-        <Link href={`/comprar/${vehicle.slug}`} className="bg-btn-black flex-1 text-center">
+        <Link href={`/comprar/${slug}`} className="bg-btn-black flex-1 text-center">
           Reserva ahora
         </Link>
       </div>

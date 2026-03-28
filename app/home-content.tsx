@@ -10,8 +10,7 @@ interface HomeContentProps {
 }
 
 export async function HomeSearchBarContent({ searchParams }: HomeContentProps): Promise<React.ReactElement> {
-  const { marca, categoria, transmision } = await searchParams;
-
+  // async-parallel: start filter fetches immediately, don't wait for searchParams
   const [categories, brands, transmissions] = await Promise.all([
     getCachedCategories(),
     getCachedBrands(),

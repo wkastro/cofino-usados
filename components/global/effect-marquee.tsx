@@ -19,7 +19,7 @@ interface EffectMarqueeProps {
 
 export function EffectMarquee({
   children,
-  speed = 28,
+  speed = 40,
   direction = "left",
   gap = 48,
   repeat = 4,
@@ -31,7 +31,7 @@ export function EffectMarquee({
   // Build a single "set" repeated `repeat` times, then duplicate it for the seamless loop.
   // Animation moves -50% → back to start, so both halves must be identical.
   const set = Array.from({ length: repeat }, (_, r) =>
-    items.map((item, i) => ({ item, key: `${r}-${i}` }))
+    items.map((item, i) => ({ item, key: `${r}-${i}` })),
   ).flat();
 
   const animationName = direction === "right" ? "marquee-reverse" : "marquee";
@@ -65,7 +65,11 @@ export function EffectMarquee({
         ))}
         {/* Second half — identical copy for seamless loop */}
         {set.map(({ item, key }) => (
-          <div key={`b-${key}`} aria-hidden className="flex shrink-0 items-center">
+          <div
+            key={`b-${key}`}
+            aria-hidden
+            className="flex shrink-0 items-center"
+          >
             {item}
           </div>
         ))}

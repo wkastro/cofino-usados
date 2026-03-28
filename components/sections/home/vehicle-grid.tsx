@@ -32,7 +32,7 @@ export function VehicleGrid({ vehicles }: VehicleGridProps): React.ReactElement 
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center"
           >
             {vehicles.vehiculos.map((vehicle) => (
-              <div key={vehicle.id} className="w-full flex justify-center">
+              <div key={vehicle.id} className="vehicle-card-item w-full flex justify-center">
                 <VehicleCard vehicle={vehicle}/>
               </div>
             ))}

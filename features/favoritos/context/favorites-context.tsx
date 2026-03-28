@@ -5,6 +5,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useOptimistic,
   useState,
   useTransition,
@@ -48,9 +49,12 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  // js-set-map-lookups: use Set for O(1) lookups instead of Array.includes O(n)
+  const optimisticIdSet = useMemo(() => new Set(optimisticIds), [optimisticIds]);
+
   const isFavorite = useCallback(
-    (vehiculoId: string) => optimisticIds.includes(vehiculoId),
-    [optimisticIds],
+    (vehiculoId: string) => optimisticIdSet.has(vehiculoId),
+    [optimisticIdSet],
   );
 
   const toggleFavorite = useCallback(
@@ -63,6 +67,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
       startTransition(async () => {
         updateOptimisticIds(vehiculoId);
         const result = await toggleFavoriteAction(vehiculoId);
+        // rerender-functional-setstate: use functional form for stable callbacks
         setBaseIds((prev) =>
           result.isFavorite
             ? [...prev, vehiculoId]

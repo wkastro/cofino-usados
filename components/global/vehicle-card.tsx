@@ -119,11 +119,9 @@ export function VehicleCard({ vehicle }: VehicleCardProps): React.ReactElement {
 
       {/* DISPONIBILIDAD */}
       <div className="mt-5 mb-1 min-h-5">
-        {true && (
-          <p className="text-[0.85rem] text-muted-foreground/80 font-normal">
-            Listo para entrega inmediata*
-          </p>
-        )}
+        <p className="text-[0.85rem] text-muted-foreground/80 font-normal">
+          Listo para entrega inmediata*
+        </p>
       </div>
 
       {/* FOOTER - PRECIO Y BOTÓN */}
@@ -133,11 +131,12 @@ export function VehicleCard({ vehicle }: VehicleCardProps): React.ReactElement {
             <span className="text-fs-md font-semibold text-foreground tracking-tight leading-none">
               {formatCurrency(vehicle.preciosiniva)}
             </span>
-            {vehicle.preciosiniva && (
+            {/* rendering-conditional-render: use ternary to prevent rendering "0" */}
+            {vehicle.preciosiniva > 0 ? (
               <span className="text-[0.95rem] text-muted-foreground line-through font-medium">
                 {formatCurrency(vehicle.precio)}
               </span>
-            )}
+            ) : null}
           </div>
           <div
             className="flex items-center gap-1 mt-1.5"

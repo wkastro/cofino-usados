@@ -11,7 +11,8 @@ import {
 import { formatCurrency } from "@/lib/formatters/vehicle";
 import { useLoanCalculator } from "../hooks/useLoanCalculator";
 
-const currencyFormatter = new Intl.NumberFormat("en-US", {
+// js-cache-function-results: hoist formatter to module level
+const loanFormatter = new Intl.NumberFormat("en-US", {
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
 });
@@ -83,7 +84,7 @@ export function LoanCalculator({ vehiclePrice }: LoanCalculatorProps) {
         <span className="text-fs-base font-semibold">Total a financiar</span>
         <span className="bg-btn-black inline-block text-fs-base">
           {monthlyPayment
-            ? `Q ${currencyFormatter.format(monthlyPayment)}/mes`
+            ? `Q ${loanFormatter.format(monthlyPayment)}/mes`
             : `${formatCurrency(0)}/mes`}
         </span>
       </div>

@@ -21,9 +21,11 @@ export async function registerUser(data: {
   const sanitizedEmail = email.trim().toLowerCase();
   const sanitizedName = fullName.trim();
 
-  const existingUser = await prisma.user.findUnique({
-    where: { email: sanitizedEmail },
-  });
+  // async-parallel: run DB check and bcrypt hash in parallel
+  const [existingUser, hashedPassword] = await Promise.all([
+    prisma.user.findUnique({ where: { email: sanitizedEmail } }),
+    bcrypt.hash(password, 12),
+  ]);
 
   if (existingUser) {
     return {
@@ -31,8 +33,6 @@ export async function registerUser(data: {
       message: "Ya existe una cuenta con este correo electrónico",
     };
   }
-
-  const hashedPassword = await bcrypt.hash(password, 12);
 
   await prisma.user.create({
     data: {
@@ -62,9 +62,11 @@ export async function registerAdmin(data: {
   const sanitizedEmail = email.trim().toLowerCase();
   const sanitizedName = fullName.trim();
 
-  const existingUser = await prisma.user.findUnique({
-    where: { email: sanitizedEmail },
-  });
+  // async-parallel: run DB check and bcrypt hash in parallel
+  const [existingUser, hashedPassword] = await Promise.all([
+    prisma.user.findUnique({ where: { email: sanitizedEmail } }),
+    bcrypt.hash(password, 12),
+  ]);
 
   if (existingUser) {
     return {
@@ -72,8 +74,6 @@ export async function registerAdmin(data: {
       message: "Ya existe una cuenta con este correo electrónico",
     };
   }
-
-  const hashedPassword = await bcrypt.hash(password, 12);
 
   await prisma.user.create({
     data: {

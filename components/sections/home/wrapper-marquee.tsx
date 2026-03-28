@@ -13,7 +13,7 @@ const BRANDS = [
 export default function WrapperMarquee() {
   return (
     <section className="py-10">
-      <h3 className="text-center text-fs-md font-semibold mb-8">Marcas aliadas</h3>
+      <h2 className="text-center font-semibold mb-8">Marcas aliadas</h2>
       <EffectMarquee speed={24} gap={64}>
         {BRANDS.map((brand) => (
           <div key={brand.name} className="relative w-28 h-10 shrink-0">

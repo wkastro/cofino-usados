@@ -21,9 +21,11 @@ export async function POST(request: Request): Promise<NextResponse> {
     const sanitizedEmail = email.trim().toLowerCase()
     const sanitizedName = fullName.trim()
 
-    const existingUser = await prisma.user.findUnique({
-      where: { email: sanitizedEmail },
-    })
+    // async-parallel: run DB check and bcrypt hash in parallel
+    const [existingUser, hashedPassword] = await Promise.all([
+      prisma.user.findUnique({ where: { email: sanitizedEmail } }),
+      bcrypt.hash(password, 12),
+    ])
 
     if (existingUser) {
       return NextResponse.json(
@@ -31,8 +33,6 @@ export async function POST(request: Request): Promise<NextResponse> {
         { status: 409 }
       )
     }
-
-    const hashedPassword = await bcrypt.hash(password, 12)
 
     const user = await prisma.user.create({
       data: {
