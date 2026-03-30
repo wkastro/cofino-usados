@@ -5,6 +5,7 @@ import { VehicleGallery } from "@/features/vehicle-detail/components/vehicle-gal
 import { VehicleInfo } from "@/features/vehicle-detail/components/vehicle-info";
 import { VehicleSpecs } from "@/features/vehicle-detail/components/vehicle-specs";
 import { LoanCalculator } from "@/features/vehicle-detail/components/loan-calculator";
+import { ReviewsRoot } from "@/features/reviews/components/reviews-root";
 import type { VehicleImage } from "@/types/vehiculo/vehiculo";
 
 // rendering-hoist-jsx: static data hoisted to module level
@@ -51,6 +52,8 @@ export async function VehicleDetail({ params }: VehicleDetailProps): Promise<Rea
         />
         <LoanCalculator vehiclePrice={vehicle.preciosiniva} />
       </div>
+
+      <ReviewsRoot vehiculoId={vehicle.id} vehiculoSlug={vehicle.slug} />
     </>
   );
 }

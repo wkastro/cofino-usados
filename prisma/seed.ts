@@ -10,6 +10,7 @@ import { seedEtiquetasComerciales }  from "./seeds/etiqueta.seed";
 import { seedVehiculos }         from "./seeds/vehiculo.seed";
 import { seedVehiculoImagenes }  from "./seeds/vehiculo-imagen.seed";
 import { seedVehiculoEtiquetas } from "./seeds/vehiculo-etiqueta.seed";
+import { seedReviews }           from "./seeds/review.seed";
 
 const adapter = new PrismaMariaDb(process.env.DATABASE_URL!);
 const prisma = new PrismaClient({ adapter });
@@ -21,6 +22,7 @@ const seeds = [
   { name: "Categorias",             fn: seedCategorias },
   { name: "EtiquetasComerciales",   fn: seedEtiquetasComerciales },
   { name: "Vehiculos",          fn: seedVehiculos },
+  { name: "Reviews",            fn: seedReviews },
   { name: "VehiculoImagenes",   fn: seedVehiculoImagenes },
   { name: "VehiculoEtiquetas",  fn: seedVehiculoEtiquetas },
 ];
