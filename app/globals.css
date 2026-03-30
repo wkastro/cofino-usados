@@ -250,13 +250,13 @@
   @apply font-display;
 }
 @utility bg-btn-white{
-  @apply rounded-full bg-white px-7 py-2.5 text-fs-base font-bold text-black transition-transform active:scale-95 mb-0.5;
+  @apply rounded-full bg-white px-7 py-2.5 text-fs-sm md:text-fs-base font-bold text-black transition-transform active:scale-95 mb-0.5;
 }
 @utility bg-btn-lime{
-  @apply rounded-full bg-brand-lime px-7 py-2.5 text-fs-base font-bold text-brand-dark transition-transform active:scale-95 mb-0.5;
+  @apply rounded-full bg-brand-lime px-7 py-2.5 text-fs-sm md:text-fs-base font-bold text-brand-dark transition-transform active:scale-95 mb-0.5;
 }
 @utility bg-btn-black{
-  @apply rounded-full bg-brand-dark px-7 py-2.5 text-fs-base font-bold text-brand-dark-foreground transition-transform active:scale-95 mb-0.5;
+  @apply rounded-full bg-brand-dark px-7 py-2.5 text-fs-sm md:text-fs-base font-bold text-brand-dark-foreground transition-transform active:scale-95 mb-0.5;
 }
 
 /* Hero clip-path responsive */

@@ -8,6 +8,7 @@ import type { SearchParams } from "@/types/filters/filters";
 interface HomeContentProps {
   searchParams: Promise<SearchParams>;
   className?: string;
+  showAdvancedFiltersButton?: boolean;
 }
 
 export async function HomeSearchBarContent({ searchParams, className }: HomeContentProps): Promise<React.ReactElement> {
@@ -23,7 +24,10 @@ export async function HomeSearchBarContent({ searchParams, className }: HomeCont
   );
 }
 
-export async function HomeVehicleGrid({ searchParams }: HomeContentProps): Promise<React.ReactElement> {
+export async function HomeVehicleGrid({
+  searchParams,
+  showAdvancedFiltersButton = false,
+}: HomeContentProps): Promise<React.ReactElement> {
   const { marca, categoria, transmision } = await searchParams;
 
   const filters: VehicleFilters = {
@@ -34,5 +38,10 @@ export async function HomeVehicleGrid({ searchParams }: HomeContentProps): Promi
 
   const vehicles = await getCachedVehiculos(1, filters);
 
-  return <VehicleGrid vehicles={vehicles} />;
+  return (
+    <VehicleGrid
+      vehicles={vehicles}
+      showAdvancedFiltersButton={showAdvancedFiltersButton}
+    />
+  );
 }

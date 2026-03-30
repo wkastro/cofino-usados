@@ -16,7 +16,10 @@ export default async function BuyPage({ searchParams }: BuyPageProps) {
       </Suspense>
 
       <Suspense fallback={<VehicleCardSkeletonGrid />}>
-        <HomeVehicleGrid searchParams={searchParams} />
+        <HomeVehicleGrid
+          searchParams={searchParams}
+          showAdvancedFiltersButton
+        />
       </Suspense>
     </FilterLoadingProvider>
   );

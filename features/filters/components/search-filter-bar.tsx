@@ -129,15 +129,15 @@ export function SearchFilterBar({
                 <Button
                   variant="outline"
                   onClick={onFiltersClick}
-                  className="rounded-lg"
+                  className="rounded-full font-semibold"
                 >
+                  Filtros
                   <HugeiconsIcon
                     icon={FilterHorizontalIcon}
                     data-icon="inline-start"
                     strokeWidth={2}
                     className="size-4"
                   />
-                  Filtros
                 </Button>
               )}
 
@@ -145,7 +145,7 @@ export function SearchFilterBar({
                 variant="dark"
                 onClick={onClearFilters}
                 disabled={!hasActiveFilters}
-                className="flex-1 lg:flex-none rounded-lg"
+                className="flex-1 lg:flex-none rounded-full font-semibold"
               >
                 <HugeiconsIcon
                   icon={FilterRemoveIcon}
