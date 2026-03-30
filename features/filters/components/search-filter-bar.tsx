@@ -47,7 +47,7 @@ export function SearchFilterBar({
   className,
 }: SearchFilterBarProps) {
   return (
-    <section className={cn("relative z-30", className)}>
+    <div className={cn("relative z-30", className)}>
       <Container>
         <div className="rounded-2xl bg-card p-6 lg:px-8 lg:py-12 border border-border/50">
           <div className="flex flex-col lg:flex-row lg:items-end gap-4 lg:gap-3">
@@ -159,6 +159,6 @@ export function SearchFilterBar({
           </div>
         </div>
       </Container>
-    </section>
+    </div>
   );
 }

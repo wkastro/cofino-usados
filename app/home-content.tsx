@@ -7,9 +7,10 @@ import type { SearchParams } from "@/types/filters/filters";
 
 interface HomeContentProps {
   searchParams: Promise<SearchParams>;
+  className?: string;
 }
 
-export async function HomeSearchBarContent({ searchParams }: HomeContentProps): Promise<React.ReactElement> {
+export async function HomeSearchBarContent({ searchParams, className }: HomeContentProps): Promise<React.ReactElement> {
   // async-parallel: start filter fetches immediately, don't wait for searchParams
   const [categories, brands, transmissions] = await Promise.all([
     getCachedCategories(),
@@ -18,7 +19,7 @@ export async function HomeSearchBarContent({ searchParams }: HomeContentProps): 
   ]);
 
   return (
-    <HomeSearchBar brands={brands} categories={categories} transmissions={transmissions} />
+    <HomeSearchBar brands={brands} categories={categories} transmissions={transmissions} className={className} />
   );
 }
 

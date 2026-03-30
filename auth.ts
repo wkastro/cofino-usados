@@ -189,13 +189,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 return true
             }
 
-            // /comprar → solo USER autenticado
-            if (pathname.startsWith("/comprar")) {
-                if (!isLoggedIn || role !== "USER") {
-                    return Response.redirect(new URL("/login", nextUrl))
-                }
-                return true
-            }
+            
 
             // /favoritos → solo USER autenticado
             if (pathname.startsWith("/favoritos")) {

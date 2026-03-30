@@ -8,9 +8,10 @@ interface HomeSearchBarProps {
   brands: Brand[];
   categories: Category[];
   transmissions: Transmission[];
+  className?: string;
 }
 
-export function HomeSearchBar({ brands, categories, transmissions }: HomeSearchBarProps) {
+export function HomeSearchBar({ brands, categories, transmissions, className }: HomeSearchBarProps) {
   const { values, hasActiveFilters, onFilterChange, clearFilters, handleFiltersClick } = useSearchFilters();
 
   return (
@@ -23,7 +24,7 @@ export function HomeSearchBar({ brands, categories, transmissions }: HomeSearchB
       onFilterChange={onFilterChange}
       onFiltersClick={handleFiltersClick}
       onClearFilters={clearFilters}
-      className="absolute bottom-6 left-0 right-0 z-30"
+      className={className}
     />
   );
 }

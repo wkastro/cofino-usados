@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useFilterLoading } from "@/features/filters/context/filter-loading-context";
 import type { SearchFilterValues } from "@/types/filters/filters";
 
@@ -13,6 +13,7 @@ interface UseSearchFiltersReturn {
 
 export function useSearchFilters(): UseSearchFiltersReturn {
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const { startTransition } = useFilterLoading();
 
@@ -37,7 +38,7 @@ export function useSearchFilters(): UseSearchFiltersReturn {
       }
 
       startTransition(() => {
-        router.push(`/?${params.toString()}`, { scroll: false });
+        router.push(`${pathname}?${params.toString()}`, { scroll: false });
       });
     },
     [router, searchParams, startTransition],
@@ -45,7 +46,7 @@ export function useSearchFilters(): UseSearchFiltersReturn {
 
   const clearFilters = useCallback(() => {
     startTransition(() => {
-      router.push("/", { scroll: false });
+      router.push(pathname, { scroll: false });
     });
   }, [router, startTransition]);
 
