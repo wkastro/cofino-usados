@@ -12,28 +12,22 @@ export async function toggleFavorite(
     throw new Error("No autenticado");
   }
 
-  const existing = await prisma.favorito.findUnique({
-    where: {
-      userId_vehiculoId: {
-        userId: session.user.id,
-        vehiculoId,
-      },
-    },
+  const userId = session.user.id;
+
+  // Atomic transaction to prevent race conditions
+  return prisma.$transaction(async (tx) => {
+    const existing = await tx.favorito.findUnique({
+      where: { userId_vehiculoId: { userId, vehiculoId } },
+    });
+
+    if (existing) {
+      await tx.favorito.delete({ where: { id: existing.id } });
+      return { isFavorite: false };
+    }
+
+    await tx.favorito.create({ data: { userId, vehiculoId } });
+    return { isFavorite: true };
   });
-
-  if (existing) {
-    await prisma.favorito.delete({ where: { id: existing.id } });
-    return { isFavorite: false };
-  }
-
-  await prisma.favorito.create({
-    data: {
-      userId: session.user.id,
-      vehiculoId,
-    },
-  });
-
-  return { isFavorite: true };
 }
 
 export async function getFavoriteStatus(): Promise<{

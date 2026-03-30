@@ -49,7 +49,11 @@ export function VehicleCard({ vehicle }: VehicleCardProps): React.ReactElement {
           <p className="text-muted-foreground">{vehicle.marca.nombre}</p>
         </div>
         <button
-          onClick={() => toggleFavorite(vehicle.id)}
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            toggleFavorite(vehicle.id);
+          }}
           aria-label={favorited ? "Quitar de favoritos" : "Agregar a favoritos"}
           className="transition-transform hover:scale-110 active:scale-95 duration-200 p-2 -m-2"
         >

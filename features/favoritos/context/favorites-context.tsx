@@ -6,9 +6,8 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useOptimistic,
+  useRef,
   useState,
-  useTransition,
   type ReactNode,
 } from "react";
 import { useRouter } from "next/navigation";
@@ -31,51 +30,67 @@ const FavoritesContext = createContext<FavoritesContextValue>({
 
 export function FavoritesProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
-  const [, startTransition] = useTransition();
-  const [baseIds, setBaseIds] = useState<string[]>([]);
+  const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [optimisticIds, updateOptimisticIds] = useOptimistic(
-    baseIds,
-    (current: string[], vehiculoId: string) =>
-      current.includes(vehiculoId)
-        ? current.filter((id) => id !== vehiculoId)
-        : [...current, vehiculoId],
-  );
+  const pendingRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
-    getFavoriteStatus().then(({ ids, isAuthenticated: authed }) => {
-      setBaseIds(ids);
-      setIsAuthenticated(authed);
-    });
+    getFavoriteStatus()
+      .then(({ ids, isAuthenticated: authed }) => {
+        setFavoriteIds(ids);
+        setIsAuthenticated(authed);
+      })
+      .catch(() => {
+        setFavoriteIds([]);
+        setIsAuthenticated(false);
+      });
   }, []);
 
-  // js-set-map-lookups: use Set for O(1) lookups instead of Array.includes O(n)
-  const optimisticIdSet = useMemo(() => new Set(optimisticIds), [optimisticIds]);
+  const favoriteIdSet = useMemo(() => new Set(favoriteIds), [favoriteIds]);
 
   const isFavorite = useCallback(
-    (vehiculoId: string) => optimisticIdSet.has(vehiculoId),
-    [optimisticIdSet],
+    (vehiculoId: string) => favoriteIdSet.has(vehiculoId),
+    [favoriteIdSet],
   );
 
   const toggleFavorite = useCallback(
-    (vehiculoId: string) => {
+    async (vehiculoId: string) => {
       if (!isAuthenticated) {
         router.push("/login");
         return;
       }
 
-      startTransition(async () => {
-        updateOptimisticIds(vehiculoId);
+      // Prevent double-clicks on the same vehicle
+      if (pendingRef.current.has(vehiculoId)) return;
+      pendingRef.current.add(vehiculoId);
+
+      // Optimistic update
+      setFavoriteIds((prev) =>
+        prev.includes(vehiculoId)
+          ? prev.filter((id) => id !== vehiculoId)
+          : [...prev, vehiculoId],
+      );
+
+      try {
         const result = await toggleFavoriteAction(vehiculoId);
-        // rerender-functional-setstate: use functional form for stable callbacks
-        setBaseIds((prev) =>
+        // Sync with server truth
+        setFavoriteIds((prev) =>
           result.isFavorite
-            ? [...prev, vehiculoId]
+            ? prev.includes(vehiculoId) ? prev : [...prev, vehiculoId]
             : prev.filter((id) => id !== vehiculoId),
         );
-      });
+      } catch {
+        // Revert optimistic update
+        setFavoriteIds((prev) =>
+          prev.includes(vehiculoId)
+            ? prev.filter((id) => id !== vehiculoId)
+            : [...prev, vehiculoId],
+        );
+      } finally {
+        pendingRef.current.delete(vehiculoId);
+      }
     },
-    [isAuthenticated, router, startTransition, updateOptimisticIds],
+    [isAuthenticated, router],
   );
 
   return (
@@ -83,7 +98,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
       value={{
         isFavorite,
         toggleFavorite,
-        favoriteCount: optimisticIds.length,
+        favoriteCount: favoriteIds.length,
       }}
     >
       {children}
