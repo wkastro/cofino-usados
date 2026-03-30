@@ -8,7 +8,6 @@ interface UseSearchFiltersReturn {
   hasActiveFilters: boolean;
   onFilterChange: (field: keyof SearchFilterValues, value: string) => void;
   clearFilters: () => void;
-  handleFiltersClick: () => void;
 }
 
 export function useSearchFilters(): UseSearchFiltersReturn {
@@ -50,15 +49,10 @@ export function useSearchFilters(): UseSearchFiltersReturn {
     });
   }, [router, startTransition]);
 
-  const handleFiltersClick = useCallback(() => {
-    // TODO: abrir panel de filtros avanzados
-  }, []);
-
   return {
     values,
     hasActiveFilters,
     onFilterChange,
     clearFilters,
-    handleFiltersClick,
   };
 }

@@ -12,7 +12,7 @@ interface HomeSearchBarProps {
 }
 
 export function HomeSearchBar({ brands, categories, transmissions, className }: HomeSearchBarProps) {
-  const { values, hasActiveFilters, onFilterChange, clearFilters, handleFiltersClick } = useSearchFilters();
+  const { values, hasActiveFilters, onFilterChange, clearFilters } = useSearchFilters();
 
   return (
     <SearchFilterBar
@@ -22,7 +22,6 @@ export function HomeSearchBar({ brands, categories, transmissions, className }: 
       values={values}
       hasActiveFilters={hasActiveFilters}
       onFilterChange={onFilterChange}
-      onFiltersClick={handleFiltersClick}
       onClearFilters={clearFilters}
       className={className}
     />

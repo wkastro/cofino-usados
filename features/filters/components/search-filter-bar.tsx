@@ -12,10 +12,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { HugeiconsIcon } from "@hugeicons/react";
-import {
-  FilterHorizontalIcon,
-  FilterRemoveIcon,
-} from "@hugeicons/core-free-icons";
+import { FilterRemoveIcon } from "@hugeicons/core-free-icons";
 import type {
   Brand,
   Category,
@@ -30,7 +27,6 @@ export interface SearchFilterBarProps {
   values: SearchFilterValues;
   hasActiveFilters: boolean;
   onFilterChange: (field: keyof SearchFilterValues, value: string) => void;
-  onFiltersClick?: () => void;
   onClearFilters: () => void;
   className?: string;
 }
@@ -42,7 +38,6 @@ export function SearchFilterBar({
   values,
   hasActiveFilters,
   onFilterChange,
-  onFiltersClick,
   onClearFilters,
   className,
 }: SearchFilterBarProps) {
@@ -125,21 +120,6 @@ export function SearchFilterBar({
 
             {/* Buttons */}
             <div className="flex items-center gap-3 shrink-0">
-              {onFiltersClick && (
-                <Button
-                  variant="outline"
-                  onClick={onFiltersClick}
-                  className="rounded-full font-semibold"
-                >
-                  Filtros
-                  <HugeiconsIcon
-                    icon={FilterHorizontalIcon}
-                    data-icon="inline-start"
-                    strokeWidth={2}
-                    className="size-4"
-                  />
-                </Button>
-              )}
 
               <Button
                 variant="dark"

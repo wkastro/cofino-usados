@@ -4,10 +4,8 @@ import { VehicleCard } from "@/components/global/vehicle-card";
 import { NoResults } from "@/components/global/no-results";
 import { VehicleCardSkeletonGrid } from "@/components/global/vehicle-card-skeleton";
 import { useFilterLoading } from "@/features/filters/context/filter-loading-context";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { FilterHorizontalIcon } from "@hugeicons/core-free-icons";
+import { AdvancedFiltersButton } from "@/components/global/advanced-filters-button";
 import type { VehicleResponse } from "@/types/vehiculo/vehiculo";
-import { Button } from "@/components/ui/button";
 
 interface VehicleGridProps {
   vehicles: VehicleResponse;
@@ -32,15 +30,7 @@ export function VehicleGrid({
             Autos recomendados
           </h2>
           {showAdvancedFiltersButton ? (
-            <Button variant="outline" onClick={() => {}} className="rounded-full font-semibold">
-              Filtros avanzados
-              <HugeiconsIcon
-                icon={FilterHorizontalIcon}
-                data-icon="inline-start"
-                strokeWidth={2}
-                className="size-4"
-              />
-            </Button>
+            <AdvancedFiltersButton />
           ) : null}
         </div>
 

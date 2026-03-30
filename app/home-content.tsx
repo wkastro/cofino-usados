@@ -26,7 +26,7 @@ export async function HomeSearchBarContent({ searchParams, className }: HomeCont
 
 export async function HomeVehicleGrid({
   searchParams,
-  showAdvancedFiltersButton = false,
+  showAdvancedFiltersButton = true,
 }: HomeContentProps): Promise<React.ReactElement> {
   const { marca, categoria, transmision } = await searchParams;
 
