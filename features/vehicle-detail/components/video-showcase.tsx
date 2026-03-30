@@ -80,6 +80,7 @@ function YouTubePlayer({ videoId }: { videoId: string }) {
 }
 
 function LocalVideoPlayer({ src, onClose }: { src: string; onClose: () => void }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   return (
     <video
