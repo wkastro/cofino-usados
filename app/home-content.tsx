@@ -28,13 +28,14 @@ export async function HomeVehicleGrid({
   searchParams,
   showAdvancedFiltersButton = true,
 }: HomeContentProps): Promise<React.ReactElement> {
-  const { marca, categoria, transmision, etiqueta } = await searchParams;
+  const { marca, categoria, transmision, etiqueta, combustible } = await searchParams;
 
   const filters: VehicleFilters = {
     ...(marca && { marca }),
     ...(categoria && { categoria }),
     ...(transmision && { transmision }),
     ...(etiqueta && { etiqueta }),
+    ...(combustible && { combustible }),
   };
 
   const [vehicles, etiquetaOptions] = await Promise.all([

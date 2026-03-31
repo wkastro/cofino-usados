@@ -3,7 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { revalidateTag } from "next/cache";
 import { EstadoVenta } from "@/generated/prisma/client";
-import type { Transmision } from "@/generated/prisma/client";
+import type { Transmision, Combustible } from "@/generated/prisma/client";
 import type { VehicleResponse, VehicleDetail } from "@/types/vehiculo/vehiculo";
 import type { VehicleFilters } from "@/types/filters/filters";
 
@@ -21,6 +21,7 @@ export async function getVehiculos(
     ...(filters.etiqueta && {
       etiquetaComercial: { slug: filters.etiqueta },
     }),
+    ...(filters.combustible && { combustible: filters.combustible as Combustible }),
   };
 
   const [vehiculos, total] = await prisma.$transaction([

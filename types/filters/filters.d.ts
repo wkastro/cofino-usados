@@ -24,6 +24,7 @@ export interface VehicleFilters {
   categoria?: string;
   transmision?: string;
   etiqueta?: string;
+  combustible?: string;
 }
 
 export interface SearchFilterValues {
@@ -37,4 +38,5 @@ export interface SearchParams {
   categoria?: string;
   transmision?: string;
   etiqueta?: string;
+  combustible?: string;
 }
