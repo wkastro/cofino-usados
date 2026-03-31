@@ -2,7 +2,6 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidateTag } from "next/cache";
-import type { Transmision } from "@/generated/prisma/client";
 
 export async function getCategories() {
   return prisma.categoria.findMany({
@@ -23,13 +22,13 @@ export async function getBrands() {
 
 export type BrandsResult = Awaited<ReturnType<typeof getBrands>>;
 
-const TRANSMISSION_OPTIONS: Transmision[] = ["Automatico", "Manual"];
+const TRANSMISSION_OPTIONS = [
+  { id: "automatico", nombre: "Automático" },
+  { id: "manual", nombre: "Manual" },
+];
 
 export async function getTransmissions() {
-  return TRANSMISSION_OPTIONS.map((value) => ({
-    id: value,
-    nombre: value,
-  }));
+  return TRANSMISSION_OPTIONS;
 }
 
 export type TransmissionsResult = Awaited<ReturnType<typeof getTransmissions>>;
@@ -58,6 +57,17 @@ export async function getPriceRange() {
 }
 
 export type PriceRangeResult = Awaited<ReturnType<typeof getPriceRange>>;
+
+export async function getMinYear() {
+  const result = await prisma.vehiculo.aggregate({
+    where: { estado: "Disponible" },
+    _min: { anio: true },
+  });
+
+  return result._min.anio ?? new Date().getFullYear();
+}
+
+export type MinYearResult = Awaited<ReturnType<typeof getMinYear>>;
 
 export async function revalidateCategories() {
   revalidateTag("categories", "weeks");

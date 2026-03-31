@@ -27,6 +27,7 @@ export interface VehicleFilters {
   combustible?: string;
   precioMin?: number;
   precioMax?: number;
+  anio?: number;
 }
 
 export interface SearchFilterValues {
@@ -41,6 +42,7 @@ export interface SearchParams {
   transmision?: string;
   etiqueta?: string;
   combustible?: string;
-  precioMin?: string;
-  precioMax?: string;
+  "precio-min"?: string;
+  "precio-max"?: string;
+  anio?: string;
 }

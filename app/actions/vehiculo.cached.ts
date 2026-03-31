@@ -1,9 +1,9 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { getVehicleBySlug, getVehiculos } from "./vehiculo";
-import { getCategories, getBrands, getEtiquetas, getPriceRange } from "./filters";
+import { getCategories, getBrands, getEtiquetas, getPriceRange, getMinYear } from "./filters";
 import type { VehicleFilters } from "@/types/filters/filters";
 import type { VehicleDetail, VehicleResponse } from "@/types/vehiculo/vehiculo";
-import type { CategoriesResult, BrandsResult, EtiquetasResult, PriceRangeResult } from "./filters";
+import type { CategoriesResult, BrandsResult, EtiquetasResult, PriceRangeResult, MinYearResult } from "./filters";
 
 export async function getCachedVehicleBySlug(slug: string): Promise<VehicleDetail | null> {
   "use cache";
@@ -54,4 +54,12 @@ export async function getCachedPriceRange(): Promise<PriceRangeResult> {
   cacheTag("price-range");
 
   return getPriceRange();
+}
+
+export async function getCachedMinYear(): Promise<MinYearResult> {
+  "use cache";
+  cacheLife("hours");
+  cacheTag("min-year");
+
+  return getMinYear();
 }

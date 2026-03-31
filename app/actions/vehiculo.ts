@@ -2,10 +2,21 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidateTag } from "next/cache";
-import { EstadoVenta } from "@/generated/prisma/client";
-import type { Transmision, Combustible } from "@/generated/prisma/client";
+import { EstadoVenta, Transmision, Combustible } from "@/generated/prisma/client";
 import type { VehicleResponse, VehicleDetail } from "@/types/vehiculo/vehiculo";
 import type { VehicleFilters } from "@/types/filters/filters";
+
+const TRANSMISION_MAP: Record<string, Transmision> = {
+  automatico: Transmision.Automatico,
+  manual: Transmision.Manual,
+};
+
+const COMBUSTIBLE_MAP: Record<string, Combustible> = {
+  gasolina: Combustible.Gasolina,
+  diesel: Combustible.Diesel,
+  hibrido: Combustible.Hibrido,
+  electrico: Combustible.Electrico,
+};
 
 const PAGE_SIZE = 6;
 
@@ -13,15 +24,19 @@ export async function getVehiculos(
   page = 1,
   filters: VehicleFilters = {},
 ): Promise<VehicleResponse> {
+  const transmision = filters.transmision ? TRANSMISION_MAP[filters.transmision] : undefined;
+  const combustible = filters.combustible ? COMBUSTIBLE_MAP[filters.combustible] : undefined;
+
   const where = {
     estado: EstadoVenta.Disponible,
     ...(filters.marca && { marca: { slug: filters.marca } }),
     ...(filters.categoria && { categoria: { slug: filters.categoria } }),
-    ...(filters.transmision && { transmision: filters.transmision as Transmision }),
+    ...(transmision && { transmision }),
     ...(filters.etiqueta && {
       etiquetaComercial: { slug: filters.etiqueta },
     }),
-    ...(filters.combustible && { combustible: filters.combustible as Combustible }),
+    ...(combustible && { combustible }),
+    ...(filters.anio != null && { anio: { gte: filters.anio } }),
     ...((filters.precioMin != null || filters.precioMax != null) && {
       precio: {
         ...(filters.precioMin != null && { gte: filters.precioMin }),

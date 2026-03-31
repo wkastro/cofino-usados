@@ -1,5 +1,5 @@
 import { VehicleGrid } from "@/components/sections/home/vehicle-grid";
-import { getCachedVehiculos, getCachedCategories, getCachedBrands, getCachedEtiquetas, getCachedPriceRange } from "./actions/vehiculo.cached";
+import { getCachedVehiculos, getCachedCategories, getCachedBrands, getCachedEtiquetas, getCachedPriceRange, getCachedMinYear } from "./actions/vehiculo.cached";
 import { getTransmissions } from "./actions/filters";
 import { HomeSearchBar } from "@/features/filters/components/home-search-bar";
 import type { VehicleFilters } from "@/types/filters/filters";
@@ -28,22 +28,27 @@ export async function HomeVehicleGrid({
   searchParams,
   showAdvancedFiltersButton = true,
 }: HomeContentProps): Promise<React.ReactElement> {
-  const { marca, categoria, transmision, etiqueta, combustible, precioMin, precioMax } = await searchParams;
+  const resolvedParams = await searchParams;
+  const precioMin = resolvedParams["precio-min"];
+  const precioMax = resolvedParams["precio-max"];
+  const anioMin = resolvedParams.anio;
 
   const filters: VehicleFilters = {
-    ...(marca && { marca }),
-    ...(categoria && { categoria }),
-    ...(transmision && { transmision }),
-    ...(etiqueta && { etiqueta }),
-    ...(combustible && { combustible }),
+    ...(resolvedParams.marca && { marca: resolvedParams.marca }),
+    ...(resolvedParams.categoria && { categoria: resolvedParams.categoria }),
+    ...(resolvedParams.transmision && { transmision: resolvedParams.transmision }),
+    ...(resolvedParams.etiqueta && { etiqueta: resolvedParams.etiqueta }),
+    ...(resolvedParams.combustible && { combustible: resolvedParams.combustible }),
     ...(precioMin && { precioMin: Number(precioMin) }),
     ...(precioMax && { precioMax: Number(precioMax) }),
+    ...(anioMin && { anio: Number(anioMin) }),
   };
 
-  const [vehicles, etiquetaOptions, priceRange] = await Promise.all([
+  const [vehicles, etiquetaOptions, priceRange, minYear] = await Promise.all([
     getCachedVehiculos(1, filters),
     getCachedEtiquetas(),
     getCachedPriceRange(),
+    getCachedMinYear(),
   ]);
 
   return (
@@ -52,6 +57,7 @@ export async function HomeVehicleGrid({
       showAdvancedFiltersButton={showAdvancedFiltersButton}
       etiquetas={etiquetaOptions}
       priceRange={priceRange}
+      minYear={minYear}
     />
   );
 }

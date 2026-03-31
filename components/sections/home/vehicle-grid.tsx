@@ -4,7 +4,7 @@ import { VehicleCard } from "@/components/global/vehicle-card";
 import { NoResults } from "@/components/global/no-results";
 import { VehicleCardSkeletonGrid } from "@/components/global/vehicle-card-skeleton";
 import { useFilterLoading } from "@/features/filters/context/filter-loading-context";
-import { AdvancedFiltersButton } from "@/components/global/advanced-filters-button";
+import { AdvancedFiltersButton } from "@/features/filters/components/advanced-filters-button";
 import type { VehicleResponse } from "@/types/vehiculo/vehiculo";
 import type { EtiquetaComercial } from "@/types/filters/filters";
 
@@ -18,6 +18,7 @@ interface VehicleGridProps {
   showAdvancedFiltersButton?: boolean;
   etiquetas?: EtiquetaComercial[];
   priceRange?: PriceRange;
+  minYear?: number;
 }
 
 export function VehicleGrid({
@@ -25,6 +26,7 @@ export function VehicleGrid({
   showAdvancedFiltersButton = false,
   etiquetas = [],
   priceRange,
+  minYear,
 }: VehicleGridProps): React.ReactElement {
   const { isPending } = useFilterLoading();
 
@@ -40,7 +42,7 @@ export function VehicleGrid({
             Autos recomendados
           </h2>
           {showAdvancedFiltersButton ? (
-            <AdvancedFiltersButton etiquetas={etiquetas} priceRange={priceRange} />
+            <AdvancedFiltersButton etiquetas={etiquetas} priceRange={priceRange} minYear={minYear} />
           ) : null}
         </div>
 
