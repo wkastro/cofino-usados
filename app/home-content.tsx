@@ -1,5 +1,5 @@
 import { VehicleGrid } from "@/components/sections/home/vehicle-grid";
-import { getCachedVehiculos, getCachedCategories, getCachedBrands, getCachedEtiquetas, getCachedPriceRange, getCachedMinYear } from "./actions/vehiculo.cached";
+import { getCachedVehiculos, getCachedCategories, getCachedBrands, getCachedEtiquetas, getCachedPriceRange, getCachedMinYear, getCachedKilometrajeRange } from "./actions/vehiculo.cached";
 import { getTransmissions } from "./actions/filters";
 import { HomeSearchBar } from "@/features/filters/components/home-search-bar";
 import type { VehicleFilters } from "@/types/filters/filters";
@@ -42,13 +42,16 @@ export async function HomeVehicleGrid({
     ...(precioMin && { precioMin: Number(precioMin) }),
     ...(precioMax && { precioMax: Number(precioMax) }),
     ...(anioMin && { anio: Number(anioMin) }),
+    ...(resolvedParams.kmin && { kmin: Number(resolvedParams.kmin) }),
+    ...(resolvedParams.kmax && { kmax: Number(resolvedParams.kmax) }),
   };
 
-  const [vehicles, etiquetaOptions, priceRange, minYear] = await Promise.all([
+  const [vehicles, etiquetaOptions, priceRange, minYear, kilometrajeRange] = await Promise.all([
     getCachedVehiculos(1, filters),
     getCachedEtiquetas(),
     getCachedPriceRange(),
     getCachedMinYear(),
+    getCachedKilometrajeRange(),
   ]);
 
   return (
@@ -58,6 +61,7 @@ export async function HomeVehicleGrid({
       etiquetas={etiquetaOptions}
       priceRange={priceRange}
       minYear={minYear}
+      kilometrajeRange={kilometrajeRange}
     />
   );
 }

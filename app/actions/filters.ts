@@ -69,6 +69,21 @@ export async function getMinYear() {
 
 export type MinYearResult = Awaited<ReturnType<typeof getMinYear>>;
 
+export async function getKilometrajeRange() {
+  const result = await prisma.vehiculo.aggregate({
+    where: { estado: "Disponible" },
+    _min: { kilometraje: true },
+    _max: { kilometraje: true },
+  });
+
+  return {
+    min: result._min.kilometraje ?? 0,
+    max: result._max.kilometraje ?? 0,
+  };
+}
+
+export type KilometrajeRangeResult = Awaited<ReturnType<typeof getKilometrajeRange>>;
+
 export async function revalidateCategories() {
   revalidateTag("categories", "weeks");
 }

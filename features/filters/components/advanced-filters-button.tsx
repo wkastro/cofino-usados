@@ -21,8 +21,9 @@ import { FilterSection } from "@/features/filters/components/filter-section";
 import { CheckboxFilter } from "@/features/filters/components/checkbox-filter";
 import { PriceRangeFilter } from "@/features/filters/components/price-range-filter";
 import { YearFilter } from "@/features/filters/components/year-filter";
+import { KilometrajeRangeFilter } from "@/features/filters/components/kilometraje-range-filter";
 import type { EtiquetaComercial } from "@/types/filters/filters";
-import type { PriceRange } from "@/features/filters/types/advanced-filters";
+import type { PriceRange, RangeValues } from "@/features/filters/types/advanced-filters";
 
 interface AdvancedFiltersButtonProps {
   className?: string;
@@ -30,6 +31,7 @@ interface AdvancedFiltersButtonProps {
   etiquetas?: EtiquetaComercial[];
   priceRange?: PriceRange;
   minYear?: number;
+  kilometrajeRange?: RangeValues;
 }
 
 export function AdvancedFiltersButton({
@@ -38,6 +40,7 @@ export function AdvancedFiltersButton({
   etiquetas = [],
   priceRange = { min: 0, max: 1000000 },
   minYear = 2000,
+  kilometrajeRange = { min: 0, max: 500000 },
 }: AdvancedFiltersButtonProps) {
   const {
     open,
@@ -50,9 +53,12 @@ export function AdvancedFiltersButton({
     handleMinInputChange,
     handleMaxInputChange,
     handleYearSliderChange,
+    handleKilometrajeSliderChange,
+    handleKminInputChange,
+    handleKmaxInputChange,
     applyFilters,
     clearFilters,
-  } = useAdvancedFilters(priceRange, minYear);
+  } = useAdvancedFilters(priceRange, minYear, kilometrajeRange);
 
   const etiquetaOptions = etiquetas.map((e) => ({
     value: e.slug,
@@ -119,6 +125,17 @@ export function AdvancedFiltersButton({
               maxYear={CURRENT_YEAR}
               value={state.anioMin}
               onSliderChange={handleYearSliderChange}
+            />
+          </FilterSection>
+
+          <FilterSection title="Kilometraje">
+            <KilometrajeRangeFilter
+              kilometrajeRange={kilometrajeRange}
+              kmin={state.kmin}
+              kmax={state.kmax}
+              onSliderChange={handleKilometrajeSliderChange}
+              onMinChange={handleKminInputChange}
+              onMaxChange={handleKmaxInputChange}
             />
           </FilterSection>
         </div>

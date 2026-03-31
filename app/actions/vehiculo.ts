@@ -37,6 +37,12 @@ export async function getVehiculos(
     }),
     ...(combustible && { combustible }),
     ...(filters.anio != null && { anio: { gte: filters.anio } }),
+    ...((filters.kmin != null || filters.kmax != null) && {
+      kilometraje: {
+        ...(filters.kmin != null && { gte: filters.kmin }),
+        ...(filters.kmax != null && { lte: filters.kmax }),
+      },
+    }),
     ...((filters.precioMin != null || filters.precioMax != null) && {
       precio: {
         ...(filters.precioMin != null && { gte: filters.precioMin }),

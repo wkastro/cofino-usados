@@ -8,7 +8,7 @@ import { AdvancedFiltersButton } from "@/features/filters/components/advanced-fi
 import type { VehicleResponse } from "@/types/vehiculo/vehiculo";
 import type { EtiquetaComercial } from "@/types/filters/filters";
 
-interface PriceRange {
+interface RangeValues {
   min: number;
   max: number;
 }
@@ -17,8 +17,9 @@ interface VehicleGridProps {
   vehicles: VehicleResponse;
   showAdvancedFiltersButton?: boolean;
   etiquetas?: EtiquetaComercial[];
-  priceRange?: PriceRange;
+  priceRange?: RangeValues;
   minYear?: number;
+  kilometrajeRange?: RangeValues;
 }
 
 export function VehicleGrid({
@@ -27,6 +28,7 @@ export function VehicleGrid({
   etiquetas = [],
   priceRange,
   minYear,
+  kilometrajeRange,
 }: VehicleGridProps): React.ReactElement {
   const { isPending } = useFilterLoading();
 
@@ -42,7 +44,7 @@ export function VehicleGrid({
             Autos recomendados
           </h2>
           {showAdvancedFiltersButton ? (
-            <AdvancedFiltersButton etiquetas={etiquetas} priceRange={priceRange} minYear={minYear} />
+            <AdvancedFiltersButton etiquetas={etiquetas} priceRange={priceRange} minYear={minYear} kilometrajeRange={kilometrajeRange} />
           ) : null}
         </div>
 

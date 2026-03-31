@@ -3,6 +3,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useFilterLoading } from "@/features/filters/context/filter-loading-context";
 import type {
   PriceRange,
+  RangeValues,
   UseAdvancedFiltersReturn,
 } from "@/features/filters/types/advanced-filters";
 
@@ -11,6 +12,7 @@ const CURRENT_YEAR = new Date().getFullYear();
 export function useAdvancedFilters(
   priceRange: PriceRange,
   minYear: number,
+  kilometrajeRange: RangeValues = { min: 0, max: 500000 },
 ): UseAdvancedFiltersReturn {
   const router = useRouter();
   const pathname = usePathname();
@@ -33,16 +35,26 @@ export function useAdvancedFilters(
   const [anioMin, setAnioMin] = useState(
     Number(searchParams.get("anio")) || minYear,
   );
+  const [kmin, setKmin] = useState(
+    Number(searchParams.get("kmin")) || kilometrajeRange.min,
+  );
+  const [kmax, setKmax] = useState(
+    Number(searchParams.get("kmax")) || kilometrajeRange.max,
+  );
 
   const isPriceModified =
     precioMin !== priceRange.min || precioMax !== priceRange.max;
 
   const isYearModified = anioMin !== minYear;
 
+  const isKilometrajeModified =
+    kmin !== kilometrajeRange.min || kmax !== kilometrajeRange.max;
+
   const activeFilterCount =
     [etiqueta, combustible].filter(Boolean).length +
     (isPriceModified ? 1 : 0) +
-    (isYearModified ? 1 : 0);
+    (isYearModified ? 1 : 0) +
+    (isKilometrajeModified ? 1 : 0);
 
   const handleSliderChange = useCallback((values: number[]) => {
     setPrecioMin(values[0]);
@@ -71,6 +83,29 @@ export function useAdvancedFilters(
     setAnioMin(values[0]);
   }, []);
 
+  const handleKilometrajeSliderChange = useCallback((values: number[]) => {
+    setKmin(values[0]);
+    setKmax(values[1]);
+  }, []);
+
+  const handleKminInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const raw = e.target.value.replace(/\D/g, "");
+      const value = raw ? Math.max(0, Number(raw)) : kilometrajeRange.min;
+      setKmin(Math.min(value, kmax));
+    },
+    [kilometrajeRange.min, kmax],
+  );
+
+  const handleKmaxInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const raw = e.target.value.replace(/\D/g, "");
+      const value = raw ? Math.max(0, Number(raw)) : kilometrajeRange.max;
+      setKmax(Math.max(value, kmin));
+    },
+    [kilometrajeRange.max, kmin],
+  );
+
   const navigate = useCallback(
     (params: URLSearchParams) => {
       startTransition(() => {
@@ -96,6 +131,12 @@ export function useAdvancedFilters(
     anioMin !== minYear
       ? params.set("anio", String(anioMin))
       : params.delete("anio");
+    kmin !== kilometrajeRange.min
+      ? params.set("kmin", String(kmin))
+      : params.delete("kmin");
+    kmax !== kilometrajeRange.max
+      ? params.set("kmax", String(kmax))
+      : params.delete("kmax");
 
     navigate(params);
     setOpen(false);
@@ -106,8 +147,11 @@ export function useAdvancedFilters(
     precioMin,
     precioMax,
     anioMin,
+    kmin,
+    kmax,
     priceRange,
     minYear,
+    kilometrajeRange,
     navigate,
   ]);
 
@@ -117,6 +161,8 @@ export function useAdvancedFilters(
     setPrecioMin(priceRange.min);
     setPrecioMax(priceRange.max);
     setAnioMin(minYear);
+    setKmin(kilometrajeRange.min);
+    setKmax(kilometrajeRange.max);
 
     const params = new URLSearchParams(searchParams.toString());
     params.delete("etiqueta");
@@ -124,10 +170,12 @@ export function useAdvancedFilters(
     params.delete("precio-min");
     params.delete("precio-max");
     params.delete("anio");
+    params.delete("kmin");
+    params.delete("kmax");
 
     navigate(params);
     setOpen(false);
-  }, [searchParams, priceRange, minYear, navigate]);
+  }, [searchParams, priceRange, minYear, kilometrajeRange, navigate]);
 
   const handleOpenChange = useCallback(
     (isOpen: boolean) => {
@@ -141,19 +189,22 @@ export function useAdvancedFilters(
           Number(searchParams.get("precio-max")) || priceRange.max,
         );
         setAnioMin(Number(searchParams.get("anio")) || minYear);
+        setKmin(Number(searchParams.get("kmin")) || kilometrajeRange.min);
+        setKmax(Number(searchParams.get("kmax")) || kilometrajeRange.max);
       }
       setOpen(isOpen);
     },
-    [searchParams, priceRange, minYear],
+    [searchParams, priceRange, minYear, kilometrajeRange],
   );
 
   return {
     open,
     setOpen: handleOpenChange,
-    state: { etiqueta, combustible, precioMin, precioMax, anioMin },
+    state: { etiqueta, combustible, precioMin, precioMax, anioMin, kmin, kmax },
     activeFilterCount,
     isPriceModified,
     isYearModified,
+    isKilometrajeModified,
     setEtiqueta,
     setCombustible,
     setPrecioMin,
@@ -163,6 +214,9 @@ export function useAdvancedFilters(
     handleMinInputChange,
     handleMaxInputChange,
     handleYearSliderChange,
+    handleKilometrajeSliderChange,
+    handleKminInputChange,
+    handleKmaxInputChange,
     applyFilters,
     clearFilters,
   };

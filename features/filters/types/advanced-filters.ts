@@ -8,12 +8,19 @@ export interface CheckboxOption {
   label: string;
 }
 
+export interface RangeValues {
+  min: number;
+  max: number;
+}
+
 export interface AdvancedFiltersState {
   etiqueta: string;
   combustible: string;
   precioMin: number;
   precioMax: number;
   anioMin: number;
+  kmin: number;
+  kmax: number;
 }
 
 export interface UseAdvancedFiltersReturn {
@@ -23,6 +30,7 @@ export interface UseAdvancedFiltersReturn {
   activeFilterCount: number;
   isPriceModified: boolean;
   isYearModified: boolean;
+  isKilometrajeModified: boolean;
   setEtiqueta: (value: string) => void;
   setCombustible: (value: string) => void;
   setPrecioMin: (value: number) => void;
@@ -32,6 +40,9 @@ export interface UseAdvancedFiltersReturn {
   handleMinInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleMaxInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleYearSliderChange: (values: number[]) => void;
+  handleKilometrajeSliderChange: (values: number[]) => void;
+  handleKminInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleKmaxInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   applyFilters: () => void;
   clearFilters: () => void;
 }

@@ -28,6 +28,8 @@ export interface VehicleFilters {
   precioMin?: number;
   precioMax?: number;
   anio?: number;
+  kmin?: number;
+  kmax?: number;
 }
 
 export interface SearchFilterValues {
@@ -45,4 +47,6 @@ export interface SearchParams {
   "precio-min"?: string;
   "precio-max"?: string;
   anio?: string;
+  kmin?: string;
+  kmax?: string;
 }
