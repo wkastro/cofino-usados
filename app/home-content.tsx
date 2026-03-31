@@ -1,5 +1,5 @@
 import { VehicleGrid } from "@/components/sections/home/vehicle-grid";
-import { getCachedVehiculos, getCachedCategories, getCachedBrands, getCachedEtiquetas } from "./actions/vehiculo.cached";
+import { getCachedVehiculos, getCachedCategories, getCachedBrands, getCachedEtiquetas, getCachedPriceRange } from "./actions/vehiculo.cached";
 import { getTransmissions } from "./actions/filters";
 import { HomeSearchBar } from "@/features/filters/components/home-search-bar";
 import type { VehicleFilters } from "@/types/filters/filters";
@@ -28,7 +28,7 @@ export async function HomeVehicleGrid({
   searchParams,
   showAdvancedFiltersButton = true,
 }: HomeContentProps): Promise<React.ReactElement> {
-  const { marca, categoria, transmision, etiqueta, combustible } = await searchParams;
+  const { marca, categoria, transmision, etiqueta, combustible, precioMin, precioMax } = await searchParams;
 
   const filters: VehicleFilters = {
     ...(marca && { marca }),
@@ -36,11 +36,14 @@ export async function HomeVehicleGrid({
     ...(transmision && { transmision }),
     ...(etiqueta && { etiqueta }),
     ...(combustible && { combustible }),
+    ...(precioMin && { precioMin: Number(precioMin) }),
+    ...(precioMax && { precioMax: Number(precioMax) }),
   };
 
-  const [vehicles, etiquetaOptions] = await Promise.all([
+  const [vehicles, etiquetaOptions, priceRange] = await Promise.all([
     getCachedVehiculos(1, filters),
     getCachedEtiquetas(),
+    getCachedPriceRange(),
   ]);
 
   return (
@@ -48,6 +51,7 @@ export async function HomeVehicleGrid({
       vehicles={vehicles}
       showAdvancedFiltersButton={showAdvancedFiltersButton}
       etiquetas={etiquetaOptions}
+      priceRange={priceRange}
     />
   );
 }

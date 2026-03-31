@@ -22,6 +22,12 @@ export async function getVehiculos(
       etiquetaComercial: { slug: filters.etiqueta },
     }),
     ...(filters.combustible && { combustible: filters.combustible as Combustible }),
+    ...((filters.precioMin != null || filters.precioMax != null) && {
+      precio: {
+        ...(filters.precioMin != null && { gte: filters.precioMin }),
+        ...(filters.precioMax != null && { lte: filters.precioMax }),
+      },
+    }),
   };
 
   const [vehiculos, total] = await prisma.$transaction([

@@ -44,6 +44,21 @@ export async function getEtiquetas() {
 
 export type EtiquetasResult = Awaited<ReturnType<typeof getEtiquetas>>;
 
+export async function getPriceRange() {
+  const result = await prisma.vehiculo.aggregate({
+    where: { estado: "Disponible" },
+    _min: { precio: true },
+    _max: { precio: true },
+  });
+
+  return {
+    min: Number(result._min.precio ?? 0),
+    max: Number(result._max.precio ?? 0),
+  };
+}
+
+export type PriceRangeResult = Awaited<ReturnType<typeof getPriceRange>>;
+
 export async function revalidateCategories() {
   revalidateTag("categories", "weeks");
 }

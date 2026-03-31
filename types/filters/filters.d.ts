@@ -25,6 +25,8 @@ export interface VehicleFilters {
   transmision?: string;
   etiqueta?: string;
   combustible?: string;
+  precioMin?: number;
+  precioMax?: number;
 }
 
 export interface SearchFilterValues {
@@ -39,4 +41,6 @@ export interface SearchParams {
   transmision?: string;
   etiqueta?: string;
   combustible?: string;
+  precioMin?: string;
+  precioMax?: string;
 }
