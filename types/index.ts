@@ -4,8 +4,7 @@ export type {
   VehicleResponse,
   Vehiculo,
   VehicleRelation,
-  VehicleTag,
-  TagDetail,
+  EtiquetaComercialDetail,
   VehicleImage,
   VehicleDetail,
 } from "./vehiculo/vehiculo"

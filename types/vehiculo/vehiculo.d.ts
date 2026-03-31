@@ -22,7 +22,7 @@ export interface Vehiculo {
   sucursal: VehicleRelation;
   marca: VehicleRelation;
   categoria: VehicleRelation;
-  etiquetas: VehicleTag[];
+  etiquetaComercial: EtiquetaComercialDetail | null;
 }
 
 export interface VehicleRelation {
@@ -30,11 +30,7 @@ export interface VehicleRelation {
   nombre: string;
 }
 
-export interface VehicleTag {
-  etiqueta: TagDetail;
-}
-
-export interface TagDetail {
+export interface EtiquetaComercialDetail {
   nombre: string;
   slug: string;
 }

@@ -76,7 +76,7 @@ model Vehiculo {
   kilometraje    Int
   motor          String?
   anio           Int
-  estado         EstadoVenta                @default(DISPONIBLE)
+  estado         EstadoVenta                @default(Disponible)
   sucursalId     String                     @db.Char(36)
   marcaId        String                     @db.Char(36)
   categoriaId    String                     @db.Char(36)
@@ -92,8 +92,9 @@ model Vehiculo {
   marca          Marca                      @relation(fields: [marcaId], references: [id])
   sucursal       Sucursal                   @relation(fields: [sucursalId], references: [id])
   categoria      Categoria                  @relation(fields: [categoriaId], references: [id])
-  etiquetas      VehiculoEtiquetaComercial[]
-  galeria        Galeria[]
+  etiquetaComercialId String?              @db.Char(36)
+  etiquetaComercial   EtiquetaComercial?   @relation(fields: [etiquetaComercialId], references: [id])
+  galeria             Galeria[]
   favoritos      Favorito[]
   reviews        Review[]
 
@@ -116,6 +117,7 @@ model Vehiculo {
   @@index([estado, combustible])
   @@index([estado, transmision])
   @@index([estado, traccion])
+  @@index([etiquetaComercialId])
 }
 
 model Review {
@@ -173,23 +175,13 @@ model Categoria {
 }
 
 model EtiquetaComercial {
-  id        String                     @id @default(uuid()) @db.Char(36)
-  nombre    String                     @unique
-  slug      String                     @unique
-  estado    Boolean                    @default(true)
-  createdAt DateTime                   @default(now())
-  updatedAt DateTime                   @updatedAt
-  vehiculos VehiculoEtiquetaComercial[]
-}
-
-model VehiculoEtiquetaComercial {
-  vehiculoId String            @db.Char(36)
-  etiquetaId String            @db.Char(36)
-  vehiculo   Vehiculo          @relation(fields: [vehiculoId], references: [id], onDelete: Cascade)
-  etiqueta   EtiquetaComercial @relation(fields: [etiquetaId], references: [id], onDelete: Cascade)
-
-  @@id([vehiculoId, etiquetaId])
-  @@index([etiquetaId])
+  id        String     @id @default(uuid()) @db.Char(36)
+  nombre    String     @unique
+  slug      String     @unique
+  estado    Boolean    @default(true)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  vehiculos Vehiculo[]
 }
 
 model Galeria {
@@ -223,22 +215,22 @@ model Favorito {
 // ─── ENUMS ───────────────────────────────────────────────────────────────────
 
 enum EstadoVenta {
-  DISPONIBLE
-  RESERVADO
-  FACTURADO
-  VENDIDO
+  Disponible @map("Disponible")
+  Reservado  @map("Reservado")
+  Facturado  @map("Facturado")
+  Vendido    @map("Vendido")
 }
 
 enum Transmision {
-  AUTOMATICO
-  MANUAL
+  Automatico @map("Automático")
+  Manual     @map("Manual")
 }
 
 enum Combustible {
-  GASOLINA
-  DIESEL
-  HIBRIDO
-  ELECTRICO
+  Gasolina  @map("Gasolina")
+  Diesel    @map("Diesel")
+  Hibrido   @map("Híbrido")
+  Electrico @map("Eléctrico")
 }
 
 enum Traccion {

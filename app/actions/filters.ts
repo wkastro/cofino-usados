@@ -23,7 +23,7 @@ export async function getBrands() {
 
 export type BrandsResult = Awaited<ReturnType<typeof getBrands>>;
 
-const TRANSMISSION_OPTIONS: Transmision[] = ["AUTOMATICO", "MANUAL"];
+const TRANSMISSION_OPTIONS: Transmision[] = ["Automatico", "Manual"];
 
 export async function getTransmissions() {
   return TRANSMISSION_OPTIONS.map((value) => ({
@@ -33,6 +33,16 @@ export async function getTransmissions() {
 }
 
 export type TransmissionsResult = Awaited<ReturnType<typeof getTransmissions>>;
+
+export async function getEtiquetas() {
+  return prisma.etiquetaComercial.findMany({
+    where: { estado: true },
+    select: { id: true, nombre: true, slug: true },
+    orderBy: { nombre: "asc" },
+  });
+}
+
+export type EtiquetasResult = Awaited<ReturnType<typeof getEtiquetas>>;
 
 export async function revalidateCategories() {
   revalidateTag("categories", "weeks");

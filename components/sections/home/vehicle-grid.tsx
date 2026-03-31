@@ -6,15 +6,18 @@ import { VehicleCardSkeletonGrid } from "@/components/global/vehicle-card-skelet
 import { useFilterLoading } from "@/features/filters/context/filter-loading-context";
 import { AdvancedFiltersButton } from "@/components/global/advanced-filters-button";
 import type { VehicleResponse } from "@/types/vehiculo/vehiculo";
+import type { EtiquetaComercial } from "@/types/filters/filters";
 
 interface VehicleGridProps {
   vehicles: VehicleResponse;
   showAdvancedFiltersButton?: boolean;
+  etiquetas?: EtiquetaComercial[];
 }
 
 export function VehicleGrid({
   vehicles,
   showAdvancedFiltersButton = false,
+  etiquetas = [],
 }: VehicleGridProps): React.ReactElement {
   const { isPending } = useFilterLoading();
 
@@ -30,7 +33,7 @@ export function VehicleGrid({
             Autos recomendados
           </h2>
           {showAdvancedFiltersButton ? (
-            <AdvancedFiltersButton />
+            <AdvancedFiltersButton etiquetas={etiquetas} />
           ) : null}
         </div>
 

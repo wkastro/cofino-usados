@@ -14,10 +14,13 @@ export async function getVehiculos(
   filters: VehicleFilters = {},
 ): Promise<VehicleResponse> {
   const where = {
-    estado: EstadoVenta.DISPONIBLE,
+    estado: EstadoVenta.Disponible,
     ...(filters.marca && { marca: { slug: filters.marca } }),
     ...(filters.categoria && { categoria: { slug: filters.categoria } }),
     ...(filters.transmision && { transmision: filters.transmision as Transmision }),
+    ...(filters.etiqueta && {
+      etiquetaComercial: { slug: filters.etiqueta },
+    }),
   };
 
   const [vehiculos, total] = await prisma.$transaction([
@@ -39,8 +42,8 @@ export async function getVehiculos(
         marca: { select: { id: true, nombre: true } },
         categoria: { select: { id: true, nombre: true } },
         sucursal: { select: { id: true, nombre: true } },
-        etiquetas: {
-          select: { etiqueta: { select: { nombre: true, slug: true } } },
+        etiquetaComercial: {
+          select: { nombre: true, slug: true },
         },
       },
       orderBy: { createdAt: "desc" },
@@ -92,8 +95,8 @@ export async function getVehicleBySlug(
       marca: { select: { id: true, nombre: true } },
       categoria: { select: { id: true, nombre: true } },
       sucursal: { select: { id: true, nombre: true } },
-      etiquetas: {
-        select: { etiqueta: { select: { nombre: true, slug: true } } },
+      etiquetaComercial: {
+        select: { nombre: true, slug: true },
       },
       galeria: {
         select: { id: true, url: true, orden: true },

@@ -13,10 +13,17 @@ export interface Transmission {
   nombre: string;
 }
 
+export interface EtiquetaComercial {
+  id: string;
+  nombre: string;
+  slug: string;
+}
+
 export interface VehicleFilters {
   marca?: string;
   categoria?: string;
   transmision?: string;
+  etiqueta?: string;
 }
 
 export interface SearchFilterValues {
@@ -29,4 +36,5 @@ export interface SearchParams {
   marca?: string;
   categoria?: string;
   transmision?: string;
+  etiqueta?: string;
 }

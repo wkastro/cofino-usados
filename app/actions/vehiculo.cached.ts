@@ -1,9 +1,9 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { getVehicleBySlug, getVehiculos } from "./vehiculo";
-import { getCategories, getBrands } from "./filters";
+import { getCategories, getBrands, getEtiquetas } from "./filters";
 import type { VehicleFilters } from "@/types/filters/filters";
 import type { VehicleDetail, VehicleResponse } from "@/types/vehiculo/vehiculo";
-import type { CategoriesResult, BrandsResult } from "./filters";
+import type { CategoriesResult, BrandsResult, EtiquetasResult } from "./filters";
 
 export async function getCachedVehicleBySlug(slug: string): Promise<VehicleDetail | null> {
   "use cache";
@@ -38,4 +38,12 @@ export async function getCachedBrands(): Promise<BrandsResult> {
   cacheTag("brands");
 
   return getBrands();
+}
+
+export async function getCachedEtiquetas(): Promise<EtiquetasResult> {
+  "use cache";
+  cacheLife("weeks");
+  cacheTag("etiquetas");
+
+  return getEtiquetas();
 }

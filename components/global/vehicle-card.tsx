@@ -40,9 +40,9 @@ export function VehicleCard({ vehicle }: VehicleCardProps): React.ReactElement {
             <h2 className="text-fs-base font-semibold">
               {vehicle.nombre} {vehicle.anio}
             </h2>
-            {vehicle.etiquetas.at(0)?.etiqueta && (
+            {vehicle.etiquetaComercial && (
               <span className="inline-flex items-center rounded-full bg-destructive/10 px-2.5 py-0.5 text-[0.7rem] font-medium text-destructive">
-                {vehicle.etiquetas.at(0)?.etiqueta.nombre}
+                {vehicle.etiquetaComercial.nombre}
               </span>
             )}
           </div>
