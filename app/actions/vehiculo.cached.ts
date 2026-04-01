@@ -16,12 +16,13 @@ export async function getCachedVehicleBySlug(slug: string): Promise<VehicleDetai
 export async function getCachedVehiculos(
   page = 1,
   filters: VehicleFilters = {},
+  pageSize?: number,
 ): Promise<VehicleResponse> {
   "use cache";
   cacheLife("hours");
   cacheTag("vehicle-list");
 
-  return getVehiculos(page, filters);
+  return getVehiculos(page, filters, pageSize);
 }
 
 export async function getCachedCategories(): Promise<CategoriesResult> {

@@ -18,11 +18,12 @@ const COMBUSTIBLE_MAP: Record<string, Combustible> = {
   electrico: Combustible.Electrico,
 };
 
-const PAGE_SIZE = 6;
+const DEFAULT_PAGE_SIZE = 6;
 
 export async function getVehiculos(
   page = 1,
   filters: VehicleFilters = {},
+  pageSize = DEFAULT_PAGE_SIZE,
 ): Promise<VehicleResponse> {
   const transmision = filters.transmision ? TRANSMISION_MAP[filters.transmision] : undefined;
   const combustible = filters.combustible ? COMBUSTIBLE_MAP[filters.combustible] : undefined;
@@ -75,8 +76,8 @@ export async function getVehiculos(
         },
       },
       orderBy: { createdAt: "desc" },
-      skip: (page - 1) * PAGE_SIZE,
-      take: PAGE_SIZE,
+      skip: (page - 1) * pageSize,
+      take: pageSize,
     }),
 
     prisma.vehiculo.count({ where }),
@@ -95,7 +96,7 @@ export async function getVehiculos(
   return {
     vehiculos: formattedVehicles,
     total,
-    pages: Math.ceil(total / PAGE_SIZE),
+    pages: Math.ceil(total / pageSize),
     page,
   };
 }
