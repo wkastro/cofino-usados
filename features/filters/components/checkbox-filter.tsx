@@ -4,7 +4,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import type { CheckboxOption } from "@/features/filters/types/advanced-filters";
 
 interface CheckboxFilterProps {
-  options: CheckboxOption[];
+  options: readonly CheckboxOption[];
   selected: string;
   onChange: (value: string) => void;
 }

@@ -1,23 +1,16 @@
-export interface Category {
-  id: string;
-  nombre: string;
-  slug: string;
-}
-export interface Brand {
-  id: string;
-  nombre: string;
-  slug: string;
-}
-export interface Transmission {
+interface BaseEntity {
   id: string;
   nombre: string;
 }
 
-export interface EtiquetaComercial {
-  id: string;
-  nombre: string;
+interface SlugEntity extends BaseEntity {
   slug: string;
 }
+
+export type Category = SlugEntity;
+export type Brand = SlugEntity;
+export type Transmission = BaseEntity;
+export type EtiquetaComercial = SlugEntity;
 
 export interface VehicleFilters {
   marca?: string;

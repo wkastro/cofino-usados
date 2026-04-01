@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/drawer";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { FilterHorizontalIcon } from "@hugeicons/core-free-icons";
+import { useMemo } from "react";
 import { cn } from "@/lib/utils";
 import {
   useAdvancedFilters,
@@ -23,13 +24,18 @@ import { PriceRangeFilter } from "@/features/filters/components/price-range-filt
 import { YearFilter } from "@/features/filters/components/year-filter";
 import { KilometrajeRangeFilter } from "@/features/filters/components/kilometraje-range-filter";
 import type { EtiquetaComercial } from "@/types/filters/filters";
-import type { PriceRange, RangeValues } from "@/features/filters/types/advanced-filters";
+import type { RangeValues } from "@/features/filters/types/advanced-filters";
+
+// rerender-memo-with-default-value: hoist default non-primitive props to stable constants
+const DEFAULT_ETIQUETAS: EtiquetaComercial[] = [];
+const DEFAULT_PRICE_RANGE: RangeValues = { min: 0, max: 1000000 };
+const DEFAULT_KILOMETRAJE_RANGE: RangeValues = { min: 0, max: 500000 };
 
 interface AdvancedFiltersButtonProps {
   className?: string;
   label?: string;
   etiquetas?: EtiquetaComercial[];
-  priceRange?: PriceRange;
+  priceRange?: RangeValues;
   minYear?: number;
   kilometrajeRange?: RangeValues;
 }
@@ -37,10 +43,10 @@ interface AdvancedFiltersButtonProps {
 export function AdvancedFiltersButton({
   className,
   label = "Filtros avanzados",
-  etiquetas = [],
-  priceRange = { min: 0, max: 1000000 },
+  etiquetas = DEFAULT_ETIQUETAS,
+  priceRange = DEFAULT_PRICE_RANGE,
   minYear = 2000,
-  kilometrajeRange = { min: 0, max: 500000 },
+  kilometrajeRange = DEFAULT_KILOMETRAJE_RANGE,
 }: AdvancedFiltersButtonProps) {
   const {
     open,
@@ -60,10 +66,11 @@ export function AdvancedFiltersButton({
     clearFilters,
   } = useAdvancedFilters(priceRange, minYear, kilometrajeRange);
 
-  const etiquetaOptions = etiquetas.map((e) => ({
-    value: e.slug,
-    label: e.nombre,
-  }));
+  // rerender-memo: memoize derived data to avoid recomputation on every render
+  const etiquetaOptions = useMemo(
+    () => etiquetas.map((e) => ({ value: e.slug, label: e.nombre })),
+    [etiquetas]
+  );
 
   return (
     <Drawer open={open} onOpenChange={setOpen} direction="right" handleOnly>
@@ -88,7 +95,7 @@ export function AdvancedFiltersButton({
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader>
-          <DrawerTitle>Filtros avanzados</DrawerTitle>
+          <DrawerTitle className="text-fs-md">Filtros avanzados</DrawerTitle>
         </DrawerHeader>
 
         <div className="flex-1 overflow-y-auto px-4 pb-4">
@@ -141,11 +148,7 @@ export function AdvancedFiltersButton({
         </div>
 
         <DrawerFooter className="flex-row gap-3">
-          <Button
-            variant="outline"
-            className="flex-1"
-            onClick={clearFilters}
-          >
+          <Button variant="outline" className="flex-1" onClick={clearFilters}>
             Limpiar
           </Button>
           <Button className="flex-1" onClick={applyFilters}>

@@ -1,16 +1,14 @@
-export interface PriceRange {
+export interface RangeValues {
   min: number;
   max: number;
 }
+
+/** @deprecated Use RangeValues — kept as alias for backward compatibility */
+export type PriceRange = RangeValues;
 
 export interface CheckboxOption {
   value: string;
   label: string;
-}
-
-export interface RangeValues {
-  min: number;
-  max: number;
 }
 
 export interface AdvancedFiltersState {
