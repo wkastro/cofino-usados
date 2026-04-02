@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import {
   authUserLoginSchema,
   type AuthUserLoginData,
-} from "@/lib/validations/auth-users";
+} from "@/features/auth-users/validations/auth-users";
 
 interface UseLoginFormReturn {
   register: UseFormRegister<AuthUserLoginData>;

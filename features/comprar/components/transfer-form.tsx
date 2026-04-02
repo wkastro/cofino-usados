@@ -11,7 +11,7 @@ import { Upload } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FieldError } from "@/components/forms/field-error";
-import type { PurchaseFormData } from "@/lib/validations/purchase";
+import type { PurchaseFormData } from "@/features/comprar/validations/purchase";
 
 interface TransferFormProps {
   register: UseFormRegister<PurchaseFormData>;

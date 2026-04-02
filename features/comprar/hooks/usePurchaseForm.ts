@@ -2,7 +2,7 @@
 
 import { useForm, type UseFormHandleSubmit, type UseFormRegister, type FieldErrors, type Control } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { purchaseSchema, type PurchaseFormData } from "@/lib/validations/purchase";
+import { purchaseSchema, type PurchaseFormData } from "@/features/comprar/validations/purchase";
 
 interface UsePurchaseFormReturn {
   register: UseFormRegister<PurchaseFormData>;

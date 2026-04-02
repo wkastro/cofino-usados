@@ -27,7 +27,7 @@ import {
   TEST_DRIVE_START_TIMES,
   TEST_DRIVE_END_TIMES,
   TEST_DRIVE_BRANCHES,
-} from "@/lib/constants/test-drive";
+} from "@/features/test-drive/constants/test-drive";
 import { AUTH_PHONE_CODES_EXTENDED } from "@/lib/constants/auth";
 import { FieldError } from "@/components/forms/field-error";
 import { PhoneField } from "@/components/forms/phone-field";

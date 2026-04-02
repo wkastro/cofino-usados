@@ -1,4 +1,4 @@
-import { getFavoriteVehiculos } from "@/app/actions/favorito";
+import { getFavoriteVehiculos } from "@/features/favoritos/actions/favorito";
 import { VehicleCard } from "@/components/global/vehicle-card";
 import { NoResults } from "@/components/global/no-results";
 

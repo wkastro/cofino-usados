@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { Heart } from "lucide-react";
-import { FavoritesContent } from "@/features/favoritos/component/favorites-content";
+import { FavoritesContent } from "@/features/favoritos/components/favorites-content";
 
 export default function FavoritesPage() {
   return (

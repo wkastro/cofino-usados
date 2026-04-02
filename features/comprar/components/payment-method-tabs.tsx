@@ -2,7 +2,7 @@
 
 import { type Control, Controller } from "react-hook-form";
 import { CreditCard, Building2 } from "lucide-react";
-import type { PurchaseFormData } from "@/lib/validations/purchase";
+import type { PurchaseFormData } from "@/features/comprar/validations/purchase";
 
 interface PaymentMethodTabsProps {
   control: Control<PurchaseFormData>;

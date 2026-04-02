@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { FieldError } from "@/components/forms/field-error";
-import type { PurchaseFormData } from "@/lib/validations/purchase";
+import type { PurchaseFormData } from "@/features/comprar/validations/purchase";
 
 interface CardFormProps {
   register: UseFormRegister<PurchaseFormData>;

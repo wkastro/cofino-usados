@@ -1,5 +1,6 @@
 import { Suspense } from "react";
-import { HomeSearchBarContent, ComprarVehicleGrid } from "../home-content";
+import { HomeSearchBarContent } from "@/features/filters/components/home-search-bar-content";
+import { ComprarVehicleGrid } from "@/features/comprar/components/comprar-vehicle-grid";
 import { VehicleCardSkeletonGrid } from "@/components/global/vehicle-card-skeleton";
 import { FilterLoadingProvider } from "@/features/filters/context/filter-loading-context";
 import type { SearchParams } from "@/types/filters/filters";

@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation";
 import {
   toggleFavorite as toggleFavoriteAction,
   getFavoriteStatus,
-} from "@/app/actions/favorito";
+} from "@/features/favoritos/actions/favorito";
 
 interface FavoritesContextValue {
   isFavorite: (vehiculoId: string) => boolean;

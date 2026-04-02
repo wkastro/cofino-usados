@@ -1,8 +1,8 @@
 import { useState, type Dispatch, type SetStateAction } from "react";
 import { useForm, type UseFormHandleSubmit, type UseFormRegister, type FieldErrors, type Control } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { TEST_DRIVE_STEP_1_FIELDS } from "@/lib/constants/test-drive";
-import { testDriveSchema, type TestDriveFormData } from "@/lib/validations/test-drive";
+import { TEST_DRIVE_STEP_1_FIELDS } from "@/features/test-drive/constants/test-drive";
+import { testDriveSchema, type TestDriveFormData } from "@/features/test-drive/validations/test-drive";
 
 interface UseTestDriveFormReturn {
   register: UseFormRegister<TestDriveFormData>;

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { Container } from "@/components/layout/container";
 import { VideoShowcase } from "@/features/vehicle-detail/components/video-showcase";
-import { VehicleDetail } from "./vehicle-detail";
+import { VehicleDetail } from "@/features/vehicle-detail/components/vehicle-detail";
 
 interface VehiclePageProps {
   params: Promise<{ slug: string }>;

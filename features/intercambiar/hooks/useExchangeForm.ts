@@ -4,8 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   exchangeSchema,
   EXCHANGE_STEP_1_FIELDS,
-} from "@/lib/validations/exchange";
-import type { ExchangeFormData } from "@/lib/validations/exchange";
+} from "@/features/intercambiar/validations/exchange";
+import type { ExchangeFormData } from "@/features/intercambiar/validations/exchange";
 
 interface UseExchangeFormReturn {
   register: UseFormRegister<ExchangeFormData>;

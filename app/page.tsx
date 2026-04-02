@@ -1,8 +1,9 @@
 import { Suspense } from "react";
-import Hero from "@/features/sections/home/hero";
+import Hero from "@/components/sections/home/hero";
 import AnnouncementGrid from "@/components/sections/home/announcement-grid";
 import WrapperMarquee from "@/components/sections/home/wrapper-marquee";
-import { HomeSearchBarContent, HomeVehicleGrid } from "./home-content";
+import { HomeSearchBarContent } from "@/features/filters/components/home-search-bar-content";
+import { HomeVehicleGrid } from "@/features/filters/components/home-vehicle-grid";
 import { VehicleCardSkeletonGrid } from "@/components/global/vehicle-card-skeleton";
 import { FilterLoadingProvider } from "@/features/filters/context/filter-loading-context";
 import type { SearchParams } from "@/types/filters/filters";

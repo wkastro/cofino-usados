@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import {
   authDashboardRegisterSchema,
   type AuthDashboardRegisterData,
-} from "@/lib/validations/auth-dashboard";
+} from "@/features/auth-dashboard/validations/auth-dashboard";
 import { registerAdmin } from "@/app/actions/auth";
 
 interface UseAdminRegisterFormReturn {
