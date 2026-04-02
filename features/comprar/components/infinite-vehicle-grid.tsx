@@ -10,11 +10,7 @@ import { useIntersectionObserver } from "@/features/comprar/hooks/useIntersectio
 import { AdvancedFiltersButton } from "@/features/filters/components/advanced-filters-button";
 import type { VehicleResponse } from "@/types/vehiculo/vehiculo";
 import type { VehicleFilters, EtiquetaComercial } from "@/types/filters/filters";
-
-interface RangeValues {
-  min: number;
-  max: number;
-}
+import type { RangeValues } from "@/features/filters/types/advanced-filters";
 
 interface InfiniteVehicleGridProps {
   initialData: VehicleResponse;

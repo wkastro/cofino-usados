@@ -7,11 +7,7 @@ import { useFilterLoading } from "@/features/filters/context/filter-loading-cont
 import { AdvancedFiltersButton } from "@/features/filters/components/advanced-filters-button";
 import type { VehicleResponse } from "@/types/vehiculo/vehiculo";
 import type { EtiquetaComercial } from "@/types/filters/filters";
-
-interface RangeValues {
-  min: number;
-  max: number;
-}
+import type { RangeValues } from "@/features/filters/types/advanced-filters";
 
 interface VehicleGridProps {
   vehicles: VehicleResponse;

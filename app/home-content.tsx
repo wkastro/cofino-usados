@@ -3,7 +3,7 @@ import { InfiniteVehicleGrid } from "@/features/comprar/components/infinite-vehi
 import { getCachedVehiculos, getCachedCategories, getCachedBrands, getCachedEtiquetas, getCachedPriceRange, getCachedMinYear, getCachedKilometrajeRange } from "./actions/vehiculo.cached";
 import { getTransmissions } from "./actions/filters";
 import { HomeSearchBar } from "@/features/filters/components/home-search-bar";
-import type { VehicleFilters } from "@/types/filters/filters";
+import { parseSearchParamsToFilters } from "@/lib/filters/parse-search-params";
 import type { SearchParams } from "@/types/filters/filters";
 
 interface HomeContentProps {
@@ -30,22 +30,7 @@ export async function HomeVehicleGrid({
   showAdvancedFiltersButton = true,
 }: HomeContentProps): Promise<React.ReactElement> {
   const resolvedParams = await searchParams;
-  const precioMin = resolvedParams["precio-min"];
-  const precioMax = resolvedParams["precio-max"];
-  const anioMin = resolvedParams.anio;
-
-  const filters: VehicleFilters = {
-    ...(resolvedParams.marca && { marca: resolvedParams.marca }),
-    ...(resolvedParams.categoria && { categoria: resolvedParams.categoria }),
-    ...(resolvedParams.transmision && { transmision: resolvedParams.transmision }),
-    ...(resolvedParams.etiqueta && { etiqueta: resolvedParams.etiqueta }),
-    ...(resolvedParams.combustible && { combustible: resolvedParams.combustible }),
-    ...(precioMin && { precioMin: Number(precioMin) }),
-    ...(precioMax && { precioMax: Number(precioMax) }),
-    ...(anioMin && { anio: Number(anioMin) }),
-    ...(resolvedParams.kmin && { kmin: Number(resolvedParams.kmin) }),
-    ...(resolvedParams.kmax && { kmax: Number(resolvedParams.kmax) }),
-  };
+  const filters = parseSearchParamsToFilters(resolvedParams);
 
   const [vehicles, etiquetaOptions, priceRange, minYear, kilometrajeRange] = await Promise.all([
     getCachedVehiculos(1, filters),
@@ -73,22 +58,7 @@ export async function ComprarVehicleGrid({
   searchParams,
 }: HomeContentProps): Promise<React.ReactElement> {
   const resolvedParams = await searchParams;
-  const precioMin = resolvedParams["precio-min"];
-  const precioMax = resolvedParams["precio-max"];
-  const anioMin = resolvedParams.anio;
-
-  const filters: VehicleFilters = {
-    ...(resolvedParams.marca && { marca: resolvedParams.marca }),
-    ...(resolvedParams.categoria && { categoria: resolvedParams.categoria }),
-    ...(resolvedParams.transmision && { transmision: resolvedParams.transmision }),
-    ...(resolvedParams.etiqueta && { etiqueta: resolvedParams.etiqueta }),
-    ...(resolvedParams.combustible && { combustible: resolvedParams.combustible }),
-    ...(precioMin && { precioMin: Number(precioMin) }),
-    ...(precioMax && { precioMax: Number(precioMax) }),
-    ...(anioMin && { anio: Number(anioMin) }),
-    ...(resolvedParams.kmin && { kmin: Number(resolvedParams.kmin) }),
-    ...(resolvedParams.kmax && { kmax: Number(resolvedParams.kmax) }),
-  };
+  const filters = parseSearchParamsToFilters(resolvedParams);
 
   const [vehicles, etiquetaOptions, priceRange, minYear, kilometrajeRange] = await Promise.all([
     getCachedVehiculos(1, filters, COMPRAR_PAGE_SIZE),
