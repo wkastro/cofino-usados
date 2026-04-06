@@ -14,6 +14,8 @@ import {
   EvCharger,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+
 import {
   formatBlindaje,
   formatCurrency,
@@ -22,6 +24,7 @@ import {
 } from "@/lib/formatters/vehicle";
 import { useFavorites } from "@/features/favoritos/context/favorites-context";
 import type { Vehiculo } from "@/types/vehiculo/vehiculo";
+import { etiquetaStyles } from "@/lib/constants/etiqueta-comercial";
 
 interface VehicleCardProps {
   vehicle: Vehiculo;
@@ -65,7 +68,13 @@ export function VehicleCard({ vehicle }: VehicleCardProps): React.ReactElement {
       <div className="flex flex-wrap justify-between items-center">
         <p className="text-muted-foreground">{vehicle.marca.nombre}</p>
         {vehicle.etiquetaComercial && (
-          <span className="inline-flex items-center rounded-full bg-destructive/10 px-2.5 py-0.5 text-[0.7rem] font-medium text-destructive">
+          <span
+            className={cn(
+              "inline-flex items-center rounded-full px-2.5 py-0.5 text-[0.7rem] font-medium",
+              etiquetaStyles[vehicle.etiquetaComercial.slug] ??
+                "text-destructive bg-destructive/10",
+            )}
+          >
             {vehicle.etiquetaComercial.nombre}
           </span>
         )}
