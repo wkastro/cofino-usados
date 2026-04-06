@@ -32,7 +32,7 @@ export function VehicleCard({ vehicle }: VehicleCardProps): React.ReactElement {
   const favorited = isFavorite(vehicle.id);
 
   return (
-    <article className="group relative w-full max-w-[24rem] rounded-lg bg-card text-card-foreground border border-border p-6 pb-4 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.06)] flex flex-col justify-between overflow-hidden">
+    <article className="group space-y-2 relative w-full max-w-[24rem] rounded-lg bg-card text-card-foreground border border-border p-6 pb-4 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.06)] flex flex-col justify-between overflow-hidden">
       {/* HEADER */}
       <div className="flex items-start justify-between relative z-10 w-full">
         <div className="flex flex-col">
@@ -40,13 +40,7 @@ export function VehicleCard({ vehicle }: VehicleCardProps): React.ReactElement {
             <h2 className="text-fs-base font-semibold">
               {vehicle.nombre} {vehicle.anio}
             </h2>
-            {vehicle.etiquetaComercial && (
-              <span className="inline-flex items-center rounded-full bg-destructive/10 px-2.5 py-0.5 text-[0.7rem] font-medium text-destructive">
-                {vehicle.etiquetaComercial.nombre}
-              </span>
-            )}
           </div>
-          <p className="text-muted-foreground">{vehicle.marca.nombre}</p>
         </div>
         <button
           type="button"
@@ -67,6 +61,14 @@ export function VehicleCard({ vehicle }: VehicleCardProps): React.ReactElement {
             strokeWidth={favorited ? 0 : 2}
           />
         </button>
+      </div>
+      <div className="flex flex-wrap justify-between items-center">
+        <p className="text-muted-foreground">{vehicle.marca.nombre}</p>
+        {vehicle.etiquetaComercial && (
+          <span className="inline-flex items-center rounded-full bg-destructive/10 px-2.5 py-0.5 text-[0.7rem] font-medium text-destructive">
+            {vehicle.etiquetaComercial.nombre}
+          </span>
+        )}
       </div>
 
       {/* IMAGEN */}
