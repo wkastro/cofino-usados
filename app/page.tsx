@@ -3,7 +3,6 @@ import Hero from "@/components/sections/home/hero";
 import AnnouncementGrid from "@/components/sections/home/announcement-grid";
 import WrapperMarquee from "@/components/sections/home/wrapper-marquee";
 import { HomeSearchBarContent } from "@/features/filters/components/home-search-bar-content";
-import { HomeVehicleGrid } from "@/features/filters/components/home-vehicle-grid";
 import { HomeRecommendations } from "@/features/recommendations/components/home-recommendations";
 import { VehicleCardSkeletonGrid } from "@/components/global/vehicle-card-skeleton";
 import { FilterLoadingProvider } from "@/features/filters/context/filter-loading-context";
@@ -23,19 +22,15 @@ export default async function Home({ searchParams }: HomeProps): Promise<React.R
         </Suspense>
       </Hero>
 
-      {/* Vehicle grid streams in */}
-      <Suspense fallback={<VehicleCardSkeletonGrid />}>
-        <HomeVehicleGrid searchParams={searchParams} />
+      {/* Recommendations grid (filtrable) */}
+      <Suspense fallback={<VehicleCardSkeletonGrid count={6} />}>
+        <HomeRecommendations searchParams={searchParams} />
       </Suspense>
-
+      
       {/* Static sections */}
       <WrapperMarquee />
       <AnnouncementGrid />
 
-      {/* Recommendations */}
-      <Suspense fallback={<VehicleCardSkeletonGrid count={6} />}>
-        <HomeRecommendations />
-      </Suspense>
     </FilterLoadingProvider>
   );
 }

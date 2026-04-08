@@ -2,20 +2,9 @@ import type React from "react";
 import { Suspense } from "react";
 import { Container } from "@/components/layout/container";
 import { PurchaseContent } from "@/features/comprar/components/purchase-content";
-import { SimilarVehicles } from "@/features/recommendations/components/similar-vehicles";
-import { VehicleCardSkeletonGrid } from "@/components/global/vehicle-card-skeleton";
 
 interface BuyPageProps {
   params: Promise<{ slug: string }>;
-}
-
-async function SimilarVehiclesSection({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}): Promise<React.ReactElement | null> {
-  const { slug } = await params;
-  return <SimilarVehicles slug={slug} />;
 }
 
 export default async function BuyPage({ params }: BuyPageProps): Promise<React.ReactElement> {
@@ -37,10 +26,6 @@ export default async function BuyPage({ params }: BuyPageProps): Promise<React.R
         }
       >
         <PurchaseContent params={params} />
-      </Suspense>
-
-      <Suspense fallback={<VehicleCardSkeletonGrid count={3} />}>
-        <SimilarVehiclesSection params={params} />
       </Suspense>
     </Container>
   );

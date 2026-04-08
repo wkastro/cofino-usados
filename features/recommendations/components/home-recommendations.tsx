@@ -1,28 +1,46 @@
-// features/recommendations/components/home-recommendations.tsx
 import type React from "react";
 import { getCachedHomeRecommendations } from "../actions/recommendations.cached";
-import { VehicleCard } from "@/components/global/vehicle-card";
-import { Container } from "@/components/layout/container";
+import { VehicleGrid } from "@/features/filters/components/vehicle-grid";
+import {
+  getCachedEtiquetas,
+  getCachedPriceRange,
+  getCachedMinYear,
+  getCachedKilometrajeRange,
+} from "@/app/actions/vehiculo.cached";
+import { parseSearchParamsToFilters } from "@/lib/filters/parse-search-params";
+import type { SearchParams } from "@/types/filters/filters";
 
-export async function HomeRecommendations(): Promise<React.ReactElement | null> {
-  const vehicles = await getCachedHomeRecommendations();
+interface HomeRecommendationsProps {
+  searchParams: Promise<SearchParams>;
+}
 
-  if (vehicles.length === 0) return null;
+export async function HomeRecommendations({
+  searchParams,
+}: HomeRecommendationsProps): Promise<React.ReactElement> {
+  const resolvedParams = await searchParams;
+  const filters = parseSearchParamsToFilters(resolvedParams);
+
+  const [vehicles, etiquetaOptions, priceRange, minYear, kilometrajeRange] = await Promise.all([
+    getCachedHomeRecommendations(filters),
+    getCachedEtiquetas(),
+    getCachedPriceRange(),
+    getCachedMinYear(),
+    getCachedKilometrajeRange(),
+  ]);
 
   return (
-    <section className="w-full py-12">
-      <Container>
-        <h2 className="font-semibold text-[#111111] mb-10 tracking-tight">
-          Vehículos destacados
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
-          {vehicles.map((vehicle) => (
-            <div key={vehicle.id} className="w-full flex justify-center">
-              <VehicleCard vehicle={vehicle} />
-            </div>
-          ))}
-        </div>
-      </Container>
-    </section>
+    <VehicleGrid
+      vehicles={{
+        vehiculos: vehicles,
+        total: vehicles.length,
+        pages: 1,
+        page: 1,
+      }}
+      showAdvancedFiltersButton
+      etiquetas={etiquetaOptions}
+      priceRange={priceRange}
+      minYear={minYear}
+      kilometrajeRange={kilometrajeRange}
+    />
   );
 }

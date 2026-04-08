@@ -2,13 +2,57 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { Transmision, Combustible } from "@/generated/prisma/client";
 import { getVehicleBySlug } from "@/app/actions/vehiculo";
 import type { Vehiculo } from "@/types/vehiculo/vehiculo";
+import type { VehicleFilters } from "@/types/filters/filters";
 
 const HOME_LIMIT = 6;
 const SIMILAR_LIMIT = 3;
 const MAX_PER_BRAND = 2;
 const PRICE_DELTA = 0.20;
+
+const TRANSMISION_MAP: Record<string, Transmision> = {
+  automatico: Transmision.Automatico,
+  manual: Transmision.Manual,
+};
+
+const COMBUSTIBLE_MAP: Record<string, Combustible> = {
+  gasolina: Combustible.Gasolina,
+  diesel: Combustible.Diesel,
+  hibrido: Combustible.Hibrido,
+  electrico: Combustible.Electrico,
+};
+
+/**
+ * Construye el `where` de Prisma a partir de los filtros del usuario.
+ * Replica la lógica de `getVehiculos` para mantener consistencia.
+ */
+function buildFilterWhere(filters: VehicleFilters): Record<string, unknown> {
+  const transmision = filters.transmision ? TRANSMISION_MAP[filters.transmision] : undefined;
+  const combustible = filters.combustible ? COMBUSTIBLE_MAP[filters.combustible] : undefined;
+
+  return {
+    ...(filters.marca && { marca: { slug: filters.marca } }),
+    ...(filters.categoria && { categoria: { slug: filters.categoria } }),
+    ...(transmision && { transmision }),
+    ...(filters.etiqueta && { etiquetaComercial: { slug: filters.etiqueta } }),
+    ...(combustible && { combustible }),
+    ...(filters.anio != null && { anio: { gte: filters.anio } }),
+    ...((filters.kmin != null || filters.kmax != null) && {
+      kilometraje: {
+        ...(filters.kmin != null && { gte: filters.kmin }),
+        ...(filters.kmax != null && { lte: filters.kmax }),
+      },
+    }),
+    ...((filters.precioMin != null || filters.precioMax != null) && {
+      precio: {
+        ...(filters.precioMin != null && { gte: filters.precioMin }),
+        ...(filters.precioMax != null && { lte: filters.precioMax }),
+      },
+    }),
+  };
+}
 
 /**
  * Select compartido para recomendaciones.
@@ -77,44 +121,56 @@ function pickWithBrandDiversity(
   limit: number,
   marcaCount: Record<string, number>,
   alreadyPicked: Vehiculo[] = [],
+  perBrandCap: number = MAX_PER_BRAND,
 ): Vehiculo[] {
   const result = [...alreadyPicked];
   for (const row of rows) {
     if (result.length >= limit) break;
     const brandId = row.marca.id;
     const count = marcaCount[brandId] ?? 0;
-    if (count >= MAX_PER_BRAND) continue;
+    if (count >= perBrandCap) continue;
     result.push(row);
     marcaCount[brandId] = count + 1;
   }
   return result;
 }
 
-export async function getHomeRecommendations(): Promise<Vehiculo[]> {
-  // Paso 1: vehículos con etiqueta comercial, ordenados por recientes.
+export async function getHomeRecommendations(
+  filters: VehicleFilters = {},
+): Promise<Vehiculo[]> {
+  const filterWhere = buildFilterWhere(filters);
+  // Cuando el usuario filtra explícitamente por marca, no tiene sentido
+  // aplicar el cap de diversidad — quiere ver todos los resultados de esa marca.
+  const enforceBrandDiversity = !filters.marca;
+  const perBrandCap = enforceBrandDiversity ? MAX_PER_BRAND : Number.POSITIVE_INFINITY;
+
+  // Paso 1: vehículos con etiqueta comercial + filtros del usuario, recientes primero.
   const destacadosRaw = await prisma.vehiculo.findMany({
-    where: { etiquetaComercialId: { not: null } },
+    where: { ...filterWhere, etiquetaComercialId: { not: null } },
     select: RECOMMENDATION_SELECT,
     orderBy: { createdAt: "desc" },
   });
   const destacados = (destacadosRaw as unknown as PrismaVehicleRow[]).map(formatVehicle);
 
-  // Paso 2: aplicar diversidad por marca.
+  // Paso 2: aplicar diversidad por marca (o cap relajado si el filtro lo desactiva).
   const marcaCount: Record<string, number> = {};
-  let picked = pickWithBrandDiversity(destacados, HOME_LIMIT, marcaCount);
+  let picked = pickWithBrandDiversity(destacados, HOME_LIMIT, marcaCount, [], perBrandCap);
 
   if (picked.length >= HOME_LIMIT) return picked;
 
-  // Paso 3: fallback con recientes, excluyendo ya seleccionados.
+  // Paso 3: fallback con recientes (manteniendo filtros), excluyendo ya seleccionados.
   const excludedIds = picked.map((v) => v.id);
   const recientesRaw = await prisma.vehiculo.findMany({
-    where: excludedIds.length > 0 ? { id: { notIn: excludedIds } } : {},
+    where: {
+      ...filterWhere,
+      ...(excludedIds.length > 0 ? { id: { notIn: excludedIds } } : {}),
+    },
     select: RECOMMENDATION_SELECT,
     orderBy: { createdAt: "desc" },
   });
   const recientes = (recientesRaw as unknown as PrismaVehicleRow[]).map(formatVehicle);
 
-  picked = pickWithBrandDiversity(recientes, HOME_LIMIT, marcaCount, picked);
+  picked = pickWithBrandDiversity(recientes, HOME_LIMIT, marcaCount, picked, perBrandCap);
 
   if (picked.length >= HOME_LIMIT) return picked;
 

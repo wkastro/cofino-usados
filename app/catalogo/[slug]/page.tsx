@@ -5,9 +5,20 @@ import { ChevronLeft } from "lucide-react";
 import { Container } from "@/components/layout/container";
 import { VideoShowcase } from "@/features/vehicle-detail/components/video-showcase";
 import { VehicleDetail } from "@/features/vehicle-detail/components/vehicle-detail";
+import { SimilarVehicles } from "@/features/recommendations/components/similar-vehicles";
+import { VehicleCardSkeletonGrid } from "@/components/global/vehicle-card-skeleton";
 
 interface VehiclePageProps {
   params: Promise<{ slug: string }>;
+}
+
+async function SimilarVehiclesSection({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<React.ReactElement | null> {
+  const { slug } = await params;
+  return <SimilarVehicles slug={slug} />;
 }
 
 export default async function VehiclePage({ params }: VehiclePageProps): Promise<React.ReactElement> {
@@ -47,6 +58,11 @@ export default async function VehiclePage({ params }: VehiclePageProps): Promise
           subtitle="Aprovechá descuentos exclusivos, financiamiento flexible y garantía certificada."
         />
       </div>
+
+      {/* Similar vehicles — streams in */}
+      <Suspense fallback={<VehicleCardSkeletonGrid count={3} />}>
+        <SimilarVehiclesSection params={params} />
+      </Suspense>
     </Container>
   );
 }
