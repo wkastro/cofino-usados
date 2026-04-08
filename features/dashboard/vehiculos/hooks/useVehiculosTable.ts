@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter, useSearchParams, usePathname } from "next/navigation"
-import { useCallback, useTransition } from "react"
+import { useCallback, useRef, useTransition } from "react"
 import { EstadoVenta } from "@/generated/prisma/client"
 
 const ESTADOS = Object.values(EstadoVenta)
@@ -48,8 +48,15 @@ export function useVehiculosTable(): UseVehiculosTableReturn {
     [router, pathname, searchParams],
   )
 
+  const searchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
   const setSearch = useCallback(
-    (value: string) => pushParams({ q: value }),
+    (value: string) => {
+      if (searchTimerRef.current) clearTimeout(searchTimerRef.current)
+      searchTimerRef.current = setTimeout(() => {
+        pushParams({ q: value })
+      }, 350)
+    },
     [pushParams],
   )
 
@@ -59,14 +66,8 @@ export function useVehiculosTable(): UseVehiculosTableReturn {
   )
 
   const setPage = useCallback(
-    (value: number) => {
-      const params = new URLSearchParams(searchParams.toString())
-      params.set("page", String(value))
-      startTransition(() => {
-        router.push(`${pathname}?${params.toString()}`, { scroll: false })
-      })
-    },
-    [router, pathname, searchParams],
+    (value: number) => pushParams({ page: String(value) }),
+    [pushParams],
   )
 
   const clearFilters = useCallback(

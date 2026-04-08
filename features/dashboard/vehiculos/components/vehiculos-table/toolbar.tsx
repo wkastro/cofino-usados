@@ -43,12 +43,13 @@ export function VehiculosToolbar({ table }: ToolbarProps) {
     <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex flex-1 items-center gap-2">
         <div className="relative flex-1 max-w-xs">
-          <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
+          <SearchIcon aria-hidden="true" className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
           <Input
             ref={inputRef}
             defaultValue={table.search}
             onChange={handleSearchChange}
             placeholder="Buscar por nombre, placa..."
+            aria-label="Buscar vehículos"
             className="pl-9"
           />
         </div>
@@ -57,7 +58,7 @@ export function VehiculosToolbar({ table }: ToolbarProps) {
           onValueChange={handleEstadoChange}
         >
           <SelectTrigger className="w-[140px]" size="default">
-            <FilterIcon className="size-4 mr-1 text-muted-foreground" />
+            <FilterIcon aria-hidden="true" className="size-4 mr-1 text-muted-foreground" />
             <SelectValue placeholder="Estado" />
           </SelectTrigger>
           <SelectContent>
@@ -71,14 +72,14 @@ export function VehiculosToolbar({ table }: ToolbarProps) {
         </Select>
         {table.hasActiveFilters && (
           <Button variant="ghost" size="sm" onClick={table.clearFilters}>
-            <XIcon className="size-4 mr-1" />
+            <XIcon aria-hidden="true" className="size-4 mr-1" />
             Limpiar
           </Button>
         )}
       </div>
       <Button asChild size="sm">
         <Link href="/dashboard/vehiculos/nuevo">
-          <PlusIcon className="size-4 mr-1" />
+          <PlusIcon aria-hidden="true" className="size-4 mr-1" />
           Nuevo vehículo
         </Link>
       </Button>
