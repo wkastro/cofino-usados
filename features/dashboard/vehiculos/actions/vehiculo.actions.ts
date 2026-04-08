@@ -198,7 +198,7 @@ export async function addGaleriaImage(
   vehiculoId: string,
   url: string,
   orden: number,
-): Promise<ActionResult> {
+): Promise<ActionResult<{ id: string; url: string; orden: number }>> {
   await requireAdmin()
 
   const parsed = galeriaImageSchema.safeParse({ url, orden })
@@ -210,9 +210,11 @@ export async function addGaleriaImage(
     }
   }
 
+  let created: { id: string; url: string; orden: number }
   try {
-    await prisma.galeria.create({
+    created = await prisma.galeria.create({
       data: { vehiculoId, url: parsed.data.url, orden: parsed.data.orden },
+      select: { id: true, url: true, orden: true },
     })
   } catch {
     return { ok: false, message: "Error al añadir la imagen. Verifica que el vehículo existe." }
@@ -220,7 +222,7 @@ export async function addGaleriaImage(
 
   revalidateTag(`admin-vehiculo-${vehiculoId}`, "minutes")
 
-  return { ok: true, message: "Imagen añadida." }
+  return { ok: true, message: "Imagen añadida.", data: created }
 }
 
 export async function removeGaleriaImage(

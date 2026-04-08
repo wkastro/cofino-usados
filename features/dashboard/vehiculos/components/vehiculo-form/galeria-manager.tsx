@@ -31,10 +31,10 @@ export function GaleriaManager({ vehiculoId, initialImages }: GaleriaManagerProp
     startTransition(async () => {
       const orden = images.length
       const result = await addGaleriaImage(vehiculoId, newUrl.trim(), orden)
-      if (result.ok) {
+      if (result.ok && result.data) {
         setImages((prev) => [
           ...prev,
-          { id: crypto.randomUUID(), url: newUrl.trim(), orden },
+          { id: result.data!.id, url: result.data!.url, orden: result.data!.orden },
         ])
         setNewUrl("")
         toast.success(result.message)
@@ -58,6 +58,7 @@ export function GaleriaManager({ vehiculoId, initialImages }: GaleriaManagerProp
 
   function handleMoveUp(index: number) {
     if (index === 0) return
+    const previous = [...images]
     const reordered = [...images]
     ;[reordered[index - 1], reordered[index]] = [reordered[index], reordered[index - 1]]
     const withOrden = reordered.map((img, i) => ({ ...img, orden: i }))
@@ -68,7 +69,10 @@ export function GaleriaManager({ vehiculoId, initialImages }: GaleriaManagerProp
         vehiculoId,
         withOrden.map(({ id, orden }) => ({ id, orden })),
       )
-      if (!result.ok) toast.error(result.message)
+      if (!result.ok) {
+        setImages(previous)
+        toast.error(result.message)
+      }
     })
   }
 
