@@ -129,7 +129,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         },
         async jwt({ token, user, account }) {
             // Credentials: enrich from the authorize return value
-            if (user && account?.provider === "credentials") {
+            if (user && account?.type === "credentials") {
                 token.id = user.id!
                 token.fullName = user.name ?? ""
                 token.phone = user.phone ?? undefined

@@ -1,7 +1,5 @@
-import type React from "react";
+import { redirect } from "next/navigation";
 
-export default function Page(): React.ReactElement {
-    return (
-        <h1>Dashboard</h1>
-    );
+export default function DashboardPage() {
+  redirect("/dashboard/default");
 }

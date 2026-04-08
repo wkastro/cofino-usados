@@ -53,7 +53,7 @@ export default function RootLayout({
           >
             <Header />
           </Suspense>
-          {children}
+          <Suspense>{children}</Suspense>
           <Footer />
         </FavoritesProvider>
       </body>
