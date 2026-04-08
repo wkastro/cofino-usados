@@ -111,7 +111,7 @@ export function VehiculosTable({ data }: VehiculosTableProps) {
               onClick={() => tableHook.setPage(1)}
               disabled={data.page <= 1}
             >
-              <ChevronsLeftIcon />
+              <ChevronsLeftIcon aria-hidden="true" />
               <span className="sr-only">Primera página</span>
             </Button>
             <Button
@@ -121,7 +121,7 @@ export function VehiculosTable({ data }: VehiculosTableProps) {
               onClick={() => tableHook.setPage(data.page - 1)}
               disabled={data.page <= 1}
             >
-              <ChevronLeftIcon />
+              <ChevronLeftIcon aria-hidden="true" />
               <span className="sr-only">Página anterior</span>
             </Button>
             <Button
@@ -131,7 +131,7 @@ export function VehiculosTable({ data }: VehiculosTableProps) {
               onClick={() => tableHook.setPage(data.page + 1)}
               disabled={data.page >= data.pages}
             >
-              <ChevronRightIcon />
+              <ChevronRightIcon aria-hidden="true" />
               <span className="sr-only">Página siguiente</span>
             </Button>
             <Button
@@ -141,7 +141,7 @@ export function VehiculosTable({ data }: VehiculosTableProps) {
               onClick={() => tableHook.setPage(data.pages)}
               disabled={data.page >= data.pages}
             >
-              <ChevronsRightIcon />
+              <ChevronsRightIcon aria-hidden="true" />
               <span className="sr-only">Última página</span>
             </Button>
           </div>
