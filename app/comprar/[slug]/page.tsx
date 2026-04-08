@@ -2,12 +2,16 @@ import type React from "react";
 import { Suspense } from "react";
 import { Container } from "@/components/layout/container";
 import { PurchaseContent } from "@/features/comprar/components/purchase-content";
+import { SimilarVehicles } from "@/features/recommendations/components/similar-vehicles";
+import { VehicleCardSkeletonGrid } from "@/components/global/vehicle-card-skeleton";
 
 interface BuyPageProps {
   params: Promise<{ slug: string }>;
 }
 
 export default async function BuyPage({ params }: BuyPageProps): Promise<React.ReactElement> {
+  const { slug } = await params;
+
   return (
     <Container className="py-4">
       <Suspense
@@ -26,6 +30,10 @@ export default async function BuyPage({ params }: BuyPageProps): Promise<React.R
         }
       >
         <PurchaseContent params={params} />
+      </Suspense>
+
+      <Suspense fallback={<VehicleCardSkeletonGrid count={3} />}>
+        <SimilarVehicles slug={slug} />
       </Suspense>
     </Container>
   );
