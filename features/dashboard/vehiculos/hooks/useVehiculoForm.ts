@@ -41,7 +41,7 @@ export function useVehiculoForm({ mode, vehiculo }: UseVehiculoFormOptions) {
       marcaId: vehiculo?.marcaId ?? "",
       sucursalId: vehiculo?.sucursalId ?? "",
       categoriaId: vehiculo?.categoriaId ?? "",
-      etiquetaComercialId: vehiculo?.etiquetaComercialId ?? undefined,
+      etiquetaComercialId: vehiculo?.etiquetaComercialId ?? null,
     },
   })
 
