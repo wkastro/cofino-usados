@@ -1,14 +1,14 @@
-import { z } from "zod"
+import * as z from "zod"
 import { EstadoVenta, Transmision, Combustible, Traccion } from "@/generated/prisma/client"
 
 export const vehiculoSchema = z.object({
   nombre: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
-  codigo: z.string().optional().default(""),
+  codigo: z.string().optional().default("").transform(v => v?.trim() || null),
   placa: z.string().min(2, "La placa es requerida").max(20, "Placa muy larga"),
   precio: z.coerce.number().positive("El precio debe ser mayor a 0"),
   preciosiniva: z.coerce.number().positive("El precio sin IVA debe ser mayor a 0"),
   kilometraje: z.coerce.number().int().min(0, "El kilometraje no puede ser negativo"),
-  motor: z.string().optional().default(""),
+  motor: z.string().optional().default("").transform(v => v?.trim() || null),
   anio: z.coerce
     .number()
     .int()
@@ -18,9 +18,9 @@ export const vehiculoSchema = z.object({
   transmision: z.nativeEnum(Transmision),
   combustible: z.nativeEnum(Combustible),
   traccion: z.nativeEnum(Traccion),
-  color_interior: z.string().optional().default(""),
-  color_exterior: z.string().optional().default(""),
-  descripcion: z.string().optional().default(""),
+  color_interior: z.string().optional().default("").transform(v => v?.trim() || null),
+  color_exterior: z.string().optional().default("").transform(v => v?.trim() || null),
+  descripcion: z.string().optional().default("").transform(v => v?.trim() || null),
   marcaId: z.string().uuid("Selecciona una marca"),
   sucursalId: z.string().uuid("Selecciona una sucursal"),
   categoriaId: z.string().uuid("Selecciona una categoría"),
