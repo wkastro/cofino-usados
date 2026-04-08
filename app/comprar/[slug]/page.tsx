@@ -9,9 +9,16 @@ interface BuyPageProps {
   params: Promise<{ slug: string }>;
 }
 
-export default async function BuyPage({ params }: BuyPageProps): Promise<React.ReactElement> {
+async function SimilarVehiclesSection({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<React.ReactElement | null> {
   const { slug } = await params;
+  return <SimilarVehicles slug={slug} />;
+}
 
+export default async function BuyPage({ params }: BuyPageProps): Promise<React.ReactElement> {
   return (
     <Container className="py-4">
       <Suspense
@@ -33,7 +40,7 @@ export default async function BuyPage({ params }: BuyPageProps): Promise<React.R
       </Suspense>
 
       <Suspense fallback={<VehicleCardSkeletonGrid count={3} />}>
-        <SimilarVehicles slug={slug} />
+        <SimilarVehiclesSection params={params} />
       </Suspense>
     </Container>
   );
