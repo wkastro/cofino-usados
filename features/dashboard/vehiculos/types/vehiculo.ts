@@ -1,4 +1,4 @@
-import type { EstadoVenta, Transmision, Combustible, Traccion } from "@/generated/prisma/client"
+import type { EstadoVenta, Transmision, Combustible, Traccion } from "@/generated/prisma/enums"
 
 export interface SelectOption {
   id: string

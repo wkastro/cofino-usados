@@ -1,5 +1,5 @@
 import { Badge } from "@/features/dashboard/components/ui/badge"
-import { EstadoVenta } from "@/generated/prisma/client"
+import { EstadoVenta } from "@/generated/prisma/enums"
 
 const ESTADO_CONFIG: Record<
   EstadoVenta,

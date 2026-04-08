@@ -5,7 +5,7 @@ import { useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { EllipsisVerticalIcon, PencilIcon, TrashIcon, CircleDotIcon } from "lucide-react"
 import { toast } from "sonner"
-import { EstadoVenta } from "@/generated/prisma/client"
+import { EstadoVenta } from "@/generated/prisma/enums"
 import { Button } from "@/features/dashboard/components/ui/button"
 import {
   DropdownMenu,

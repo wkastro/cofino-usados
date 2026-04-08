@@ -7,7 +7,7 @@ import { vehiculoSchema, galeriaImageSchema } from "../validations/vehiculo"
 import { generateVehiculoSlug } from "../lib/slug"
 import type { VehiculoInput } from "../validations/vehiculo"
 import type { ActionResult } from "../types/vehiculo"
-import { EstadoVenta } from "@/generated/prisma/client"
+import { EstadoVenta } from "@/generated/prisma/enums"
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 

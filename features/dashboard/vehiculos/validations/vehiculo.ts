@@ -1,5 +1,5 @@
 import * as z from "zod"
-import { EstadoVenta, Transmision, Combustible, Traccion } from "@/generated/prisma/client"
+import { EstadoVenta, Transmision, Combustible, Traccion } from "@/generated/prisma/enums"
 
 export const vehiculoSchema = z.object({
   nombre: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),

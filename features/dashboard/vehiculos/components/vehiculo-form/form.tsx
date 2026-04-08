@@ -3,7 +3,7 @@
 import { Controller } from "react-hook-form"
 import { ArrowLeftIcon } from "lucide-react"
 import Link from "next/link"
-import { EstadoVenta, Transmision, Combustible, Traccion } from "@/generated/prisma/client"
+import { EstadoVenta, Transmision, Combustible, Traccion } from "@/generated/prisma/enums"
 import { Button } from "@/features/dashboard/components/ui/button"
 import { Input } from "@/features/dashboard/components/ui/input"
 import { Label } from "@/features/dashboard/components/ui/label"

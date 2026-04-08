@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams, usePathname } from "next/navigation"
 import { useCallback, useRef, useTransition } from "react"
-import { EstadoVenta } from "@/generated/prisma/client"
+import { EstadoVenta } from "@/generated/prisma/enums"
 
 const ESTADOS = Object.values(EstadoVenta)
 
