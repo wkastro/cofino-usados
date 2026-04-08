@@ -185,7 +185,11 @@ export async function changeEstadoVehiculo(
   })
   if (!vehiculo) return { ok: false, message: "Vehículo no encontrado." }
 
-  await prisma.vehiculo.update({ where: { id }, data: { estado } })
+  try {
+    await prisma.vehiculo.update({ where: { id }, data: { estado } })
+  } catch {
+    return { ok: false, message: "Error al cambiar el estado del vehículo." }
+  }
 
   revalidateVehiculoCaches(vehiculo.slug, id)
 

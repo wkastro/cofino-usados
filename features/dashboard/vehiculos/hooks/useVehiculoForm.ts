@@ -8,7 +8,7 @@ import { toast } from "sonner"
 import { EstadoVenta, Transmision, Combustible, Traccion } from "@/generated/prisma/client"
 import { vehiculoSchema, type VehiculoInput } from "../validations/vehiculo"
 import { createVehiculo, updateVehiculo } from "../actions/vehiculo.actions"
-import type { VehiculoAdmin } from "../types/vehiculo"
+import type { VehiculoAdmin, ActionResult } from "../types/vehiculo"
 
 interface UseVehiculoFormOptions {
   mode: "create" | "edit"
@@ -48,10 +48,16 @@ export function useVehiculoForm({ mode, vehiculo }: UseVehiculoFormOptions) {
   const onSubmit = form.handleSubmit((data) => {
     startTransition(async () => {
       // data is already validated/transformed by zodResolver
-      const result =
-        mode === "create"
-          ? await createVehiculo(data as VehiculoInput)
-          : await updateVehiculo(vehiculo!.id, data as VehiculoInput)
+      let result: ActionResult<unknown>
+      if (mode === "create") {
+        result = await createVehiculo(data as VehiculoInput)
+      } else {
+        if (!vehiculo) {
+          toast.error("No se puede guardar: vehículo no encontrado.")
+          return
+        }
+        result = await updateVehiculo(vehiculo.id, data as VehiculoInput)
+      }
 
       if (result.ok) {
         toast.success(result.message)
