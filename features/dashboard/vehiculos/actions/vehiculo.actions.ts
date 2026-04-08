@@ -48,31 +48,36 @@ export async function createVehiculo(
   const existing = await prisma.vehiculo.findUnique({ where: { slug }, select: { id: true } })
   if (existing) slug = `${slug}-${Date.now()}`
 
-  const vehiculo = await prisma.vehiculo.create({
-    data: {
-      nombre: data.nombre,
-      slug,
-      codigo: data.codigo ?? null,
-      placa: data.placa,
-      precio: data.precio,
-      preciosiniva: data.preciosiniva,
-      kilometraje: data.kilometraje,
-      motor: data.motor ?? null,
-      anio: data.anio,
-      estado: data.estado,
-      transmision: data.transmision,
-      combustible: data.combustible,
-      traccion: data.traccion,
-      color_interior: data.color_interior ?? null,
-      color_exterior: data.color_exterior ?? null,
-      descripcion: data.descripcion ?? null,
-      marcaId: data.marcaId,
-      sucursalId: data.sucursalId,
-      categoriaId: data.categoriaId,
-      etiquetaComercialId: data.etiquetaComercialId ?? null,
-    },
-    select: { id: true, slug: true },
-  })
+  let vehiculo: { id: string; slug: string }
+  try {
+    vehiculo = await prisma.vehiculo.create({
+      data: {
+        nombre: data.nombre,
+        slug,
+        codigo: data.codigo ?? null,
+        placa: data.placa,
+        precio: data.precio,
+        preciosiniva: data.preciosiniva,
+        kilometraje: data.kilometraje,
+        motor: data.motor ?? null,
+        anio: data.anio,
+        estado: data.estado,
+        transmision: data.transmision,
+        combustible: data.combustible,
+        traccion: data.traccion,
+        color_interior: data.color_interior ?? null,
+        color_exterior: data.color_exterior ?? null,
+        descripcion: data.descripcion ?? null,
+        marcaId: data.marcaId,
+        sucursalId: data.sucursalId,
+        categoriaId: data.categoriaId,
+        etiquetaComercialId: data.etiquetaComercialId ?? null,
+      },
+      select: { id: true, slug: true },
+    })
+  } catch {
+    return { ok: false, message: "Error al crear el vehículo. Verifica que la placa no esté duplicada." }
+  }
 
   revalidateVehiculoCaches(vehiculo.slug, vehiculo.id)
 
@@ -108,30 +113,34 @@ export async function updateVehiculo(
   })
   if (!current) return { ok: false, message: "Vehículo no encontrado." }
 
-  await prisma.vehiculo.update({
-    where: { id },
-    data: {
-      nombre: data.nombre,
-      codigo: data.codigo ?? null,
-      placa: data.placa,
-      precio: data.precio,
-      preciosiniva: data.preciosiniva,
-      kilometraje: data.kilometraje,
-      motor: data.motor ?? null,
-      anio: data.anio,
-      estado: data.estado,
-      transmision: data.transmision,
-      combustible: data.combustible,
-      traccion: data.traccion,
-      color_interior: data.color_interior ?? null,
-      color_exterior: data.color_exterior ?? null,
-      descripcion: data.descripcion ?? null,
-      marcaId: data.marcaId,
-      sucursalId: data.sucursalId,
-      categoriaId: data.categoriaId,
-      etiquetaComercialId: data.etiquetaComercialId ?? null,
-    },
-  })
+  try {
+    await prisma.vehiculo.update({
+      where: { id },
+      data: {
+        nombre: data.nombre,
+        codigo: data.codigo ?? null,
+        placa: data.placa,
+        precio: data.precio,
+        preciosiniva: data.preciosiniva,
+        kilometraje: data.kilometraje,
+        motor: data.motor ?? null,
+        anio: data.anio,
+        estado: data.estado,
+        transmision: data.transmision,
+        combustible: data.combustible,
+        traccion: data.traccion,
+        color_interior: data.color_interior ?? null,
+        color_exterior: data.color_exterior ?? null,
+        descripcion: data.descripcion ?? null,
+        marcaId: data.marcaId,
+        sucursalId: data.sucursalId,
+        categoriaId: data.categoriaId,
+        etiquetaComercialId: data.etiquetaComercialId ?? null,
+      },
+    })
+  } catch {
+    return { ok: false, message: "Error al actualizar el vehículo. Verifica que la placa no esté duplicada." }
+  }
 
   revalidateVehiculoCaches(current.slug, id)
   revalidatePath(`/catalogo/${current.slug}`)
@@ -150,7 +159,11 @@ export async function deleteVehiculo(id: string): Promise<ActionResult> {
   })
   if (!vehiculo) return { ok: false, message: "Vehículo no encontrado." }
 
-  await prisma.vehiculo.delete({ where: { id } })
+  try {
+    await prisma.vehiculo.delete({ where: { id } })
+  } catch {
+    return { ok: false, message: "Error al eliminar el vehículo." }
+  }
 
   revalidateVehiculoCaches(vehiculo.slug, id)
   revalidatePath(`/catalogo/${vehiculo.slug}`)
@@ -197,9 +210,13 @@ export async function addGaleriaImage(
     }
   }
 
-  await prisma.galeria.create({
-    data: { vehiculoId, url: parsed.data.url, orden: parsed.data.orden },
-  })
+  try {
+    await prisma.galeria.create({
+      data: { vehiculoId, url: parsed.data.url, orden: parsed.data.orden },
+    })
+  } catch {
+    return { ok: false, message: "Error al añadir la imagen. Verifica que el vehículo existe." }
+  }
 
   revalidateTag(`admin-vehiculo-${vehiculoId}`, "minutes")
 
@@ -212,7 +229,11 @@ export async function removeGaleriaImage(
 ): Promise<ActionResult> {
   await requireAdmin()
 
-  await prisma.galeria.delete({ where: { id: galeriaId } })
+  try {
+    await prisma.galeria.delete({ where: { id: galeriaId, vehiculoId } })
+  } catch {
+    return { ok: false, message: "Imagen no encontrada o no pertenece a este vehículo." }
+  }
 
   revalidateTag(`admin-vehiculo-${vehiculoId}`, "minutes")
 
@@ -225,14 +246,18 @@ export async function reorderGaleriaImages(
 ): Promise<ActionResult> {
   await requireAdmin()
 
-  await prisma.$transaction(
-    images.map((img) =>
-      prisma.galeria.update({
-        where: { id: img.id },
-        data: { orden: img.orden },
-      }),
-    ),
-  )
+  try {
+    await prisma.$transaction(
+      images.map((img) =>
+        prisma.galeria.update({
+          where: { id: img.id, vehiculoId },
+          data: { orden: img.orden },
+        }),
+      ),
+    )
+  } catch {
+    return { ok: false, message: "Error al reordenar las imágenes." }
+  }
 
   revalidateTag(`admin-vehiculo-${vehiculoId}`, "minutes")
 
