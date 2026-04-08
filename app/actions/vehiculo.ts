@@ -159,4 +159,5 @@ export async function revalidateVehicle(slug: string) {
 
 export async function revalidateVehicleList() {
   revalidateTag("vehicle-list", "hours");
+  revalidateTag("home-recommendations", "hours");
 }

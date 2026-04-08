@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import {
@@ -74,6 +74,7 @@ export async function upsertReview(
     },
   });
 
+  revalidateTag(`reviews-${data.vehiculoId}`, "hours");
   revalidatePath(`/catalogo/${vehicle.slug}`);
 
   if (data.vehiculoSlug !== vehicle.slug) {

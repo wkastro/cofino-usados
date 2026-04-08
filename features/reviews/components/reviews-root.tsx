@@ -1,10 +1,8 @@
 import { auth } from "@/auth";
 import { ReviewForm } from "@/features/reviews/components/review-form";
 import { ReviewsList } from "@/features/reviews/components/reviews-list";
-import {
-  getUserVehicleReview,
-  getVehicleReviewsSummary,
-} from "@/features/reviews/data/reviews.queries";
+import { getUserVehicleReview } from "@/features/reviews/data/reviews.queries";
+import { getCachedVehicleReviewsSummary } from "@/features/reviews/data/reviews.cached";
 
 interface ReviewsRootProps {
   vehiculoId: string;
@@ -17,7 +15,7 @@ export async function ReviewsRoot({
 }: ReviewsRootProps) {
   const [session, summary] = await Promise.all([
     auth(),
-    getVehicleReviewsSummary(vehiculoId),
+    getCachedVehicleReviewsSummary(vehiculoId),
   ]);
   const sessionUserId = session?.user?.id ?? null;
 
