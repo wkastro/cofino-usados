@@ -58,7 +58,6 @@ lib/
   validations/    # Zod schemas
   formatters/     # vehicle.ts (currency, km, blindaje)
   constants/      # Nav, auth, test-drive constants
-  data/cars.json  # Demo vehicle data
 auth.ts           # NextAuth config (two credential providers)
 prisma/schema.prisma
 ```
@@ -81,7 +80,6 @@ Authorization redirects:
 - **Server components** fetch data directly or use Prisma
 - **Client components** use React Hook Form + custom hooks for form state
 - **Feature hooks** (e.g. `useLoginForm`, `useRegisterForm`, `useTestDriveForm`) encapsulate all form logic, validation, and API calls — components stay thin
-- Demo vehicle data is currently served from `lib/data/cars.json` (not from DB)
 
 ### Key Conventions
 
