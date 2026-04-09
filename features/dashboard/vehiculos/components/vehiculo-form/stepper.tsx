@@ -16,7 +16,7 @@ export function Stepper({ steps, currentStep }: StepperProps) {
           const isCompleted = index < currentStep
           const isActive = index === currentStep
           return (
-            <li key={index} className="flex items-center flex-1 last:flex-none">
+            <li key={label} aria-current={isActive ? "step" : undefined} className="flex items-center flex-1 last:flex-none">
               <div className="flex flex-col items-center gap-1 min-w-0">
                 <div
                   className={cn(
@@ -41,7 +41,7 @@ export function Stepper({ steps, currentStep }: StepperProps) {
               {index < steps.length - 1 && (
                 <div
                   className={cn(
-                    "h-0.5 flex-1 mx-2 mt-[-16px] transition-colors",
+                    "h-0.5 flex-1 mx-2 self-start mt-4 transition-colors",
                     index < currentStep ? "bg-primary" : "bg-muted"
                   )}
                 />
