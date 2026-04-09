@@ -2,7 +2,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { Transmision, Combustible } from "@/generated/prisma/client";
+import { EstadoVenta, Transmision, Combustible } from "@/generated/prisma/client";
 import { getVehicleBySlug } from "@/app/actions/vehiculo";
 import type { Vehiculo } from "@/types/vehiculo/vehiculo";
 import type { VehicleFilters } from "@/types/filters/filters";
@@ -28,11 +28,14 @@ const COMBUSTIBLE_MAP: Record<string, Combustible> = {
  * Construye el `where` de Prisma a partir de los filtros del usuario.
  * Replica la lógica de `getVehiculos` para mantener consistencia.
  */
+const NOT_FACTURADO = { not: EstadoVenta.Facturado } as const;
+
 function buildFilterWhere(filters: VehicleFilters): Record<string, unknown> {
   const transmision = filters.transmision ? TRANSMISION_MAP[filters.transmision] : undefined;
   const combustible = filters.combustible ? COMBUSTIBLE_MAP[filters.combustible] : undefined;
 
   return {
+    estado: NOT_FACTURADO,
     ...(filters.marca && { marca: { slug: filters.marca } }),
     ...(filters.categoria && { categoria: { slug: filters.categoria } }),
     ...(transmision && { transmision }),
@@ -208,6 +211,7 @@ export async function getSimilarVehicles(slug: string): Promise<Vehiculo[]> {
     const remaining = SIMILAR_LIMIT - collected.length;
     const rows = await prisma.vehiculo.findMany({
       where: {
+        estado: NOT_FACTURADO,
         ...where,
         id: { notIn: Array.from(collectedIds) },
       },

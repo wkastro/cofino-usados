@@ -3,6 +3,8 @@
 import { prisma } from "@/lib/prisma";
 import { revalidateTag } from "next/cache";
 import { EstadoVenta, Transmision, Combustible } from "@/generated/prisma/client";
+
+const NOT_FACTURADO = { not: EstadoVenta.Facturado } as const;
 import type { VehicleResponse, VehicleDetail } from "@/types/vehiculo/vehiculo";
 import type { VehicleFilters } from "@/types/filters/filters";
 
@@ -33,7 +35,7 @@ export async function getVehiculos(
   const combustible = filters.combustible ? COMBUSTIBLE_MAP[filters.combustible] : undefined;
 
   const where = {
-    estado: { not: EstadoVenta.Facturado },
+    estado: NOT_FACTURADO,
     ...(filters.marca && { marca: { slug: filters.marca } }),
     ...(filters.categoria && { categoria: { slug: filters.categoria } }),
     ...(transmision && { transmision }),
@@ -108,8 +110,8 @@ export async function getVehiculos(
 export async function getVehicleBySlug(
   slug: string,
 ): Promise<VehicleDetail | null> {
-  const vehicle = await prisma.vehiculo.findUnique({
-    where: { slug },
+  const vehicle = await prisma.vehiculo.findFirst({
+    where: { slug, estado: NOT_FACTURADO },
     select: {
       id: true,
       nombre: true,
