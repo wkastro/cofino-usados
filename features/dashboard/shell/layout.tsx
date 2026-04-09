@@ -27,19 +27,11 @@ const COOKIE_PREFIX = "db_";
 export default async function DashboardShellLayout({
   children,
 }: Readonly<{ children: ReactNode }>) {
-  const cookieStore = await cookies();
-
-  const defaultOpen = cookieStore.get("sidebar_state")?.value !== "false";
-
-  // La sesión está garantizada por requireAdmin() en app/dashboard/layout.tsx.
-  const session = await auth();
-  const sessionUser = {
-    name: session?.user?.fullName ?? session?.user?.name ?? "Administrador",
-    email: session?.user?.email ?? "",
-    avatar: session?.user?.image ?? "",
-  };
-
+  // La sesión está garantizada por el callback `authorized` en auth.ts (middleware).
+  // auth() y las preferencias de cookies son independientes — se resuelven en paralelo.
   const [
+    session,
+    defaultOpen,
     variant,
     collapsible,
     themeMode,
@@ -48,6 +40,8 @@ export default async function DashboardShellLayout({
     navbarStyle,
     font,
   ] = await Promise.all([
+    auth(),
+    cookies().then((s) => s.get("sidebar_state")?.value !== "false"),
     getPreference(`${COOKIE_PREFIX}sidebar_variant`, SIDEBAR_VARIANT_VALUES, PREFERENCE_DEFAULTS.sidebar_variant),
     getPreference(
       `${COOKIE_PREFIX}sidebar_collapsible`,
@@ -60,6 +54,12 @@ export default async function DashboardShellLayout({
     getPreference(`${COOKIE_PREFIX}navbar_style`, ["sticky", "scroll"] as const, PREFERENCE_DEFAULTS.navbar_style),
     getPreference(`${COOKIE_PREFIX}font`, ["workSans", "clashDisplay"] as const, PREFERENCE_DEFAULTS.font),
   ]);
+
+  const sessionUser = {
+    name: session?.user?.fullName ?? session?.user?.name ?? "Administrador",
+    email: session?.user?.email ?? "",
+    avatar: session?.user?.image ?? "",
+  };
 
   return (
     <>

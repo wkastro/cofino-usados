@@ -29,13 +29,9 @@ export function StepGaleria({ vehiculoId, initialImages, adapter: _adapter }: St
   function handleAddImage() {
     if (!newUrl.trim()) return
 
-    let isValidUrl = true
     try {
       new URL(newUrl.trim())
     } catch {
-      isValidUrl = false
-    }
-    if (!isValidUrl) {
       toast.error("Ingresa una URL válida")
       return
     }

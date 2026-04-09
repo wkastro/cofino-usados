@@ -20,15 +20,13 @@ import { StepGaleria } from "./steps/step-galeria"
 import { localUrlAdapter } from "./upload-adapter"
 import type { VehiculoAdmin, VehiculoRelationOptions } from "../../types/vehiculo"
 
-const STEP_LABELS = ["Info General", "Especificaciones", "Precios", "Clasificación", "Galería"]
-
-const STEP_DESCRIPTIONS: Record<number, string> = {
-  0: "Información básica e identificación del vehículo.",
-  1: "Transmisión, combustible, tracción y estado.",
-  2: "Precios con y sin IVA.",
-  3: "Marca, categoría, sucursal y etiqueta comercial.",
-  4: "Imágenes del vehículo.",
-}
+const STEPS = [
+  { label: "Info General",     description: "Información básica e identificación del vehículo." },
+  { label: "Especificaciones", description: "Transmisión, combustible, tracción y estado." },
+  { label: "Precios",          description: "Precios con y sin IVA." },
+  { label: "Clasificación",    description: "Marca, categoría, sucursal y etiqueta comercial." },
+  { label: "Galería",          description: "Imágenes del vehículo." },
+]
 
 interface VehiculoFormProps {
   mode: "create" | "edit"
@@ -66,14 +64,14 @@ export function VehiculoForm({ mode, vehiculo, options }: VehiculoFormProps) {
       </div>
 
       {/* Stepper */}
-      <Stepper steps={STEP_LABELS} currentStep={currentStep} />
+      <Stepper steps={STEPS.map((s) => s.label)} currentStep={currentStep} />
 
       {/* Step Card */}
       <form onSubmit={onSubmit}>
         <Card>
           <CardHeader>
-            <CardTitle>{STEP_LABELS[currentStep]}</CardTitle>
-            <CardDescription>{STEP_DESCRIPTIONS[currentStep]}</CardDescription>
+            <CardTitle>{STEPS[currentStep].label}</CardTitle>
+            <CardDescription>{STEPS[currentStep].description}</CardDescription>
           </CardHeader>
           <CardContent>
             {currentStep === 0 && (
@@ -112,11 +110,11 @@ export function VehiculoForm({ mode, vehiculo, options }: VehiculoFormProps) {
           {isLastStep ? (
             <Button type="submit" disabled={isPending}>
               {isPending
-                ? mode === "create" ? "Creando..." : "Guardando..."
-                : mode === "create" ? "Crear vehículo" : "Guardar cambios"}
+                ? (mode === "create" ? "Creando..." : "Guardando...")
+                : (mode === "create" ? "Crear vehículo" : "Guardar cambios")}
             </Button>
           ) : (
-            <Button type="button" onClick={goNext}>
+            <Button type="button" onClick={() => void goNext()}>
               Siguiente
               <ArrowRightIcon className="size-4 ml-1" />
             </Button>

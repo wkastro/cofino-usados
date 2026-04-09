@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useTransition } from "react"
+import { useRef, useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { useForm, type Resolver } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -29,6 +29,7 @@ export function useVehiculoFormWizard({ mode, vehiculo }: UseVehiculoFormWizardO
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [currentStep, setCurrentStep] = useState(0)
+  const isValidating = useRef(false)
 
   const form = useForm<VehiculoInput, unknown, VehiculoInput>({
     resolver: zodResolver(vehiculoSchema) as Resolver<VehiculoInput, unknown, VehiculoInput>,
@@ -56,9 +57,15 @@ export function useVehiculoFormWizard({ mode, vehiculo }: UseVehiculoFormWizardO
   })
 
   async function goNext() {
-    const fields = STEP_FIELDS[currentStep]
-    const valid = fields.length === 0 || (await form.trigger(fields))
-    if (valid) setCurrentStep((s) => Math.min(s + 1, TOTAL_STEPS - 1))
+    if (isValidating.current) return
+    isValidating.current = true
+    try {
+      const fields = STEP_FIELDS[currentStep]
+      const valid = fields.length === 0 || (await form.trigger(fields))
+      if (valid) setCurrentStep((s) => Math.min(s + 1, TOTAL_STEPS - 1))
+    } finally {
+      isValidating.current = false
+    }
   }
 
   function goPrev() {
@@ -69,19 +76,18 @@ export function useVehiculoFormWizard({ mode, vehiculo }: UseVehiculoFormWizardO
     startTransition(async () => {
       let result: ActionResult<unknown>
       if (mode === "create") {
-        result = await createVehiculo(data as VehiculoInput)
+        result = await createVehiculo(data)
       } else {
         if (!vehiculo) {
           toast.error("No se puede guardar: vehículo no encontrado.")
           return
         }
-        result = await updateVehiculo(vehiculo.id, data as VehiculoInput)
+        result = await updateVehiculo(vehiculo.id, data)
       }
 
       if (result.ok) {
         toast.success(result.message)
         router.push("/dashboard/vehiculos")
-        router.refresh()
       } else {
         toast.error(result.message)
         if (result.fieldErrors) {
