@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
+import type { Session } from "next-auth";
 import { Suspense } from "react";
 
 import { cookies } from "next/headers";
@@ -48,7 +49,7 @@ async function DashboardShell({
   children,
 }: {
   cookiesPromise: ReturnType<typeof cookies>;
-  authPromise: ReturnType<typeof auth>;
+  authPromise: Promise<Session | null>;
   children: ReactNode;
 }) {
   const [
