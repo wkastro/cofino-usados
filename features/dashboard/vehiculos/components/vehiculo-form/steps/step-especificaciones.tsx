@@ -88,7 +88,7 @@ export function StepEspecificaciones({ control, errors }: StepEspecificacionesPr
           control={control}
           render={({ field }) => (
             <Select value={field.value} onValueChange={field.onChange}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectTrigger><SelectValue placeholder="Seleccionar" /></SelectTrigger>
               <SelectContent>
                 <SelectGroup>
                   {ESTADOS.map((e) => <SelectItem key={e} value={e}>{e}</SelectItem>)}
