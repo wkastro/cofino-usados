@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
-import { useForm } from "react-hook-form"
+import { useForm, type Resolver } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
 import { EstadoVenta, Transmision, Combustible, Traccion } from "@/generated/prisma/enums"
@@ -30,8 +30,8 @@ export function useVehiculoFormWizard({ mode, vehiculo }: UseVehiculoFormWizardO
   const [isPending, startTransition] = useTransition()
   const [currentStep, setCurrentStep] = useState(0)
 
-  const form = useForm({
-    resolver: zodResolver(vehiculoSchema),
+  const form = useForm<VehiculoInput, unknown, VehiculoInput>({
+    resolver: zodResolver(vehiculoSchema) as Resolver<VehiculoInput, unknown, VehiculoInput>,
     defaultValues: {
       nombre: vehiculo?.nombre ?? "",
       codigo: vehiculo?.codigo ?? "",
