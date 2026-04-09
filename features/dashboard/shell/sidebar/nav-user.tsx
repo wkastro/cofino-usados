@@ -2,6 +2,7 @@
 
 import { CircleUser, CreditCard, EllipsisVertical, LogOut, MessageSquareDot } from "lucide-react";
 
+import { adminSignOut } from "@/app/auth/actions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/features/dashboard/components/ui/avatar";
 import {
   DropdownMenu,
@@ -80,10 +81,14 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <LogOut />
-              Log out
-            </DropdownMenuItem>
+            <form action={adminSignOut}>
+              <DropdownMenuItem asChild>
+                <button type="submit" className="w-full cursor-pointer">
+                  <LogOut />
+                  Cerrar sesión
+                </button>
+              </DropdownMenuItem>
+            </form>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

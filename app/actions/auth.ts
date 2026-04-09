@@ -3,6 +3,7 @@
 import bcrypt from "bcrypt";
 import { prisma } from "@/lib/prisma";
 import { registerSchema } from "@/lib/validations/auth";
+import { requireAdmin } from "@/lib/auth-guard";
 import type { ActionResult } from "@/types/auth";
 
 export async function registerUser(data: {
@@ -52,6 +53,10 @@ export async function registerAdmin(data: {
   phone: string;
   password: string;
 }): Promise<ActionResult> {
+  // Solo un ADMIN autenticado puede crear otros ADMIN.
+  // requireAdmin() redirige a /auth si no hay sesión y a / si no es ADMIN.
+  await requireAdmin();
+
   const result = registerSchema.safeParse(data);
   if (!result.success) {
     return { success: false, message: "Datos de registro inválidos" };

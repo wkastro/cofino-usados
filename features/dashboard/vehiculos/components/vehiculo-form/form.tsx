@@ -281,13 +281,13 @@ export function VehiculoForm({ mode, vehiculo, options }: VehiculoFormProps) {
                   control={control}
                   render={({ field }) => (
                     <Select
-                      value={field.value ?? ""}
-                      onValueChange={(v) => field.onChange(v === "" ? null : v)}
+                      value={field.value ?? "none"}
+                      onValueChange={(v) => field.onChange(v === "none" ? null : v)}
                     >
                       <SelectTrigger><SelectValue placeholder="Sin etiqueta" /></SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectItem value="">Sin etiqueta</SelectItem>
+                          <SelectItem value="none">Sin etiqueta</SelectItem>
                           {options.etiquetas.map((e) => <SelectItem key={e.id} value={e.id}>{e.nombre}</SelectItem>)}
                         </SelectGroup>
                       </SelectContent>

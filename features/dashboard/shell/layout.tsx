@@ -2,6 +2,7 @@ import type { CSSProperties, ReactNode } from "react";
 
 import { cookies } from "next/headers";
 
+import { auth } from "@/auth";
 import { AppSidebar } from "@/features/dashboard/shell/sidebar/app-sidebar";
 import { AccountSwitcher } from "@/features/dashboard/shell/sidebar/account-switcher";
 import { LayoutControls } from "@/features/dashboard/shell/sidebar/layout-controls";
@@ -10,7 +11,6 @@ import { ThemeSwitcher } from "@/features/dashboard/shell/sidebar/theme-switcher
 import { Separator } from "@/features/dashboard/components/ui/separator";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/features/dashboard/components/ui/sidebar";
 import { TooltipProvider } from "@/features/dashboard/components/ui/tooltip";
-import { users } from "@/features/dashboard/data/users";
 import {
   SIDEBAR_COLLAPSIBLE_VALUES,
   SIDEBAR_VARIANT_VALUES,
@@ -30,6 +30,14 @@ export default async function DashboardShellLayout({
   const cookieStore = await cookies();
 
   const defaultOpen = cookieStore.get("sidebar_state")?.value !== "false";
+
+  // La sesión está garantizada por requireAdmin() en app/dashboard/layout.tsx.
+  const session = await auth();
+  const sessionUser = {
+    name: session?.user?.fullName ?? session?.user?.name ?? "Administrador",
+    email: session?.user?.email ?? "",
+    avatar: session?.user?.image ?? "",
+  };
 
   const [
     variant,
@@ -94,7 +102,7 @@ export default async function DashboardShellLayout({
               } as CSSProperties
             }
           >
-            <AppSidebar variant={variant} collapsible={collapsible} />
+            <AppSidebar variant={variant} collapsible={collapsible} user={sessionUser} />
             <SidebarInset
               className={cn(
                 "[html[data-content-layout=centered]_&>*]:mx-auto",
@@ -121,7 +129,7 @@ export default async function DashboardShellLayout({
                   <div className="flex items-center gap-2">
                     <LayoutControls />
                     <ThemeSwitcher />
-                    <AccountSwitcher users={users} />
+                    <AccountSwitcher user={sessionUser} />
                   </div>
                 </div>
               </header>

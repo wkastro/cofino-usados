@@ -1,12 +1,8 @@
-import { Suspense } from "react";
 import type { Metadata } from "next";
 import { Work_Sans } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import Header from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
-import { FavoritesProvider } from "@/features/favoritos/context/favorites-context";
 
 const workSans = Work_Sans({
   subsets: ["latin"],
@@ -42,21 +38,7 @@ export default function RootLayout({
       lang="es"
       className={cn("font-sans", workSans.variable, clashDisplay.variable)}
     >
-      <body className={`antialiased bg-secondary`}>
-        <FavoritesProvider>
-          <Suspense
-            fallback={
-              <header className="sticky top-0 w-full z-50 border-b border-border bg-background/95 backdrop-blur-sm">
-                <div className="h-16" />
-              </header>
-            }
-          >
-            <Header />
-          </Suspense>
-          <Suspense>{children}</Suspense>
-          <Footer />
-        </FavoritesProvider>
-      </body>
+      <body className="antialiased bg-secondary">{children}</body>
     </html>
   );
 }

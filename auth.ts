@@ -118,13 +118,24 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         signIn: "/login",
     },
     callbacks: {
-        async signIn({ account }) {
-            if (account?.provider === "credentials") {
+        async signIn({ account, user }) {
+            // Credentials: los providers user-login / admin-login ya validan el rol
+            // en su callback authorize, así que aquí solo aceptamos.
+            // Nota: para CredentialsProvider, `account.provider` es el id del provider
+            // (p. ej. "admin-login"), NO el literal "credentials". El discriminador
+            // correcto es `account.type`.
+            if (account?.type === "credentials") {
                 return true
             }
 
-            // Admin blocking for OAuth is handled in the jwt callback
-            // where the DB user is available via token.email lookup.
+            // OAuth (Google/Apple): bloquear si el email pertenece a una cuenta ADMIN.
+            // Los admins solo pueden entrar vía /auth con credenciales.
+            if (!user.email) return false
+            const dbUser = await prisma.user.findUnique({
+                where: { email: user.email },
+            })
+            if (dbUser?.role === "ADMIN") return false
+
             return true
         },
         async jwt({ token, user, account }) {
@@ -136,16 +147,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 token.role = user.role ?? "USER"
             }
 
-            // OAuth: on first sign-in (account is present), look up DB user
+            // OAuth: on first sign-in (account is present), look up DB user.
+            // El bloqueo de ADMIN ya se hizo en el callback signIn, así que aquí
+            // solo enriquecemos el token para cuentas USER.
             if (account && account.provider !== "credentials" && token.email) {
                 const dbUser = await prisma.user.findUnique({
                     where: { email: token.email },
                 })
                 if (dbUser) {
-                    // Block admin accounts from OAuth sign-in
-                    if (dbUser.role === "ADMIN") {
-                        return { ...token, error: "AdminOAuthNotAllowed" }
-                    }
                     token.id = dbUser.id
                     token.fullName = dbUser.fullName
                     token.phone = dbUser.phone ?? undefined
@@ -188,8 +197,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 }
                 return true
             }
-
-            
 
             // /favoritos → solo USER autenticado
             if (pathname.startsWith("/favoritos")) {

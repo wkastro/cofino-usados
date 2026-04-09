@@ -15,7 +15,6 @@ import {
   SidebarMenuItem,
 } from "@/features/dashboard/components/ui/sidebar";
 import { APP_CONFIG } from "@/features/dashboard/config/app-config";
-import { rootUser } from "@/features/dashboard/data/users";
 import { sidebarItems } from "@/features/dashboard/navigation/sidebar/sidebar-items";
 import { usePreferencesStore } from "@/features/dashboard/stores/preferences/preferences-provider";
 
@@ -23,7 +22,15 @@ import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
 import { SidebarSupportCard } from "./sidebar-support-card";
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
+  readonly user: {
+    readonly name: string;
+    readonly email: string;
+    readonly avatar: string;
+  };
+};
+
+export function AppSidebar({ user, ...props }: AppSidebarProps) {
   const { sidebarVariant, sidebarCollapsible, isSynced } = usePreferencesStore(
     useShallow((s) => ({
       sidebarVariant: s.sidebarVariant,
@@ -56,7 +63,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
       <SidebarFooter>
         <SidebarSupportCard />
-        <NavUser user={rootUser} />
+        <NavUser user={user} />
       </SidebarFooter>
     </Sidebar>
   );
