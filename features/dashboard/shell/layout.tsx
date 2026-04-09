@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
+import { Suspense } from "react";
 
 import { cookies } from "next/headers";
 
@@ -24,14 +25,35 @@ import { cn } from "@/features/dashboard/lib/utils";
 
 const COOKIE_PREFIX = "db_";
 
-export default async function DashboardShellLayout({
+export default function DashboardShellLayout({
   children,
 }: Readonly<{ children: ReactNode }>) {
-  // La sesión está garantizada por el callback `authorized` en auth.ts (middleware).
-  // auth() y las preferencias de cookies son independientes — se resuelven en paralelo.
+  // Start dynamic work without awaiting — resolution happens inside <Suspense>
+  // so the layout stays prerenderable and doesn't block navigation.
+  const cookiesPromise = cookies();
+  const authPromise = auth();
+
+  return (
+    <Suspense>
+      <DashboardShell cookiesPromise={cookiesPromise} authPromise={authPromise}>
+        {children}
+      </DashboardShell>
+    </Suspense>
+  );
+}
+
+async function DashboardShell({
+  cookiesPromise,
+  authPromise,
+  children,
+}: {
+  cookiesPromise: ReturnType<typeof cookies>;
+  authPromise: ReturnType<typeof auth>;
+  children: ReactNode;
+}) {
   const [
+    cookieStore,
     session,
-    defaultOpen,
     variant,
     collapsible,
     themeMode,
@@ -40,8 +62,8 @@ export default async function DashboardShellLayout({
     navbarStyle,
     font,
   ] = await Promise.all([
-    auth(),
-    cookies().then((s) => s.get("sidebar_state")?.value !== "false"),
+    cookiesPromise,
+    authPromise,
     getPreference(`${COOKIE_PREFIX}sidebar_variant`, SIDEBAR_VARIANT_VALUES, PREFERENCE_DEFAULTS.sidebar_variant),
     getPreference(
       `${COOKIE_PREFIX}sidebar_collapsible`,
@@ -54,6 +76,8 @@ export default async function DashboardShellLayout({
     getPreference(`${COOKIE_PREFIX}navbar_style`, ["sticky", "scroll"] as const, PREFERENCE_DEFAULTS.navbar_style),
     getPreference(`${COOKIE_PREFIX}font`, ["workSans", "clashDisplay"] as const, PREFERENCE_DEFAULTS.font),
   ]);
+
+  const defaultOpen = cookieStore.get("sidebar_state")?.value !== "false";
 
   const sessionUser = {
     name: session?.user?.fullName ?? session?.user?.name ?? "Administrador",
