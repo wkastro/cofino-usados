@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useTransition } from "react"
-import { ImageIcon, PlusIcon, TrashIcon, GripVerticalIcon } from "lucide-react"
+import { ImageIcon, PlusIcon, TrashIcon, ArrowUpIcon } from "lucide-react"
 import { toast } from "sonner"
 import Image from "next/image"
 import { Button } from "@/features/dashboard/components/ui/button"
@@ -28,6 +28,17 @@ export function StepGaleria({ vehiculoId, initialImages, adapter: _adapter }: St
 
   function handleAddImage() {
     if (!newUrl.trim()) return
+
+    let isValidUrl = true
+    try {
+      new URL(newUrl.trim())
+    } catch {
+      isValidUrl = false
+    }
+    if (!isValidUrl) {
+      toast.error("Ingresa una URL válida")
+      return
+    }
 
     if (!vehiculoId) {
       setImages((prev) => [
@@ -147,7 +158,7 @@ export function StepGaleria({ vehiculoId, initialImages, adapter: _adapter }: St
                     onClick={() => handleMoveUp(index)}
                     disabled={isPending}
                   >
-                    <GripVerticalIcon className="size-3" aria-hidden="true" />
+                    <ArrowUpIcon className="size-3" aria-hidden="true" />
                     <span className="sr-only">Subir</span>
                   </Button>
                 )}
