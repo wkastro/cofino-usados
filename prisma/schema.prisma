@@ -218,7 +218,6 @@ enum EstadoVenta {
   Disponible @map("Disponible")
   Reservado  @map("Reservado")
   Facturado  @map("Facturado")
-  Vendido    @map("Vendido")
 }
 
 enum Transmision {

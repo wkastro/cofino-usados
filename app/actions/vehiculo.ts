@@ -33,7 +33,7 @@ export async function getVehiculos(
   const combustible = filters.combustible ? COMBUSTIBLE_MAP[filters.combustible] : undefined;
 
   const where = {
-    estado: EstadoVenta.Disponible,
+    estado: { not: EstadoVenta.Facturado },
     ...(filters.marca && { marca: { slug: filters.marca } }),
     ...(filters.categoria && { categoria: { slug: filters.categoria } }),
     ...(transmision && { transmision }),

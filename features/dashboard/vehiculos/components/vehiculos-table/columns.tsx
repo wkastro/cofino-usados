@@ -12,7 +12,7 @@ export const vehiculosColumns: ColumnDef<VehiculoRow>[] = [
     accessorKey: "nombre",
     header: "Nombre",
     cell: ({ row }) => (
-      <div className="min-w-[180px]">
+      <div className="min-w-45">
         <p className="font-medium leading-tight">{row.original.nombre}</p>
         <p className="text-xs text-muted-foreground">{row.original.placa}</p>
       </div>
@@ -25,8 +25,8 @@ export const vehiculosColumns: ColumnDef<VehiculoRow>[] = [
     cell: ({ row }) => <span className="text-sm">{row.original.marca}</span>,
   },
   {
-    accessorKey: "categoria",
-    header: "Categoría",
+    accessorKey: "tipo",
+    header: "Tipo",
     cell: ({ row }) => <span className="text-sm">{row.original.categoria}</span>,
   },
   {

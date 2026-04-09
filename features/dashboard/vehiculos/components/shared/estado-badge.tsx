@@ -8,7 +8,6 @@ const ESTADO_CONFIG: Record<
   Disponible: { label: "Disponible", variant: "default" },
   Reservado:  { label: "Reservado",  variant: "secondary" },
   Facturado:  { label: "Facturado",  variant: "outline" },
-  Vendido:    { label: "Vendido",    variant: "destructive" },
 }
 
 interface EstadoBadgeProps {
