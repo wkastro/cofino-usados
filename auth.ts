@@ -7,10 +7,8 @@ import { AdapterUser } from "@auth/core/adapters"
 import bcrypt from "bcrypt"
 import { prisma } from "@/lib/prisma"
 
-const adapter = PrismaAdapter(prisma)
-
 const extendedAdapter = {
-    ...adapter,
+    ...PrismaAdapter(prisma),
     createUser: async (data: Omit<AdapterUser, "id">): Promise<AdapterUser> => {
         const user = await prisma.user.create({
             data: {
@@ -32,18 +30,52 @@ const extendedAdapter = {
     },
 }
 
+// Placeholder hash used to run a constant-time bcrypt comparison even when the
+// user does not exist, preventing email enumeration via response-time analysis.
+const DUMMY_HASH = "$2b$10$abcdefghijklmnopqrstuuABCDEFGHIJKLMNOPQRSTUVWXYZ012345"
+
+async function authorizeCredentials(
+    credentials: Partial<Record<string, unknown>>,
+    requiredRole: "USER" | "ADMIN"
+) {
+    const email = typeof credentials?.email === "string" ? credentials.email.trim().toLowerCase() : undefined
+    const password = typeof credentials?.password === "string" ? credentials.password : undefined
+
+    if (!email || !password) return null
+
+    const user = await prisma.user.findUnique({ where: { email } })
+
+    // Always run bcrypt so response time doesn't reveal whether the email exists.
+    const hash = user?.password ?? DUMMY_HASH
+    const isValid = await bcrypt.compare(password, hash)
+
+    if (!user?.password || !isValid) return null
+
+    if (user.role !== requiredRole) return null
+
+    return {
+        id: user.id,
+        name: user.fullName,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
+    }
+}
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
     adapter: extendedAdapter,
     session: {
         strategy: "jwt",
-        maxAge: 30 * 24 * 60 * 60, // 30 días
+        maxAge: 30 * 24 * 60 * 60,
     },
     providers: [
         Google({
-            allowDangerousEmailAccountLinking: true,
+            clientId: process.env.AUTH_GOOGLE_ID,
+            clientSecret: process.env.AUTH_GOOGLE_SECRET,
         }),
         Apple({
-            allowDangerousEmailAccountLinking: true,
+            clientId: process.env.AUTH_APPLE_ID,
+            clientSecret: process.env.AUTH_APPLE_SECRET,
         }),
         Credentials({
             id: "user-login",
@@ -52,32 +84,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 email: { label: "Email", type: "email" },
                 password: { label: "Password", type: "password" },
             },
-            authorize: async (credentials) => {
-                const email = typeof credentials?.email === "string" ? credentials.email.trim().toLowerCase() : undefined
-                const password = typeof credentials?.password === "string" ? credentials.password : undefined
-
-                if (!email || !password) return null
-
-                const user = await prisma.user.findUnique({
-                    where: { email },
-                })
-
-                if (!user) return null
-                if (!user.password) return null
-
-                const isValid = await bcrypt.compare(password, user.password)
-                if (!isValid) return null
-
-                if (user.role !== "USER") return null
-
-                return {
-                    id: user.id,
-                    name: user.fullName,
-                    email: user.email,
-                    phone: user.phone,
-                    role: user.role,
-                }
-            },
+            authorize: (credentials) => authorizeCredentials(credentials, "USER"),
         }),
         Credentials({
             id: "admin-login",
@@ -86,32 +93,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 email: { label: "Email", type: "email" },
                 password: { label: "Password", type: "password" },
             },
-            authorize: async (credentials) => {
-                const email = typeof credentials?.email === "string" ? credentials.email.trim().toLowerCase() : undefined
-                const password = typeof credentials?.password === "string" ? credentials.password : undefined
-
-                if (!email || !password) return null
-
-                const user = await prisma.user.findUnique({
-                    where: { email },
-                })
-
-                if (!user) return null
-                if (!user.password) return null
-
-                const isValid = await bcrypt.compare(password, user.password)
-                if (!isValid) return null
-
-                if (user.role !== "ADMIN") return null
-
-                return {
-                    id: user.id,
-                    name: user.fullName,
-                    email: user.email,
-                    phone: user.phone,
-                    role: user.role,
-                }
-            },
+            authorize: (credentials) => authorizeCredentials(credentials, "ADMIN"),
         }),
     ],
     pages: {
@@ -119,27 +101,25 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     callbacks: {
         async signIn({ account, user }) {
-            // Credentials: los providers user-login / admin-login ya validan el rol
-            // en su callback authorize, así que aquí solo aceptamos.
-            // Nota: para CredentialsProvider, `account.provider` es el id del provider
-            // (p. ej. "admin-login"), NO el literal "credentials". El discriminador
-            // correcto es `account.type`.
-            if (account?.type === "credentials") {
-                return true
-            }
+            if (account?.type === "credentials") return true
 
-            // OAuth (Google/Apple): bloquear si el email pertenece a una cuenta ADMIN.
-            // Los admins solo pueden entrar vía /auth con credenciales.
             if (!user.email) return false
             const dbUser = await prisma.user.findUnique({
                 where: { email: user.email },
+                select: { role: true, password: true },
             })
+
+            // Block admin accounts — they must use credentials only.
             if (dbUser?.role === "ADMIN") return false
+
+            // Block accounts registered with a password from signing in via OAuth.
+            // Without this, an attacker who creates an OAuth account with a victim's
+            // email can take over their credentials-based account.
+            if (dbUser?.password) return false
 
             return true
         },
         async jwt({ token, user, account }) {
-            // Credentials: enrich from the authorize return value
             if (user && account?.type === "credentials") {
                 token.id = user.id!
                 token.fullName = user.name ?? ""
@@ -147,12 +127,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 token.role = user.role ?? "USER"
             }
 
-            // OAuth: on first sign-in (account is present), look up DB user.
-            // El bloqueo de ADMIN ya se hizo en el callback signIn, así que aquí
-            // solo enriquecemos el token para cuentas USER.
-            if (account && account.provider !== "credentials" && token.email) {
+            if (account?.type === "oauth" && token.email) {
                 const dbUser = await prisma.user.findUnique({
                     where: { email: token.email },
+                    select: { id: true, fullName: true, phone: true, role: true },
                 })
                 if (dbUser) {
                     token.id = dbUser.id
@@ -160,6 +138,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     token.phone = dbUser.phone ?? undefined
                     token.role = dbUser.role
                 }
+            }
+
+            // On first login set expiry based on role: 8 h for ADMIN, 30 days for USER.
+            if (account) {
+                const ttl = token.role === "ADMIN" ? 8 * 60 * 60 : 30 * 24 * 60 * 60
+                token.exp = Math.floor(Date.now() / 1000) + ttl
+            }
+
+            // Re-sync role on every refresh so role revocations take effect immediately.
+            if (!account && token.email) {
+                const dbUser = await prisma.user.findUnique({
+                    where: { email: token.email },
+                    select: { role: true },
+                })
+                if (dbUser) token.role = dbUser.role
             }
 
             return token
@@ -178,39 +171,23 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             const role = auth?.user?.role
             const pathname = nextUrl.pathname
 
-            const userAuthRoutes = ["/login", "/registro"]
-            const adminAuthRoutes = ["/auth"]
-            const privateRoutes = ["/dashboard"]
-
-            // USER autenticado en /login o /registro → redirigir a /
-            if (userAuthRoutes.some((r) => pathname.startsWith(r))) {
-                if (isLoggedIn && role === "USER") {
-                    return Response.redirect(new URL("/", nextUrl))
-                }
+            if (pathname.startsWith("/login") || pathname.startsWith("/registro")) {
+                if (isLoggedIn && role === "USER") return Response.redirect(new URL("/", nextUrl))
                 return true
             }
 
-            // ADMIN autenticado en /auth → redirigir a /dashboard
-            if (adminAuthRoutes.some((r) => pathname === r)) {
-                if (isLoggedIn && role === "ADMIN") {
-                    return Response.redirect(new URL("/dashboard", nextUrl))
-                }
+            if (pathname === "/auth") {
+                if (isLoggedIn && role === "ADMIN") return Response.redirect(new URL("/dashboard", nextUrl))
                 return true
             }
 
-            // /favoritos → solo USER autenticado
             if (pathname.startsWith("/favoritos")) {
-                if (!isLoggedIn || role !== "USER") {
-                    return Response.redirect(new URL("/login", nextUrl))
-                }
+                if (!isLoggedIn || role !== "USER") return Response.redirect(new URL("/login", nextUrl))
                 return true
             }
 
-            // /dashboard/* → solo ADMIN
-            if (privateRoutes.some((r) => pathname.startsWith(r))) {
-                if (!isLoggedIn || role !== "ADMIN") {
-                    return Response.redirect(new URL("/auth", nextUrl))
-                }
+            if (pathname.startsWith("/dashboard")) {
+                if (!isLoggedIn || role !== "ADMIN") return Response.redirect(new URL("/auth", nextUrl))
                 return true
             }
 

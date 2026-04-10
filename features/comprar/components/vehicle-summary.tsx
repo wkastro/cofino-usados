@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { MapPin, Calendar } from "lucide-react";
+import { formatPriceWhole, getPriceDecimals, formatDate } from "@/lib/formatters/vehicle";
 
 interface VehicleSummaryProps {
   nombre: string;
@@ -12,31 +13,11 @@ interface VehicleSummaryProps {
 const RESERVATION_PRICE = 20000;
 const IVA_RATE = 0.025;
 
-function formatPriceWhole(value: number) {
-  return new Intl.NumberFormat("en-US", {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(value);
-}
-
-function getDecimals(value: number) {
-  const parts = value.toFixed(2).split(".");
-  return parts[1];
-}
-
-function formatDate() {
-  const now = new Date();
-  const day = String(now.getDate()).padStart(2, "0");
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const year = now.getFullYear();
-  return `${day} / ${month} / ${year}`;
-}
-
 function PriceSuperscript({ value }: { value: number }) {
   return (
     <span className="text-fs-md font-semibold">
       Q {formatPriceWhole(value)}
-      <sup className="text-fs-xs align-super">{getDecimals(value)}</sup>
+      <sup className="text-fs-xs align-super">{getPriceDecimals(value)}</sup>
     </span>
   );
 }
@@ -116,7 +97,7 @@ export function VehicleSummary({
             <p className="font-semibold tracking-widest uppercase">Total</p>
             <span className="text-fs-xl font-semibold">
               Q {formatPriceWhole(total)}
-              <sup className="text-fs-sm align-super">{getDecimals(total)}</sup>
+              <sup className="text-fs-sm align-super">{getPriceDecimals(total)}</sup>
             </span>
           </div>
         </div>
@@ -124,8 +105,8 @@ export function VehicleSummary({
         {/* Submit button */}
         <div className="flex justify-center">
           <button type="submit" className="bg-btn-black">
-          {submitLabel}
-        </button>
+            {submitLabel}
+          </button>
         </div>
       </div>
     </div>

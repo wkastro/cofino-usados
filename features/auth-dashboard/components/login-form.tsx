@@ -1,25 +1,12 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/global/logo";
-import { adminLogin } from "@/app/auth/actions";
+import { useAdminLoginForm } from "@/features/auth-dashboard/hooks/useAdminLoginForm";
 
 export function LoginForm() {
-  const [state, formAction, isPending] = useActionState(adminLogin, {
-    error: "",
-    success: false,
-  });
-  const router = useRouter();
-
-  useEffect(() => {
-    if (state.success) {
-      router.push("/dashboard");
-      router.refresh();
-    }
-  }, [state.success, router]);
+  const { state, formAction, isPending } = useAdminLoginForm();
 
   return (
     <div className="w-full max-w-md p-8 space-y-6 text-card-foreground rounded-lg shadow-md flex flex-col items-center">

@@ -26,3 +26,18 @@ export function formatBlindaje(blindaje: string | boolean): string {
   }
   return blindaje;
 }
+
+export function formatPriceWhole(value: number): string {
+  return currencyFormatter.format(value);
+}
+
+export function getPriceDecimals(value: number): string {
+  return value.toFixed(2).split(".")[1];
+}
+
+export function formatDate(date = new Date()): string {
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+  return `${day} / ${month} / ${year}`;
+}

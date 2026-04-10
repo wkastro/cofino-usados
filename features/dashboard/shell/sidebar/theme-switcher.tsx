@@ -3,22 +3,10 @@
 import { Monitor, Moon, Sun } from "lucide-react";
 
 import { Button } from "@/features/dashboard/components/ui/button";
-import { persistPreference } from "@/features/dashboard/lib/preferences/preferences-storage";
-import { usePreferencesStore } from "@/features/dashboard/stores/preferences/preferences-provider";
-
-const THEME_CYCLE = ["light", "dark", "system"] as const;
+import { useThemeSwitcher } from "./hooks/useThemeSwitcher";
 
 export function ThemeSwitcher() {
-  const themeMode = usePreferencesStore((s) => s.themeMode);
-  const setThemeMode = usePreferencesStore((s) => s.setThemeMode);
-
-  const cycleTheme = () => {
-    const currentIndex = THEME_CYCLE.indexOf(themeMode);
-    const nextTheme = THEME_CYCLE[(currentIndex + 1) % THEME_CYCLE.length];
-
-    setThemeMode(nextTheme);
-    persistPreference("theme_mode", nextTheme);
-  };
+  const { themeMode, cycleTheme } = useThemeSwitcher();
 
   return (
     <Button size="icon" onClick={cycleTheme} aria-label={`Current theme: ${themeMode}. Click to cycle themes`}>

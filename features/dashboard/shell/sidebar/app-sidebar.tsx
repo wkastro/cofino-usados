@@ -2,8 +2,6 @@
 
 import Link from "next/link";
 
-import { useShallow } from "zustand/react/shallow";
-
 import { Logo } from "@/components/global/logo";
 
 import {
@@ -16,7 +14,7 @@ import {
   SidebarMenuItem,
 } from "@/features/dashboard/components/ui/sidebar";
 import { sidebarItems } from "@/features/dashboard/navigation/sidebar/sidebar-items";
-import { usePreferencesStore } from "@/features/dashboard/stores/preferences/preferences-provider";
+import { useAppSidebar } from "./hooks/useAppSidebar";
 
 import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
@@ -31,16 +29,10 @@ type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
 };
 
 export function AppSidebar({ user, ...props }: AppSidebarProps) {
-  const { sidebarVariant, sidebarCollapsible, isSynced } = usePreferencesStore(
-    useShallow((s) => ({
-      sidebarVariant: s.sidebarVariant,
-      sidebarCollapsible: s.sidebarCollapsible,
-      isSynced: s.isSynced,
-    })),
-  );
-
-  const variant = isSynced ? sidebarVariant : props.variant;
-  const collapsible = isSynced ? sidebarCollapsible : props.collapsible;
+  const { variant, collapsible } = useAppSidebar({
+    variant: props.variant,
+    collapsible: props.collapsible,
+  });
 
   return (
     <Sidebar {...props} variant={variant} collapsible={collapsible}>
@@ -57,8 +49,6 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={sidebarItems} />
-        {/* <NavDocuments items={data.documents} /> */}
-        {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
       <SidebarFooter>
         <SidebarSupportCard />

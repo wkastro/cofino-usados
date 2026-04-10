@@ -9,7 +9,6 @@ import {
 } from "lucide-react";
 import { formatKilometers, formatMotor } from "@/lib/formatters/vehicle";
 
-// server-serialization: accept only needed fields instead of full VehicleDetail
 interface VehicleSpecsProps {
   transmision: string;
   combustible: string;
@@ -20,52 +19,20 @@ interface VehicleSpecsProps {
   sucursalNombre: string;
 }
 
-export function VehicleSpecs({
-  transmision,
-  combustible,
-  kilometraje,
-  motor,
-  anio,
-  traccion,
-  sucursalNombre,
-}: VehicleSpecsProps) {
-  const specs = [
-    {
-      icon: Settings2,
-      label: "Transmisión",
-      value: transmision,
-    },
-    {
-      icon: EvCharger,
-      label: "Combustible",
-      value: combustible,
-    },
-    {
-      icon: Milestone,
-      label: "Kilometraje",
-      value: formatKilometers(kilometraje),
-    },
-    {
-      icon: Gauge,
-      label: "Motor",
-      value: formatMotor(motor),
-    },
-    {
-      icon: Calendar1,
-      label: "Año",
-      value: String(anio),
-    },
-    {
-      icon: CarFront,
-      label: "Tracción",
-      value: traccion,
-    },
-    {
-      icon: MapPin,
-      label: "Ubicación",
-      value: sucursalNombre,
-    },
+function buildSpecs(props: VehicleSpecsProps) {
+  return [
+    { icon: Settings2, label: "Transmisión",  value: props.transmision },
+    { icon: EvCharger,  label: "Combustible",  value: props.combustible },
+    { icon: Milestone,  label: "Kilometraje",  value: formatKilometers(props.kilometraje) },
+    { icon: Gauge,      label: "Motor",        value: formatMotor(props.motor) },
+    { icon: Calendar1,  label: "Año",          value: String(props.anio) },
+    { icon: CarFront,   label: "Tracción",     value: props.traccion },
+    { icon: MapPin,     label: "Ubicación",    value: props.sucursalNombre },
   ];
+}
+
+export function VehicleSpecs(props: VehicleSpecsProps) {
+  const specs = buildSpecs(props);
 
   return (
     <div className="rounded-2xl bg-muted/50 p-6 md:p-8">

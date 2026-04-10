@@ -8,6 +8,7 @@ import { AdvancedFiltersButton } from "@/features/filters/components/advanced-fi
 import type { VehicleResponse } from "@/types/vehiculo/vehiculo";
 import type { EtiquetaComercial } from "@/types/filters/filters";
 import type { RangeValues } from "@/features/filters/types/advanced-filters";
+import Link from "next/link";
 
 interface VehicleGridProps {
   vehicles: VehicleResponse;
@@ -40,26 +41,38 @@ export function VehicleGrid({
             Autos recomendados
           </h2>
           {showAdvancedFiltersButton ? (
-            <AdvancedFiltersButton etiquetas={etiquetas} priceRange={priceRange} minYear={minYear} kilometrajeRange={kilometrajeRange} />
+            <AdvancedFiltersButton
+              etiquetas={etiquetas}
+              priceRange={priceRange}
+              minYear={minYear}
+              kilometrajeRange={kilometrajeRange}
+            />
           ) : null}
         </div>
 
         {vehicles.vehiculos.length === 0 ? (
           <NoResults />
         ) : (
-          <div
-            aria-label="Vehículos disponibles"
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center"
-          >
-            {vehicles.vehiculos.map((vehicle) => (
-              <div
-                key={vehicle.id}
-                className="vehicle-card-item w-full flex justify-center"
-              >
-                <VehicleCard vehicle={vehicle} />
-              </div>
-            ))}
-          </div>
+          <>
+            <div
+              aria-label="Vehículos disponibles"
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center mb-8 md:mb-16"
+            >
+              {vehicles.vehiculos.map((vehicle) => (
+                <div
+                  key={vehicle.id}
+                  className="vehicle-card-item w-full flex justify-center"
+                >
+                  <VehicleCard vehicle={vehicle} />
+                </div>
+              ))}
+            </div>
+            <div className="text-center">
+              <Link href="/comprar" className="bg-btn-black inline-block">
+                Ver más vehículos
+              </Link>
+            </div>
+          </>
         )}
       </div>
     </section>
