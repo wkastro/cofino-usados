@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 
-import { Command } from "lucide-react";
 import { useShallow } from "zustand/react/shallow";
+
+import { Logo } from "@/components/global/logo";
 
 import {
   Sidebar,
@@ -14,7 +15,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/features/dashboard/components/ui/sidebar";
-import { APP_CONFIG } from "@/features/dashboard/config/app-config";
 import { sidebarItems } from "@/features/dashboard/navigation/sidebar/sidebar-items";
 import { usePreferencesStore } from "@/features/dashboard/stores/preferences/preferences-provider";
 
@@ -47,10 +47,9 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild>
+            <SidebarMenuButton asChild className="h-auto py-2 [&_svg]:size-auto">
               <Link prefetch={false} href="/dashboard/default">
-                <Command />
-                <span className="font-semibold text-base">{APP_CONFIG.name}</span>
+                <Logo className="h-7 w-auto" />
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
