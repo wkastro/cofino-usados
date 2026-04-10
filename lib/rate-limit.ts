@@ -6,6 +6,14 @@ type Window = { count: number; resetAt: number }
 
 const store = new Map<string, Window>()
 
+// Prune expired entries every hour to prevent unbounded growth under scan traffic.
+setInterval(() => {
+    const now = Date.now()
+    for (const [key, entry] of store) {
+        if (now > entry.resetAt) store.delete(key)
+    }
+}, 60 * 60 * 1000).unref()
+
 export function checkRateLimit(
     key: string,
     limit = 5,

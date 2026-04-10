@@ -30,9 +30,11 @@ const extendedAdapter = {
     },
 }
 
-// Placeholder hash used to run a constant-time bcrypt comparison even when the
-// user does not exist, preventing email enumeration via response-time analysis.
-const DUMMY_HASH = "$2b$10$abcdefghijklmnopqrstuuABCDEFGHIJKLMNOPQRSTUVWXYZ012345"
+// Pre-computed at module load so bcrypt always runs its full KDF work, preventing
+// response-time analysis from revealing whether an email is registered.
+const DUMMY_HASH = bcrypt.hashSync("__dummy__", 10)
+
+const USER_SESSION_TTL = 30 * 24 * 60 * 60
 
 async function authorizeCredentials(
     credentials: Partial<Record<string, unknown>>,
@@ -66,7 +68,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     adapter: extendedAdapter,
     session: {
         strategy: "jwt",
-        maxAge: 30 * 24 * 60 * 60,
+        maxAge: USER_SESSION_TTL,
     },
     providers: [
         Google({
@@ -141,8 +143,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             }
 
             // On first login set expiry based on role: 8 h for ADMIN, 30 days for USER.
+            // IMPORTANT: token.role must be assigned in the blocks above before this runs.
+            // Do not reorder these blocks or the ADMIN TTL will silently fall back to 30 days.
             if (account) {
-                const ttl = token.role === "ADMIN" ? 8 * 60 * 60 : 30 * 24 * 60 * 60
+                const ttl = token.role === "ADMIN" ? 8 * 60 * 60 : USER_SESSION_TTL
                 token.exp = Math.floor(Date.now() / 1000) + ttl
             }
 
