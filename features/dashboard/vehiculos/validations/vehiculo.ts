@@ -6,7 +6,7 @@ export const vehiculoSchema = z.object({
   codigo: z.string().optional().default("").transform(v => v?.trim() || null),
   placa: z.string().min(2, "La placa es requerida").max(20, "Placa muy larga"),
   precio: z.coerce.number().positive("El precio debe ser mayor a 0"),
-  preciosiniva: z.coerce.number().positive("El precio sin IVA debe ser mayor a 0"),
+  preciodescuento: z.coerce.number().positive("El precio con descuento debe ser mayor a 0").optional().nullable(),
   kilometraje: z.coerce.number().int().min(0, "El kilometraje no puede ser negativo"),
   motor: z.string().optional().default("").transform(v => v?.trim() || null),
   anio: z.coerce

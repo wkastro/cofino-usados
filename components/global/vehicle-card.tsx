@@ -144,26 +144,13 @@ export function VehicleCard({ vehicle }: VehicleCardProps): React.ReactElement {
         <div className="flex flex-col">
           <div className="flex items-baseline gap-2">
             <span className="text-fs-md font-semibold text-foreground tracking-tight leading-none">
-              {formatCurrency(vehicle.preciosiniva)}
+              {formatCurrency(vehicle.preciodescuento ?? vehicle.precio)}
             </span>
-            {/* rendering-conditional-render: use ternary to prevent rendering "0" */}
-            {vehicle.preciosiniva > 0 ? (
+            {vehicle.preciodescuento != null ? (
               <span className="text-[0.95rem] text-muted-foreground line-through font-medium">
                 {formatCurrency(vehicle.precio)}
               </span>
             ) : null}
-          </div>
-          <div
-            className="flex items-center gap-1 mt-1.5"
-            title="Cuota incluye seguro y gastos administrativos según historial crediticio"
-          >
-            <span className="text-[0.85rem] text-muted-foreground/80">
-              Desde
-            </span>
-            <span className="text-[0.85rem] text-muted-foreground font-medium">
-              {formatCurrency(vehicle.precio)} / mes
-            </span>
-            <Info className="h-[0.8rem] w-[0.8rem] text-muted-foreground/60 transition-colors cursor-help ml-0.5 relative -top-px" />
           </div>
         </div>
 

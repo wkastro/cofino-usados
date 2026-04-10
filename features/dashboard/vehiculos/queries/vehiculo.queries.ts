@@ -93,7 +93,7 @@ export async function getCachedVehiculoAdminById(id: string): Promise<VehiculoAd
       codigo: true,
       placa: true,
       precio: true,
-      preciosiniva: true,
+      preciodescuento: true,
       kilometraje: true,
       motor: true,
       anio: true,
@@ -122,6 +122,6 @@ export async function getCachedVehiculoAdminById(id: string): Promise<VehiculoAd
   return {
     ...v,
     precio: Number(v.precio),
-    preciosiniva: Number(v.preciosiniva),
+    preciodescuento: v.preciodescuento != null ? Number(v.preciodescuento) : null,
   }
 }

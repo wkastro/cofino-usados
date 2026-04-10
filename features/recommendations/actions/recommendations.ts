@@ -67,7 +67,7 @@ const RECOMMENDATION_SELECT = {
   nombre: true,
   slug: true,
   precio: true,
-  preciosiniva: true,
+  preciodescuento: true,
   kilometraje: true,
   motor: true,
   anio: true,
@@ -88,7 +88,7 @@ type PrismaVehicleRow = {
   nombre: string;
   slug: string;
   precio: { toString(): string } | number;
-  preciosiniva: { toString(): string } | number;
+  preciodescuento: { toString(): string } | number | null;
   kilometraje: number;
   motor: string | null;
   anio: number;
@@ -106,7 +106,7 @@ function formatVehicle(row: PrismaVehicleRow): Vehiculo {
   return {
     ...row,
     precio: Number(row.precio),
-    preciosiniva: Number(row.preciosiniva),
+    preciodescuento: row.preciodescuento != null ? Number(row.preciodescuento) : null,
     color_exterior: row.color_exterior ?? "",
     traccion: row.traccion as string,
     transmision: row.transmision as string,

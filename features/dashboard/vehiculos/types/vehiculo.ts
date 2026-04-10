@@ -37,7 +37,7 @@ export interface VehiculoAdmin {
   codigo: string | null
   placa: string
   precio: number
-  preciosiniva: number
+  preciodescuento: number | null
   kilometraje: number
   motor: string | null
   anio: number

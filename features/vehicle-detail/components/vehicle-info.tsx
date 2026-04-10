@@ -4,7 +4,14 @@ import Link from "next/link";
 import { Heart, Star, Calculator } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/lib/formatters/vehicle";
-import { useMonthlyPayment } from "@/features/vehicle-detail/hooks/useMonthlyPayment";
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { LoanCalculator } from "./loan-calculator";
 
 const STAR_INDICES = [0, 1, 2, 3, 4];
 
@@ -13,12 +20,13 @@ interface VehicleInfoProps {
   nombre: string;
   slug: string;
   precio: number;
-  preciosiniva: number;
+  preciodescuento: number | null;
   descripcion: string | null;
 }
 
-export function VehicleInfo({ nombre, slug, precio, preciosiniva, descripcion }: VehicleInfoProps) {
-  const { monthlyPayment } = useMonthlyPayment(preciosiniva);
+export function VehicleInfo({ nombre, slug, precio, preciodescuento, descripcion }: VehicleInfoProps) {
+  const [calcOpen, setCalcOpen] = useState(false);
+  const precioFinal = preciodescuento ?? precio;
 
   return (
     <div className="flex flex-col gap-5 bg-white rounded-2xl p-4 md:p-8">
@@ -66,25 +74,33 @@ export function VehicleInfo({ nombre, slug, precio, preciosiniva, descripcion }:
       <div className="flex flex-col gap-2">
         <div className="flex items-baseline gap-3">
           <span className="text-fs-xxl font-semibold font-clash-display tracking-tight">
-            {formatCurrency(preciosiniva)}
+            {formatCurrency(precioFinal)}
           </span>
-          <span className="text-fs-base text-muted-foreground line-through">
-            {formatCurrency(precio)}
-          </span>
+          {preciodescuento != null ? (
+            <span className="text-fs-base text-muted-foreground line-through">
+              {formatCurrency(precio)}
+            </span>
+          ) : null}
         </div>
 
         <div className="flex items-center gap-3 flex-wrap">
-          <span className="text-fs-base font-medium">
-            {formatCurrency(monthlyPayment)} / mes
-          </span>
-          <Link
-            href="#calculadora"
+          <button
+            onClick={() => setCalcOpen(true)}
             className="bg-btn-black inline-flex items-center gap-1.5 px-4 py-1.5 text-fs-sm"
           >
             <Calculator className="size-4" />
             Calculadora de cuotas
-          </Link>
+          </button>
         </div>
+
+        <Dialog open={calcOpen} onOpenChange={setCalcOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle className="sr-only">Calculadora de cuotas</DialogTitle>
+            </DialogHeader>
+            <LoanCalculator vehiclePrice={precioFinal} />
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* CTAs */}

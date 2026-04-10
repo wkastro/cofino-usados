@@ -58,7 +58,7 @@ export async function getFavoriteVehiculos(): Promise<Vehiculo[]> {
           nombre: true,
           slug: true,
           precio: true,
-          preciosiniva: true,
+          preciodescuento: true,
           kilometraje: true,
           motor: true,
           anio: true,
@@ -81,7 +81,7 @@ export async function getFavoriteVehiculos(): Promise<Vehiculo[]> {
   return favoritos.map(({ vehiculo }) => ({
     ...vehiculo,
     precio: Number(vehiculo.precio),
-    preciosiniva: Number(vehiculo.preciosiniva),
+    preciodescuento: vehiculo.preciodescuento != null ? Number(vehiculo.preciodescuento) : null,
     color_exterior: vehiculo.color_exterior ?? "",
     traccion: vehiculo.traccion as string,
     transmision: vehiculo.transmision as string,

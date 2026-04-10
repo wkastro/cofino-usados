@@ -11,7 +11,7 @@ export interface Vehiculo {
   nombre: string;
   slug: string;
   precio: number;
-  preciosiniva: number;
+  preciodescuento: number | null;
   kilometraje: number;
   motor: string | null;
   anio: number;

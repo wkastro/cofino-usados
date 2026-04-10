@@ -7,13 +7,11 @@ interface Bank {
 
 const BANKS: readonly Bank[] = [
   { id: "bi", nombre: "Banco Industrial" },
-  { id: "banrural", nombre: "Banrural" },
   { id: "bac", nombre: "BAC Credomatic" },
   { id: "gyt", nombre: "G&T Continental" },
-  { id: "interbanco", nombre: "Interbanco" },
 ];
 
-const INSTALLMENT_OPTIONS = [12, 24, 36, 48, 60, 72] as const;
+const INSTALLMENT_OPTIONS = [24, 60, 90] as const;
 
 const ANNUAL_RATE = 0.12;
 
@@ -27,7 +25,9 @@ interface UseLoanCalculatorReturn {
   onInstallmentsChange: (value: string) => void;
 }
 
-export function useLoanCalculator(vehiclePrice: number): UseLoanCalculatorReturn {
+export function useLoanCalculator(
+  vehiclePrice: number,
+): UseLoanCalculatorReturn {
   const [bank, setBank] = useState("");
   const [installments, setInstallments] = useState("");
 

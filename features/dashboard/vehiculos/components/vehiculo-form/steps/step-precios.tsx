@@ -15,17 +15,17 @@ export function StepPrecios({ register, errors }: StepPreciosProps) {
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
       <div className="flex flex-col gap-1.5">
         <Label className="text-xs uppercase text-muted-foreground tracking-wide">
-          Precio con IVA (Q) *
+          Precio (Q) *
         </Label>
         <Input type="number" step="0.01" {...register("precio")} />
         {errors.precio && <p className="text-xs text-destructive">{errors.precio.message}</p>}
       </div>
       <div className="flex flex-col gap-1.5">
         <Label className="text-xs uppercase text-muted-foreground tracking-wide">
-          Precio sin IVA (Q) *
+          Precio con descuento (Q)
         </Label>
-        <Input type="number" step="0.01" {...register("preciosiniva")} />
-        {errors.preciosiniva && <p className="text-xs text-destructive">{errors.preciosiniva.message}</p>}
+        <Input type="number" step="0.01" {...register("preciodescuento")} />
+        {errors.preciodescuento && <p className="text-xs text-destructive">{errors.preciodescuento.message}</p>}
       </div>
     </div>
   )

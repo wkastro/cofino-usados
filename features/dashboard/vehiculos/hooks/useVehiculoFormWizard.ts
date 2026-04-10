@@ -15,7 +15,7 @@ const TOTAL_STEPS = 5
 const STEP_FIELDS: Record<number, (keyof VehiculoInput)[]> = {
   0: ["nombre", "placa", "anio", "kilometraje"],
   1: ["transmision", "combustible", "traccion"],
-  2: ["precio", "preciosiniva"],
+  2: ["precio"],
   3: ["marcaId", "categoriaId", "sucursalId"],
   4: [],
 }
@@ -38,7 +38,7 @@ export function useVehiculoFormWizard({ mode, vehiculo }: UseVehiculoFormWizardO
       codigo: vehiculo?.codigo ?? "",
       placa: vehiculo?.placa ?? "",
       precio: vehiculo?.precio ?? 0,
-      preciosiniva: vehiculo?.preciosiniva ?? 0,
+      preciodescuento: vehiculo?.preciodescuento ?? null,
       kilometraje: vehiculo?.kilometraje ?? 0,
       motor: vehiculo?.motor ?? "",
       anio: vehiculo?.anio ?? new Date().getFullYear(),

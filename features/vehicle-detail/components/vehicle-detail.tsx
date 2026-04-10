@@ -34,7 +34,7 @@ export async function VehicleDetail({ params }: VehicleDetailProps): Promise<Rea
           nombre={vehicle.nombre}
           slug={vehicle.slug}
           precio={vehicle.precio}
-          preciosiniva={vehicle.preciosiniva}
+          preciodescuento={vehicle.preciodescuento}
           descripcion={vehicle.descripcion}
         />
       </div>
@@ -50,7 +50,7 @@ export async function VehicleDetail({ params }: VehicleDetailProps): Promise<Rea
           traccion={vehicle.traccion}
           sucursalNombre={vehicle.sucursal.nombre}
         />
-        <LoanCalculator vehiclePrice={vehicle.preciosiniva} />
+        <LoanCalculator vehiclePrice={vehicle.preciodescuento ?? vehicle.precio} />
       </div>
 
       <ReviewsRoot vehiculoId={vehicle.id} vehiculoSlug={vehicle.slug} />
