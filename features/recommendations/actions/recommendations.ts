@@ -6,7 +6,6 @@ import { EstadoVenta, Transmision, Combustible } from "@/generated/prisma/client
 import { getVehicleBySlug } from "@/app/actions/vehiculo";
 import type { Vehiculo } from "@/types/vehiculo/vehiculo";
 import type { VehicleFilters } from "@/types/filters/filters";
-import { PROXIMAMENTE_SLUG } from "@/lib/constants/etiqueta-comercial";
 
 const HOME_LIMIT = 6;
 const SIMILAR_LIMIT = 3;
@@ -37,9 +36,7 @@ function buildFilterWhere(filters: VehicleFilters): Record<string, unknown> {
 
   return {
     estado: NOT_FACTURADO,
-    ...(filters.etiqueta
-      ? { etiquetaComercial: { slug: filters.etiqueta } }
-      : { etiquetaComercial: { slug: { not: PROXIMAMENTE_SLUG } } }),
+    ...(filters.etiqueta && { etiquetaComercial: { slug: filters.etiqueta } }),
     ...(filters.marca && { marca: { slug: filters.marca } }),
     ...(filters.categoria && { categoria: { slug: filters.categoria } }),
     ...(transmision && { transmision }),
@@ -215,7 +212,6 @@ export async function getSimilarVehicles(slug: string): Promise<Vehiculo[]> {
     const rows = await prisma.vehiculo.findMany({
       where: {
         estado: NOT_FACTURADO,
-        etiquetaComercial: { slug: { not: PROXIMAMENTE_SLUG } },
         ...where,
         id: { notIn: Array.from(collectedIds) },
       },

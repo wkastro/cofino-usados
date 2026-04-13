@@ -6,6 +6,7 @@ const etiquetas = [
   { nombre: "Autos Certificados", slug: "autos-certificados", estado: true },
   { nombre: "Consignación",       slug: "consignacion",       estado: true },
   { nombre: "Baja de precio",     slug: "baja-de-precio",     estado: true },
+  { nombre: "Próximamente",       slug: "proximamente",       estado: true },
 ];
 
 export async function seedEtiquetasComerciales(prisma: PrismaClient) {

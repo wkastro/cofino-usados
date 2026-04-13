@@ -8,13 +8,18 @@ const TAG_SLUGS = [
   "baja-de-precio",
 ] as const;
 
+const PROXIMAMENTE_SLUG = "proximamente";
+const PROXIMAMENTE_COUNT = 6;
+
 export async function seedVehiculoEtiquetas(prisma: PrismaClient) {
+  const allSlugs = [...TAG_SLUGS, PROXIMAMENTE_SLUG];
+
   const etiquetas = await prisma.etiquetaComercial.findMany({
-    where: { slug: { in: [...TAG_SLUGS] } },
+    where: { slug: { in: allSlugs } },
     select: { id: true, slug: true },
   });
 
-  const missingSlugs = TAG_SLUGS.filter(
+  const missingSlugs = allSlugs.filter(
     (slug) => !etiquetas.some((e) => e.slug === slug),
   );
   if (missingSlugs.length > 0) {
@@ -23,31 +28,46 @@ export async function seedVehiculoEtiquetas(prisma: PrismaClient) {
     );
   }
 
-  const tagIds = TAG_SLUGS.map(
-    (slug) => etiquetas.find((e) => e.slug === slug)!.id,
-  );
+  const getTagId = (slug: string) => etiquetas.find((e) => e.slug === slug)!.id;
+
+  const proximamenteId = getTagId(PROXIMAMENTE_SLUG);
+  const tagIds = TAG_SLUGS.map(getTagId);
 
   const vehicles = await prisma.vehiculo.findMany({
     select: { id: true, etiquetaComercialId: true },
   });
 
-  // Mezclar vehículos aleatoriamente para distribuir etiquetas uniformemente
-  // independientemente del estado del vehículo
+  // Mezclar aleatoriamente para distribución uniforme
   const shuffled = [...vehicles].sort(() => Math.random() - 0.5);
+
+  // Los primeros PROXIMAMENTE_COUNT vehículos reciben la etiqueta "proximamente"
+  const proximamenteVehicles = shuffled.slice(0, PROXIMAMENTE_COUNT);
+  // El resto se distribuye round-robin entre las 5 etiquetas originales
+  const remainingVehicles = shuffled.slice(PROXIMAMENTE_COUNT);
 
   let updated = 0;
   let unchanged = 0;
 
-  for (let i = 0; i < shuffled.length; i++) {
-    const desiredTagId = tagIds[i % tagIds.length];
-
-    if (shuffled[i].etiquetaComercialId === desiredTagId) {
+  for (const vehicle of proximamenteVehicles) {
+    if (vehicle.etiquetaComercialId === proximamenteId) {
       unchanged++;
       continue;
     }
-
     await prisma.vehiculo.update({
-      where: { id: shuffled[i].id },
+      where: { id: vehicle.id },
+      data: { etiquetaComercialId: proximamenteId },
+    });
+    updated++;
+  }
+
+  for (let i = 0; i < remainingVehicles.length; i++) {
+    const desiredTagId = tagIds[i % tagIds.length];
+    if (remainingVehicles[i].etiquetaComercialId === desiredTagId) {
+      unchanged++;
+      continue;
+    }
+    await prisma.vehiculo.update({
+      where: { id: remainingVehicles[i].id },
       data: { etiquetaComercialId: desiredTagId },
     });
     updated++;
