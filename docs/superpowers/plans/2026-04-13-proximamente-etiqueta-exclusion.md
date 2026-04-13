@@ -156,7 +156,7 @@ import { PROXIMAMENTE_SLUG } from "@/lib/constants/etiqueta-comercial";
 
 - [ ] **Step 2: Update `buildFilterWhere`**
 
-The function currently starts with `return { estado: NOT_FACTURADO, ... }`. Add the exclusion after `estado`, using the same conditional pattern as Task 2:
+The function currently starts with `return { estado: NOT_FACTURADO, ... }`. Replace the `etiquetaComercial` filter spread with a ternary to avoid a JS key-conflict bug (two spreads writing the same key, last one wins). The full updated function:
 
 ```ts
 function buildFilterWhere(filters: VehicleFilters): Record<string, unknown> {
@@ -165,13 +165,12 @@ function buildFilterWhere(filters: VehicleFilters): Record<string, unknown> {
 
   return {
     estado: NOT_FACTURADO,
-    ...(filters.etiqueta !== PROXIMAMENTE_SLUG && {
-      etiquetaComercial: { slug: { not: PROXIMAMENTE_SLUG } },
-    }),
+    ...(filters.etiqueta
+      ? { etiquetaComercial: { slug: filters.etiqueta } }
+      : { etiquetaComercial: { slug: { not: PROXIMAMENTE_SLUG } } }),
     ...(filters.marca && { marca: { slug: filters.marca } }),
     ...(filters.categoria && { categoria: { slug: filters.categoria } }),
     ...(transmision && { transmision }),
-    ...(filters.etiqueta && { etiquetaComercial: { slug: filters.etiqueta } }),
     ...(combustible && { combustible }),
     ...(filters.anio != null && { anio: { gte: filters.anio } }),
     ...((filters.kmin != null || filters.kmax != null) && {
@@ -189,6 +188,9 @@ function buildFilterWhere(filters: VehicleFilters): Record<string, unknown> {
   };
 }
 ```
+
+Note: the separate `filters.etiqueta` spread is removed — the ternary handles both cases in one clause.
+
 
 - [ ] **Step 3: Update `getSimilarVehicles` — add exclusion to `runQuery`**
 
