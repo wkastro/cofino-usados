@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { revalidateTag } from "next/cache";
 import { EstadoVenta, Transmision, Combustible } from "@/generated/prisma/client";
+import { PROXIMAMENTE_SLUG } from "@/lib/constants/etiqueta-comercial";
 
 const NOT_FACTURADO = { not: EstadoVenta.Facturado } as const;
 import type { VehicleResponse, VehicleDetail } from "@/types/vehiculo/vehiculo";
@@ -36,6 +37,9 @@ export async function getVehiculos(
 
   const where = {
     estado: NOT_FACTURADO,
+    ...(filters.etiqueta !== PROXIMAMENTE_SLUG && {
+      etiquetaComercial: { slug: { not: PROXIMAMENTE_SLUG } },
+    }),
     ...(filters.marca && { marca: { slug: filters.marca } }),
     ...(filters.categoria && { categoria: { slug: filters.categoria } }),
     ...(transmision && { transmision }),
