@@ -1,3 +1,5 @@
+export const PROXIMAMENTE_SLUG = "proximamente" as const;
+
 export const etiquetaStyles: Record<string, string> = {
   liquidacion: "text-[#9E2F22] bg-[#9E2F22]/15",
   "autos-certificados": "text-[#687C1B] bg-[#687C1B]/20",
