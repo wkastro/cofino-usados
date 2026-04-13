@@ -37,15 +37,12 @@ export async function getVehiculos(
 
   const where = {
     estado: NOT_FACTURADO,
-    ...(filters.etiqueta !== PROXIMAMENTE_SLUG && {
-      etiquetaComercial: { slug: { not: PROXIMAMENTE_SLUG } },
-    }),
+    ...(filters.etiqueta
+      ? { etiquetaComercial: { slug: filters.etiqueta } }
+      : { etiquetaComercial: { slug: { not: PROXIMAMENTE_SLUG } } }),
     ...(filters.marca && { marca: { slug: filters.marca } }),
     ...(filters.categoria && { categoria: { slug: filters.categoria } }),
     ...(transmision && { transmision }),
-    ...(filters.etiqueta && {
-      etiquetaComercial: { slug: filters.etiqueta },
-    }),
     ...(combustible && { combustible }),
     ...(filters.anio != null && { anio: { gte: filters.anio } }),
     ...((filters.kmin != null || filters.kmax != null) && {
