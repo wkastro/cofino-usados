@@ -16,6 +16,7 @@ interface VehicleListingGridProps {
   lockedFilters?: Partial<VehicleFilters>;
   title?: string;
   pageSize?: number;
+  showFilters?: boolean;
 }
 
 export async function VehicleListingGrid({
@@ -23,6 +24,7 @@ export async function VehicleListingGrid({
   lockedFilters,
   title,
   pageSize = DEFAULT_PAGE_SIZE,
+  showFilters = true,
 }: VehicleListingGridProps): Promise<React.ReactElement> {
   const resolvedParams = await searchParams;
   const sanitizedParams = { ...resolvedParams };
@@ -62,6 +64,7 @@ export async function VehicleListingGrid({
       minYear={minYear}
       kilometrajeRange={kilometrajeRange}
       title={title}
+      showFilters={showFilters}
     />
   );
 }
