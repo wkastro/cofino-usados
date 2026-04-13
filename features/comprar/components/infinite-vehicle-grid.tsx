@@ -20,6 +20,7 @@ interface InfiniteVehicleGridProps {
   priceRange?: RangeValues;
   minYear?: number;
   kilometrajeRange?: RangeValues;
+  title?: string;
 }
 
 export function InfiniteVehicleGrid({
@@ -30,6 +31,7 @@ export function InfiniteVehicleGrid({
   priceRange,
   minYear,
   kilometrajeRange,
+  title = "Autos recomendados",
 }: InfiniteVehicleGridProps) {
   const { isPending } = useFilterLoading();
   const { vehicles, isLoading, hasMore, loadMore } = useInfiniteVehicles({
@@ -49,7 +51,7 @@ export function InfiniteVehicleGrid({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-10 flex items-center justify-between gap-4">
           <h2 className="font-semibold text-[#111111] tracking-tight">
-            Autos recomendados
+            {title}
           </h2>
           <AdvancedFiltersButton
             etiquetas={etiquetas}

@@ -99,13 +99,15 @@ export function AdvancedFiltersButton({
         </DrawerHeader>
 
         <div className="flex-1 overflow-y-auto px-4 pb-4">
-          <FilterSection title="Estado">
-            <CheckboxFilter
-              options={etiquetaOptions}
-              selected={state.etiqueta}
-              onChange={setEtiqueta}
-            />
-          </FilterSection>
+          {etiquetaOptions.length > 0 && (
+            <FilterSection title="Estado">
+              <CheckboxFilter
+                options={etiquetaOptions}
+                selected={state.etiqueta}
+                onChange={setEtiqueta}
+              />
+            </FilterSection>
+          )}
 
           <FilterSection title="Combustible">
             <CheckboxFilter
