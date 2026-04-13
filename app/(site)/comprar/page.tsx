@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { HomeSearchBarContent } from "@/features/filters/components/home-search-bar-content";
-import { ComprarVehicleGrid } from "@/features/comprar/components/comprar-vehicle-grid";
+import { VehicleListingGrid } from "@/features/filters/components/vehicle-listing-grid";
 import { VehicleCardSkeletonGrid } from "@/components/global/vehicle-card-skeleton";
 import { FilterLoadingProvider } from "@/features/filters/context/filter-loading-context";
 import type { SearchParams } from "@/types/filters/filters";
@@ -17,7 +17,7 @@ export default async function BuyPage({ searchParams }: BuyPageProps) {
       </Suspense>
 
       <Suspense fallback={<VehicleCardSkeletonGrid count={9} />}>
-        <ComprarVehicleGrid searchParams={searchParams} />
+        <VehicleListingGrid searchParams={searchParams} title="Autos recomendados" />
       </Suspense>
     </FilterLoadingProvider>
   );
