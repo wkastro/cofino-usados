@@ -27,6 +27,11 @@ export async function VehicleListingGrid({
   const resolvedParams = await searchParams;
   const sanitizedParams = { ...resolvedParams };
   if (lockedFilters) {
+    // NOTE: VehicleFilters uses camelCase numeric keys (e.g. precioMin) while
+    // SearchParams uses hyphenated string keys (e.g. "precio-min"). This loop
+    // only correctly sanitizes keys that exist verbatim in both types (etiqueta,
+    // marca, categoria, transmision, combustible). If a numeric filter is ever
+    // locked, add explicit URL param key mapping here.
     for (const key of Object.keys(lockedFilters) as (keyof typeof sanitizedParams)[]) {
       delete sanitizedParams[key];
     }
