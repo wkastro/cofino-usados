@@ -111,7 +111,7 @@ export function VehicleInfo({ nombre, slug, precio, preciodescuento, descripcion
         >
           Agendar cita
         </Link>
-        <Link href={`/comprar/${slug}`} className="bg-btn-black flex-1 text-center">
+        <Link href={`/comprar/${slug}/reservar`} className="bg-btn-black flex-1 text-center">
           Reserva ahora
         </Link>
       </div>

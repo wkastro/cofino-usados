@@ -2,23 +2,9 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidateTag } from "next/cache";
-import { EstadoVenta, Transmision, Combustible } from "@/generated/prisma/client";
-
-const NOT_FACTURADO = { not: EstadoVenta.Facturado } as const;
 import type { VehicleResponse, VehicleDetail } from "@/types/vehiculo/vehiculo";
 import type { VehicleFilters } from "@/types/filters/filters";
-
-const TRANSMISION_MAP: Record<string, Transmision> = {
-  automatico: Transmision.Automatico,
-  manual: Transmision.Manual,
-};
-
-const COMBUSTIBLE_MAP: Record<string, Combustible> = {
-  gasolina: Combustible.Gasolina,
-  diesel: Combustible.Diesel,
-  hibrido: Combustible.Hibrido,
-  electrico: Combustible.Electrico,
-};
+import { buildFilterWhere, NOT_FACTURADO } from "@/lib/filters/build-vehicle-where";
 
 const DEFAULT_PAGE_SIZE = 6;
 const MAX_PAGE_SIZE = 50;
@@ -31,30 +17,7 @@ export async function getVehiculos(
   const clampedPageSize = Math.min(Math.max(1, pageSize), MAX_PAGE_SIZE);
   const clampedPage = Math.max(1, page);
 
-  const transmision = filters.transmision ? TRANSMISION_MAP[filters.transmision] : undefined;
-  const combustible = filters.combustible ? COMBUSTIBLE_MAP[filters.combustible] : undefined;
-
-  const where = {
-    estado: NOT_FACTURADO,
-    ...(filters.etiqueta && { etiquetaComercial: { slug: filters.etiqueta } }),
-    ...(filters.marca && { marca: { slug: filters.marca } }),
-    ...(filters.categoria && { categoria: { slug: filters.categoria } }),
-    ...(transmision && { transmision }),
-    ...(combustible && { combustible }),
-    ...(filters.anio != null && { anio: { gte: filters.anio } }),
-    ...((filters.kmin != null || filters.kmax != null) && {
-      kilometraje: {
-        ...(filters.kmin != null && { gte: filters.kmin }),
-        ...(filters.kmax != null && { lte: filters.kmax }),
-      },
-    }),
-    ...((filters.precioMin != null || filters.precioMax != null) && {
-      precio: {
-        ...(filters.precioMin != null && { gte: filters.precioMin }),
-        ...(filters.precioMax != null && { lte: filters.precioMax }),
-      },
-    }),
-  };
+  const where = buildFilterWhere(filters);
 
   const [vehiculos, total] = await prisma.$transaction([
     prisma.vehiculo.findMany({

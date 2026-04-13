@@ -155,7 +155,7 @@ export function VehicleCard({ vehicle }: VehicleCardProps): React.ReactElement {
         </div>
 
         <Link
-          href={`/catalogo/${vehicle.slug}`}
+          href={`/comprar/${vehicle.slug}`}
           aria-label={`Comprar ${vehicle.marca}`}
           className="bg-btn-black"
         >

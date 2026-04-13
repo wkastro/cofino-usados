@@ -1,9 +1,8 @@
-// features/recommendations/actions/recommendations.ts
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { EstadoVenta, Transmision, Combustible } from "@/generated/prisma/client";
 import { getVehicleBySlug } from "@/app/actions/vehiculo";
+import { buildFilterWhere, NOT_FACTURADO } from "@/lib/filters/build-vehicle-where";
 import type { Vehiculo } from "@/types/vehiculo/vehiculo";
 import type { VehicleFilters } from "@/types/filters/filters";
 
@@ -11,51 +10,6 @@ const HOME_LIMIT = 6;
 const SIMILAR_LIMIT = 3;
 const MAX_PER_BRAND = 2;
 const PRICE_DELTA = 0.20;
-
-const TRANSMISION_MAP: Record<string, Transmision> = {
-  automatico: Transmision.Automatico,
-  manual: Transmision.Manual,
-};
-
-const COMBUSTIBLE_MAP: Record<string, Combustible> = {
-  gasolina: Combustible.Gasolina,
-  diesel: Combustible.Diesel,
-  hibrido: Combustible.Hibrido,
-  electrico: Combustible.Electrico,
-};
-
-/**
- * Construye el `where` de Prisma a partir de los filtros del usuario.
- * Replica la lógica de `getVehiculos` para mantener consistencia.
- */
-const NOT_FACTURADO = { not: EstadoVenta.Facturado } as const;
-
-function buildFilterWhere(filters: VehicleFilters): Record<string, unknown> {
-  const transmision = filters.transmision ? TRANSMISION_MAP[filters.transmision] : undefined;
-  const combustible = filters.combustible ? COMBUSTIBLE_MAP[filters.combustible] : undefined;
-
-  return {
-    estado: NOT_FACTURADO,
-    ...(filters.etiqueta && { etiquetaComercial: { slug: filters.etiqueta } }),
-    ...(filters.marca && { marca: { slug: filters.marca } }),
-    ...(filters.categoria && { categoria: { slug: filters.categoria } }),
-    ...(transmision && { transmision }),
-    ...(combustible && { combustible }),
-    ...(filters.anio != null && { anio: { gte: filters.anio } }),
-    ...((filters.kmin != null || filters.kmax != null) && {
-      kilometraje: {
-        ...(filters.kmin != null && { gte: filters.kmin }),
-        ...(filters.kmax != null && { lte: filters.kmax }),
-      },
-    }),
-    ...((filters.precioMin != null || filters.precioMax != null) && {
-      precio: {
-        ...(filters.precioMin != null && { gte: filters.precioMin }),
-        ...(filters.precioMax != null && { lte: filters.precioMax }),
-      },
-    }),
-  };
-}
 
 /**
  * Select compartido para recomendaciones.
