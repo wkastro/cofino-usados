@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidateTag } from "next/cache";
+import { PROXIMAMENTE_SLUG } from "@/lib/constants/etiqueta-comercial";
 
 export async function getCategories() {
   return prisma.categoria.findMany({
@@ -35,7 +36,7 @@ export type TransmissionsResult = Awaited<ReturnType<typeof getTransmissions>>;
 
 export async function getEtiquetas() {
   return prisma.etiquetaComercial.findMany({
-    where: { estado: true },
+    where: { estado: true, slug: { not: PROXIMAMENTE_SLUG } },
     select: { id: true, nombre: true, slug: true },
     orderBy: { nombre: "asc" },
   });
