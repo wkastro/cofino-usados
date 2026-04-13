@@ -2,7 +2,7 @@
 
 import { useRef, useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
-import { useForm, type Resolver } from "react-hook-form"
+import { useForm, type Resolver, type UseFormReturn } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
 import { EstadoVenta, Transmision, Combustible, Traccion } from "@/generated/prisma/enums"
@@ -25,7 +25,18 @@ interface UseVehiculoFormWizardOptions {
   vehiculo?: VehiculoAdmin
 }
 
-export function useVehiculoFormWizard({ mode, vehiculo }: UseVehiculoFormWizardOptions) {
+interface UseVehiculoFormWizardReturn {
+  form: UseFormReturn<VehiculoInput, unknown, VehiculoInput>
+  onSubmit: (e?: React.BaseSyntheticEvent) => void
+  isPending: boolean
+  currentStep: number
+  goNext: () => Promise<void>
+  goPrev: () => void
+  isFirstStep: boolean
+  isLastStep: boolean
+}
+
+export function useVehiculoFormWizard({ mode, vehiculo }: UseVehiculoFormWizardOptions): UseVehiculoFormWizardReturn {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [currentStep, setCurrentStep] = useState(0)
@@ -74,7 +85,7 @@ export function useVehiculoFormWizard({ mode, vehiculo }: UseVehiculoFormWizardO
 
   const onSubmit = form.handleSubmit((data) => {
     startTransition(async () => {
-      let result: ActionResult<unknown>
+      let result: ActionResult<{ id: string; slug: string } | undefined>
       if (mode === "create") {
         result = await createVehiculo(data)
       } else {

@@ -13,7 +13,10 @@ export function setLocalStorageValue(key: string, value: string) {
 export function getLocalStorageValue(key: string): string | null {
   try {
     return window.localStorage.getItem(key);
-  } catch {
+  } catch (error) {
+    if (process.env.NODE_ENV !== "production") {
+      console.warn("[localStorage] Failed to read value:", error);
+    }
     return null;
   }
 }

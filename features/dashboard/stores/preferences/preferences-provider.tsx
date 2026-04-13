@@ -20,9 +20,13 @@ const PreferencesStoreContext = createContext<StoreApi<PreferencesState> | null>
 
 const FONT_VALUES = Object.keys(fontRegistry) as FontKey[];
 
+function isAllowedValue<T extends string>(value: string, allowed: readonly T[]): value is T {
+  return (allowed as readonly string[]).includes(value);
+}
+
 function getSafeValue<T extends string>(raw: string | null, allowed: readonly T[]): T | undefined {
   if (!raw) return undefined;
-  return allowed.includes(raw as T) ? (raw as T) : undefined;
+  return isAllowedValue(raw, allowed) ? raw : undefined;
 }
 
 function readDomState(): Partial<PreferencesState> {

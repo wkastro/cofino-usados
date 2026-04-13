@@ -70,9 +70,16 @@ export interface VehiculosAdminResponse {
   page: number
 }
 
-export interface ActionResult<T = undefined> {
-  ok: boolean
+export type ActionSuccess<T = undefined> = {
+  ok: true
   message: string
   data?: T
+}
+
+export type ActionError = {
+  ok: false
+  message: string
   fieldErrors?: Record<string, string[]>
 }
+
+export type ActionResult<T = undefined> = ActionSuccess<T> | ActionError

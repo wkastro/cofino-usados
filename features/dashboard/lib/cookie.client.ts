@@ -7,7 +7,7 @@ export function setClientCookie(key: string, value: string, days = 7) {
   document.cookie = `${key}=${value}; expires=${expires}; path=/`;
 }
 
-export function getClientCookie(key: string) {
+export function getClientCookie(key: string): string | undefined {
   return document.cookie
     .split("; ")
     .find((row) => row.startsWith(`${key}=`))

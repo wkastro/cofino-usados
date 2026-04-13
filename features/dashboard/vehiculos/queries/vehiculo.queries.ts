@@ -1,5 +1,6 @@
 import { cacheLife, cacheTag } from "next/cache"
 import { prisma } from "@/lib/prisma"
+import { EstadoVenta } from "@/generated/prisma/enums"
 import type { VehiculoRow, VehiculosAdminResponse, VehiculoAdmin } from "../types/vehiculo"
 
 const PAGE_SIZE = 20
@@ -21,7 +22,10 @@ export async function getCachedVehiculosAdmin(
         { codigo: { contains: search.trim() } },
       ],
     }),
-    ...(estado && { estado: estado as never }),
+    ...(estado &&
+      (Object.values(EstadoVenta) as string[]).includes(estado) && {
+        estado: estado as EstadoVenta,
+      }),
   }
 
   const clampedPage = Math.max(1, page)
@@ -59,7 +63,7 @@ export async function getCachedVehiculosAdmin(
     slug: v.slug,
     placa: v.placa,
     codigo: v.codigo,
-    precio: Number(v.precio),
+    precio: parseFloat(v.precio.toString()),
     kilometraje: v.kilometraje,
     anio: v.anio,
     estado: v.estado,
@@ -121,7 +125,7 @@ export async function getCachedVehiculoAdminById(id: string): Promise<VehiculoAd
 
   return {
     ...v,
-    precio: Number(v.precio),
-    preciodescuento: v.preciodescuento != null ? Number(v.preciodescuento) : null,
+    precio: parseFloat(v.precio.toString()),
+    preciodescuento: v.preciodescuento != null ? parseFloat(v.preciodescuento.toString()) : null,
   }
 }

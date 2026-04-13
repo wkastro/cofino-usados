@@ -1,6 +1,6 @@
 "use server"
 
-import { revalidateTag, revalidatePath } from "next/cache"
+import { revalidateTag, revalidatePath, updateTag } from "next/cache"
 import { requireAdmin } from "@/lib/auth-guard"
 import { prisma } from "@/lib/prisma"
 import { vehiculoSchema, galeriaImageSchema } from "../validations/vehiculo"
@@ -12,11 +12,11 @@ import { EstadoVenta } from "@/generated/prisma/enums"
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function revalidateVehiculoCaches(slug?: string, id?: string): void {
-  revalidateTag("admin-vehiculos", "minutes")
+  updateTag("admin-vehiculos")
   revalidateTag("vehicle-list", "hours")
   revalidateTag("home-recommendations", "hours")
-  if (slug) revalidateTag(`vehicle-${slug}`, "hours")
-  if (id) revalidateTag(`admin-vehiculo-${id}`, "minutes")
+  if (slug) revalidateTag(`vehicle-${slug}`, "days")
+  if (id) updateTag(`admin-vehiculo-${id}`)
 }
 
 // ─── Create ──────────────────────────────────────────────────────────────────
@@ -75,7 +75,8 @@ export async function createVehiculo(
       },
       select: { id: true, slug: true },
     })
-  } catch {
+  } catch (error) {
+    console.error("[createVehiculo]", error)
     return { ok: false, message: "Error al crear el vehículo. Verifica que la placa no esté duplicada." }
   }
 
@@ -138,7 +139,8 @@ export async function updateVehiculo(
         etiquetaComercialId: data.etiquetaComercialId ?? null,
       },
     })
-  } catch {
+  } catch (error) {
+    console.error("[updateVehiculo]", error)
     return { ok: false, message: "Error al actualizar el vehículo. Verifica que la placa no esté duplicada." }
   }
 
@@ -161,7 +163,8 @@ export async function deleteVehiculo(id: string): Promise<ActionResult> {
 
   try {
     await prisma.vehiculo.delete({ where: { id } })
-  } catch {
+  } catch (error) {
+    console.error("[deleteVehiculo]", error)
     return { ok: false, message: "Error al eliminar el vehículo." }
   }
 
@@ -187,7 +190,8 @@ export async function changeEstadoVehiculo(
 
   try {
     await prisma.vehiculo.update({ where: { id }, data: { estado } })
-  } catch {
+  } catch (error) {
+    console.error("[changeEstadoVehiculo]", error)
     return { ok: false, message: "Error al cambiar el estado del vehículo." }
   }
 
@@ -220,11 +224,12 @@ export async function addGaleriaImage(
       data: { vehiculoId, url: parsed.data.url, orden: parsed.data.orden },
       select: { id: true, url: true, orden: true },
     })
-  } catch {
+  } catch (error) {
+    console.error("[addGaleriaImage]", error)
     return { ok: false, message: "Error al añadir la imagen. Verifica que el vehículo existe." }
   }
 
-  revalidateTag(`admin-vehiculo-${vehiculoId}`, "minutes")
+  updateTag(`admin-vehiculo-${vehiculoId}`)
 
   return { ok: true, message: "Imagen añadida.", data: created }
 }
@@ -237,11 +242,12 @@ export async function removeGaleriaImage(
 
   try {
     await prisma.galeria.delete({ where: { id: galeriaId, vehiculoId } })
-  } catch {
+  } catch (error) {
+    console.error("[removeGaleriaImage]", error)
     return { ok: false, message: "Imagen no encontrada o no pertenece a este vehículo." }
   }
 
-  revalidateTag(`admin-vehiculo-${vehiculoId}`, "minutes")
+  updateTag(`admin-vehiculo-${vehiculoId}`)
 
   return { ok: true, message: "Imagen eliminada." }
 }
@@ -261,11 +267,12 @@ export async function reorderGaleriaImages(
         }),
       ),
     )
-  } catch {
+  } catch (error) {
+    console.error("[reorderGaleriaImages]", error)
     return { ok: false, message: "Error al reordenar las imágenes." }
   }
 
-  revalidateTag(`admin-vehiculo-${vehiculoId}`, "minutes")
+  updateTag(`admin-vehiculo-${vehiculoId}`)
 
   return { ok: true, message: "Galería reordenada." }
 }

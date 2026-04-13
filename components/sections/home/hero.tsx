@@ -25,7 +25,8 @@ export default function Hero({ children }: { children?: React.ReactNode }) {
             muted
             loop
             playsInline
-            preload="auto"
+            preload="metadata"
+            poster="/video-bg-poster.webp"
             className="w-full h-full object-cover"
             aria-hidden="true"
           >

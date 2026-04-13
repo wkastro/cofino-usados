@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 const workSans = Work_Sans({
   subsets: ["latin"],
   variable: "--font-work-sans",
+  display: "swap",
 });
 const clashDisplay = localFont({
   src: [
@@ -17,6 +18,7 @@ const clashDisplay = localFont({
     },
   ],
   variable: "--font-clash-display",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
