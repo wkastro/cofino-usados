@@ -21,6 +21,7 @@ interface InfiniteVehicleGridProps {
   minYear?: number;
   kilometrajeRange?: RangeValues;
   title?: string;
+  showFilters?: boolean;
 }
 
 export function InfiniteVehicleGrid({
@@ -32,6 +33,7 @@ export function InfiniteVehicleGrid({
   minYear,
   kilometrajeRange,
   title = "Autos recomendados",
+  showFilters = true,
 }: InfiniteVehicleGridProps) {
   const { isPending } = useFilterLoading();
   const { vehicles, isLoading, hasMore, loadMore } = useInfiniteVehicles({
@@ -53,12 +55,14 @@ export function InfiniteVehicleGrid({
           <h2 className="font-semibold text-[#111111] tracking-tight">
             {title}
           </h2>
-          <AdvancedFiltersButton
-            etiquetas={etiquetas}
-            priceRange={priceRange}
-            minYear={minYear}
-            kilometrajeRange={kilometrajeRange}
-          />
+          {showFilters && (
+            <AdvancedFiltersButton
+              etiquetas={etiquetas}
+              priceRange={priceRange}
+              minYear={minYear}
+              kilometrajeRange={kilometrajeRange}
+            />
+          )}
         </div>
 
         {vehicles.length === 0 ? (
