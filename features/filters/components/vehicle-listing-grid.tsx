@@ -25,15 +25,23 @@ export async function VehicleListingGrid({
   pageSize = DEFAULT_PAGE_SIZE,
 }: VehicleListingGridProps): Promise<React.ReactElement> {
   const resolvedParams = await searchParams;
+  const sanitizedParams = { ...resolvedParams };
+  if (lockedFilters) {
+    for (const key of Object.keys(lockedFilters) as (keyof typeof sanitizedParams)[]) {
+      delete sanitizedParams[key];
+    }
+  }
   const filters: VehicleFilters = {
-    ...parseSearchParamsToFilters(resolvedParams),
+    ...parseSearchParamsToFilters(sanitizedParams),
     ...lockedFilters,
   };
 
   const [vehicles, etiquetaOptions, priceRange, minYear, kilometrajeRange] =
     await Promise.all([
       getCachedVehiculos(1, filters, pageSize),
-      lockedFilters?.etiqueta ? Promise.resolve([]) : getCachedEtiquetas(),
+      lockedFilters != null && "etiqueta" in lockedFilters
+        ? Promise.resolve([])
+        : getCachedEtiquetas(),
       getCachedPriceRange(),
       getCachedMinYear(),
       getCachedKilometrajeRange(),
