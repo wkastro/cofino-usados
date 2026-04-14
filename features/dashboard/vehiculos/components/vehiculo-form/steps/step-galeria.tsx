@@ -111,7 +111,7 @@ export function StepGaleria({ vehiculoId, initialImages }: StepGaleriaProps) {
       {!vehiculoId ? (
         <div className="flex h-32 flex-col items-center justify-center rounded-lg border border-dashed gap-2 text-muted-foreground opacity-60">
           <UploadIcon className="size-6" aria-hidden="true" />
-          <p className="text-sm">Guarda el vehículo primero para añadir imágenes</p>
+          <p className="text-sm">Al guardar serás redirigido aquí para añadir imágenes</p>
         </div>
       ) : (
         <label

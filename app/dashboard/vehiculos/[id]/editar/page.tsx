@@ -6,14 +6,17 @@ export const metadata = { title: "Editar vehículo" }
 
 interface PageProps {
   params: Promise<{ id: string }>
+  searchParams: Promise<{ step?: string }>
 }
 
-export default async function Page({ params }: PageProps) {
+export default async function Page({ params, searchParams }: PageProps) {
   const { id } = await params
+  const { step } = await searchParams
+  const initialStep = step ? Math.max(0, Math.min(4, parseInt(step, 10))) : undefined
 
   return (
     <Suspense fallback={<Skeleton className="h-[800px] w-full rounded-xl" />}>
-      <VehiculoEditPage id={id} />
+      <VehiculoEditPage id={id} initialStep={initialStep} />
     </Suspense>
   )
 }

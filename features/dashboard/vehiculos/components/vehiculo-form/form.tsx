@@ -31,9 +31,10 @@ interface VehiculoFormProps {
   mode: "create" | "edit"
   vehiculo?: VehiculoAdmin
   options: VehiculoRelationOptions
+  initialStep?: number
 }
 
-export function VehiculoForm({ mode, vehiculo, options }: VehiculoFormProps) {
+export function VehiculoForm({ mode, vehiculo, options, initialStep }: VehiculoFormProps) {
   const {
     form,
     onSubmit,
@@ -43,7 +44,7 @@ export function VehiculoForm({ mode, vehiculo, options }: VehiculoFormProps) {
     goPrev,
     isFirstStep,
     isLastStep,
-  } = useVehiculoFormWizard({ mode, vehiculo })
+  } = useVehiculoFormWizard({ mode, vehiculo, initialStep })
 
   const { register, control, formState: { errors } } = form
 

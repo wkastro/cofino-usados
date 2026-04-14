@@ -23,6 +23,7 @@ const STEP_FIELDS: Record<number, (keyof VehiculoInput)[]> = {
 interface UseVehiculoFormWizardOptions {
   mode: "create" | "edit"
   vehiculo?: VehiculoAdmin
+  initialStep?: number
 }
 
 interface UseVehiculoFormWizardReturn {
@@ -36,10 +37,10 @@ interface UseVehiculoFormWizardReturn {
   isLastStep: boolean
 }
 
-export function useVehiculoFormWizard({ mode, vehiculo }: UseVehiculoFormWizardOptions): UseVehiculoFormWizardReturn {
+export function useVehiculoFormWizard({ mode, vehiculo, initialStep = 0 }: UseVehiculoFormWizardOptions): UseVehiculoFormWizardReturn {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
-  const [currentStep, setCurrentStep] = useState(0)
+  const [currentStep, setCurrentStep] = useState(initialStep)
   const isValidating = useRef(false)
 
   const form = useForm<VehiculoInput, unknown, VehiculoInput>({
@@ -98,7 +99,11 @@ export function useVehiculoFormWizard({ mode, vehiculo }: UseVehiculoFormWizardO
 
       if (result.ok) {
         toast.success(result.message)
-        router.push("/dashboard/vehiculos")
+        if (mode === "create" && result.data?.id) {
+          router.push(`/dashboard/vehiculos/${result.data.id}/editar?step=4`)
+        } else {
+          router.push("/dashboard/vehiculos")
+        }
       } else {
         toast.error(result.message)
         if (result.fieldErrors) {
