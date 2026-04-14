@@ -31,8 +31,8 @@ export function generateKey(
 
 /**
  * Builds the public HTTPS URL for an S3 object given its key.
- * Uses the AWS_BASE_URL environment variable (e.g. "cofalusados.s3.us-east-2.amazonaws.com").
+ * Uses the NEXT_PUBLIC_AWS_BASE_URL environment variable (e.g. "cofalusados.s3.us-east-2.amazonaws.com").
  */
 export function buildPublicUrl(key: string): string {
-  return `https://${process.env.AWS_BASE_URL}/${key}`
+  return `https://${process.env.NEXT_PUBLIC_AWS_BASE_URL}/${key}`
 }
