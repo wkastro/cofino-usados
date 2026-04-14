@@ -1,4 +1,5 @@
 import { InfiniteVehicleGrid } from "@/features/comprar/components/infinite-vehicle-grid";
+import { AdvancedFiltersButton } from "@/features/filters/components/advanced-filters-button";
 import {
   getCachedVehiculos,
   getCachedPriceRange,
@@ -36,10 +37,14 @@ export async function CertificadosVehicleGrid({
       initialData={vehicles}
       pageSize={CERTIFICADOS_PAGE_SIZE}
       filters={filters}
-      priceRange={priceRange}
-      minYear={minYear}
-      kilometrajeRange={kilometrajeRange}
       title="Autos Certificados"
+      actions={
+        <AdvancedFiltersButton
+          priceRange={priceRange}
+          minYear={minYear}
+          kilometrajeRange={kilometrajeRange}
+        />
+      }
     />
   );
 }

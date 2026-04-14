@@ -1,4 +1,5 @@
 import { InfiniteVehicleGrid } from "@/features/comprar/components/infinite-vehicle-grid";
+import { AdvancedFiltersButton } from "@/features/filters/components/advanced-filters-button";
 import { getCachedVehiculos, getCachedEtiquetas, getCachedPriceRange, getCachedMinYear, getCachedKilometrajeRange } from "@/app/actions/vehiculo.cached";
 import { parseSearchParamsToFilters } from "@/lib/filters/parse-search-params";
 import type { SearchParams } from "@/types/filters/filters";
@@ -28,10 +29,14 @@ export async function ComprarVehicleGrid({
       initialData={vehicles}
       pageSize={COMPRAR_PAGE_SIZE}
       filters={filters}
-      etiquetas={etiquetaOptions}
-      priceRange={priceRange}
-      minYear={minYear}
-      kilometrajeRange={kilometrajeRange}
+      actions={
+        <AdvancedFiltersButton
+          etiquetas={etiquetaOptions}
+          priceRange={priceRange}
+          minYear={minYear}
+          kilometrajeRange={kilometrajeRange}
+        />
+      }
     />
   );
 }

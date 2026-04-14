@@ -1,4 +1,5 @@
 import { InfiniteVehicleGrid } from "@/features/comprar/components/infinite-vehicle-grid";
+import { AdvancedFiltersButton } from "@/features/filters/components/advanced-filters-button";
 import {
   getCachedVehiculos,
   getCachedEtiquetas,
@@ -59,12 +60,17 @@ export async function VehicleListingGrid({
       initialData={vehicles}
       pageSize={pageSize}
       filters={filters}
-      etiquetas={etiquetaOptions}
-      priceRange={priceRange}
-      minYear={minYear}
-      kilometrajeRange={kilometrajeRange}
       title={title}
-      showFilters={showFilters}
+      actions={
+        showFilters ? (
+          <AdvancedFiltersButton
+            etiquetas={etiquetaOptions}
+            priceRange={priceRange}
+            minYear={minYear}
+            kilometrajeRange={kilometrajeRange}
+          />
+        ) : undefined
+      }
     />
   );
 }

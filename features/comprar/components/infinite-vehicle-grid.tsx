@@ -7,33 +7,23 @@ import { LoadMoreIndicator } from "./load-more-indicator";
 import { useFilterLoading } from "@/features/filters/context/filter-loading-context";
 import { useInfiniteVehicles } from "@/features/comprar/hooks/useInfiniteVehicles";
 import { useIntersectionObserver } from "@/features/comprar/hooks/useIntersectionObserver";
-import { AdvancedFiltersButton } from "@/features/filters/components/advanced-filters-button";
 import type { VehicleResponse } from "@/types/vehiculo/vehiculo";
-import type { VehicleFilters, EtiquetaComercial } from "@/types/filters/filters";
-import type { RangeValues } from "@/features/filters/types/advanced-filters";
+import type { VehicleFilters } from "@/types/filters/filters";
 
 interface InfiniteVehicleGridProps {
   initialData: VehicleResponse;
   pageSize: number;
   filters: VehicleFilters;
-  etiquetas?: EtiquetaComercial[];
-  priceRange?: RangeValues;
-  minYear?: number;
-  kilometrajeRange?: RangeValues;
   title?: string;
-  showFilters?: boolean;
+  actions?: React.ReactNode;
 }
 
 export function InfiniteVehicleGrid({
   initialData,
   pageSize,
   filters,
-  etiquetas = [],
-  priceRange,
-  minYear,
-  kilometrajeRange,
   title = "Autos recomendados",
-  showFilters = true,
+  actions,
 }: InfiniteVehicleGridProps) {
   const { isPending } = useFilterLoading();
   const { vehicles, isLoading, hasMore, loadMore } = useInfiniteVehicles({
@@ -55,14 +45,7 @@ export function InfiniteVehicleGrid({
           <h2 className="font-semibold text-[#111111] tracking-tight">
             {title}
           </h2>
-          {showFilters && (
-            <AdvancedFiltersButton
-              etiquetas={etiquetas}
-              priceRange={priceRange}
-              minYear={minYear}
-              kilometrajeRange={kilometrajeRange}
-            />
-          )}
+          {actions}
         </div>
 
         {vehicles.length === 0 ? (
