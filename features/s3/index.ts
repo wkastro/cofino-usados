@@ -1,4 +1,3 @@
-export { router } from "./router"
 export { buildPublicUrl, generateKey } from "./keys"
 
 /** Type-safe route name constants — use these instead of raw strings. */
