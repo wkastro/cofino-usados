@@ -17,8 +17,6 @@ import type { GaleriaItem } from "../../../types/vehiculo"
 interface StepGaleriaProps {
   vehiculoId: string | null
   initialImages: GaleriaItem[]
-  /** @deprecated Will be removed in Task 7 — ignored, file picker is now built-in */
-  adapter?: unknown
 }
 
 export function StepGaleria({ vehiculoId, initialImages }: StepGaleriaProps) {
