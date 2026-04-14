@@ -1,64 +1,71 @@
 "use client"
 
-import { useState, useTransition } from "react"
-import { ImageIcon, PlusIcon, TrashIcon, ArrowUpIcon } from "lucide-react"
+import { useRef, useState, useTransition } from "react"
+import { ImageIcon, TrashIcon, ArrowUpIcon, UploadIcon } from "lucide-react"
 import { toast } from "sonner"
 import Image from "next/image"
+import { useUploadFiles } from "@better-upload/client"
 import { Button } from "@/features/dashboard/components/ui/button"
-import { Input } from "@/features/dashboard/components/ui/input"
-import { Label } from "@/features/dashboard/components/ui/label"
 import {
   addGaleriaImage,
   removeGaleriaImage,
   reorderGaleriaImages,
 } from "../../../actions/vehiculo.actions"
+import { UPLOAD_ROUTES, buildPublicUrl } from "@/features/s3"
 import type { GaleriaItem } from "../../../types/vehiculo"
-import type { UploadAdapter } from "../upload-adapter"
 
 interface StepGaleriaProps {
   vehiculoId: string | null
   initialImages: GaleriaItem[]
-  adapter: UploadAdapter
+  /** @deprecated Will be removed in Task 7 — ignored, file picker is now built-in */
+  adapter?: unknown
 }
 
-export function StepGaleria({ vehiculoId, initialImages, adapter: _adapter }: StepGaleriaProps) {
+export function StepGaleria({ vehiculoId, initialImages }: StepGaleriaProps) {
   const [images, setImages] = useState<GaleriaItem[]>(initialImages)
-  const [newUrl, setNewUrl] = useState("")
   const [isPending, startTransition] = useTransition()
 
-  function handleAddImage() {
-    if (!newUrl.trim()) return
+  // Tracks the next orden value without causing re-renders
+  const nextOrdenRef = useRef(initialImages.length)
 
-    try {
-      new URL(newUrl.trim())
-    } catch {
-      toast.error("Ingresa una URL válida")
-      return
-    }
+  const { upload, progresses, isPending: isUploading } = useUploadFiles({
+    route: UPLOAD_ROUTES.vehiculoImages,
+    onUploadComplete: ({ files }) => {
+      files.forEach((file) => {
+        const url = buildPublicUrl(file.objectInfo.key)
+        const orden = nextOrdenRef.current++
 
-    if (!vehiculoId) {
-      setImages((prev) => [
-        ...prev,
-        { id: `pending-${Date.now()}`, url: newUrl.trim(), orden: prev.length },
-      ])
-      setNewUrl("")
-      return
-    }
+        if (!vehiculoId) {
+          setImages((prev) => [
+            ...prev,
+            { id: `pending-${Date.now()}-${Math.random()}`, url, orden },
+          ])
+          return
+        }
 
-    startTransition(async () => {
-      const result = await addGaleriaImage(vehiculoId, newUrl.trim(), images.length)
-      if (result.ok && result.data) {
-        setImages((prev) => [
-          ...prev,
-          { id: result.data!.id, url: result.data!.url, orden: result.data!.orden },
-        ])
-        setNewUrl("")
-        toast.success(result.message)
-      } else {
-        toast.error(result.message)
-      }
-    })
-  }
+        startTransition(async () => {
+          const result = await addGaleriaImage(vehiculoId, url, orden)
+          if (result.ok && result.data) {
+            setImages((prev) => [
+              ...prev,
+              { id: result.data!.id, url: result.data!.url, orden: result.data!.orden },
+            ])
+            toast.success(result.message)
+          } else {
+            toast.error(result.message)
+          }
+        })
+      })
+    },
+    onUploadFail: ({ failedFiles }) => {
+      failedFiles.forEach((f) => {
+        toast.error(`Error al subir ${f.name}: ${f.error.message}`)
+      })
+    },
+    onError: (error) => {
+      toast.error(error.message ?? "Error al subir la imagen")
+    },
+  })
 
   function handleRemove(galeriaId: string) {
     if (!vehiculoId || galeriaId.startsWith("pending-")) {
@@ -98,43 +105,60 @@ export function StepGaleria({ vehiculoId, initialImages, adapter: _adapter }: St
     })
   }
 
+  const isBusy = isUploading || isPending
+
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex gap-2">
-        <div className="flex-1 flex flex-col gap-1">
-          <Label htmlFor="gallery-url" className="sr-only">URL de imagen</Label>
-          <Input
-            id="gallery-url"
-            value={newUrl}
-            onChange={(e) => setNewUrl(e.target.value)}
-            placeholder="https://cdn.ejemplo.com/imagen.jpg"
-            onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleAddImage())}
-          />
-        </div>
-        <Button
-          type="button"
-          variant="outline"
-          size="icon"
-          onClick={handleAddImage}
-          disabled={isPending || !newUrl.trim()}
-          aria-label="Añadir imagen"
-        >
-          <PlusIcon className="size-4" aria-hidden="true" />
-        </Button>
-      </div>
+      {/* File picker */}
+      <label
+        htmlFor="gallery-upload"
+        className="flex h-32 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed gap-2 text-muted-foreground transition-colors hover:bg-muted/50 has-[:disabled]:pointer-events-none has-[:disabled]:opacity-50"
+      >
+        <UploadIcon className="size-6" aria-hidden="true" />
+        <p className="text-sm">Arrastra imágenes o haz clic para seleccionar</p>
+        <p className="text-xs">PNG, JPG, WEBP · máx. 5 MB por imagen</p>
+        <input
+          id="gallery-upload"
+          type="file"
+          accept="image/*"
+          multiple
+          className="sr-only"
+          disabled={isBusy}
+          onChange={(e) => {
+            if (!e.target.files?.length) return
+            upload(e.target.files, {
+              metadata: vehiculoId ? { vehiculoId } : undefined,
+            })
+            e.target.value = ""
+          }}
+        />
+      </label>
 
+      {/* Per-file upload progress */}
+      {isUploading && progresses.length > 0 && (
+        <ul className="flex flex-col gap-1" aria-label="Progreso de subida">
+          {progresses.map((file) => (
+            <li
+              key={file.objectInfo.key}
+              className="flex items-center gap-2 text-sm text-muted-foreground"
+            >
+              <span className="flex-1 truncate">{file.name}</span>
+              <span>{Math.round(file.progress * 100)}%</span>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {/* Gallery grid */}
       {images.length === 0 ? (
-        <div className="flex h-32 flex-col items-center justify-center rounded-lg border border-dashed gap-2 text-muted-foreground">
-          <ImageIcon className="size-8" />
-          <p className="text-sm">Añade URLs de imágenes arriba</p>
-          {!vehiculoId && (
-            <p className="text-xs">Las imágenes se guardarán al crear el vehículo</p>
-          )}
+        <div className="flex h-24 flex-col items-center justify-center gap-2 rounded-lg border border-dashed text-muted-foreground">
+          <ImageIcon className="size-6" aria-hidden="true" />
+          <p className="text-sm">No hay imágenes todavía</p>
         </div>
       ) : (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           {images.map((img, index) => (
-            <div key={img.id} className="group relative rounded-lg border overflow-hidden">
+            <div key={img.id} className="group relative overflow-hidden rounded-lg border">
               <div className="relative aspect-video bg-muted">
                 <Image
                   src={img.url}
@@ -144,7 +168,7 @@ export function StepGaleria({ vehiculoId, initialImages, adapter: _adapter }: St
                   sizes="(max-width: 640px) 50vw, 33vw"
                 />
               </div>
-              <div className="absolute inset-0 flex items-center justify-center gap-1 opacity-0 bg-black/40 transition-opacity group-hover:opacity-100">
+              <div className="absolute inset-0 flex items-center justify-center gap-1 bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
                 {index > 0 && (
                   <Button
                     type="button"
@@ -152,7 +176,7 @@ export function StepGaleria({ vehiculoId, initialImages, adapter: _adapter }: St
                     variant="secondary"
                     className="size-7"
                     onClick={() => handleMoveUp(index)}
-                    disabled={isPending}
+                    disabled={isBusy}
                   >
                     <ArrowUpIcon className="size-3" aria-hidden="true" />
                     <span className="sr-only">Subir</span>
@@ -164,7 +188,7 @@ export function StepGaleria({ vehiculoId, initialImages, adapter: _adapter }: St
                   variant="destructive"
                   className="size-7"
                   onClick={() => handleRemove(img.id)}
-                  disabled={isPending}
+                  disabled={isBusy}
                 >
                   <TrashIcon className="size-3" aria-hidden="true" />
                   <span className="sr-only">Eliminar</span>
