@@ -1,4 +1,6 @@
-export { buildPublicUrl, generateKey } from "./keys"
+// features/s3/index.ts
+
+export { buildPublicUrl } from "./keys"
 
 /** Type-safe route name constants — use these instead of raw strings. */
 export const UPLOAD_ROUTES = {

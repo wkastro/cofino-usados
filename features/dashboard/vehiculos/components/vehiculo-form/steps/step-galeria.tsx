@@ -108,36 +108,43 @@ export function StepGaleria({ vehiculoId, initialImages }: StepGaleriaProps) {
   return (
     <div className="flex flex-col gap-4">
       {/* File picker */}
-      <label
-        htmlFor="gallery-upload"
-        className="flex h-32 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed gap-2 text-muted-foreground transition-colors hover:bg-muted/50 has-[:disabled]:pointer-events-none has-[:disabled]:opacity-50"
-      >
-        <UploadIcon className="size-6" aria-hidden="true" />
-        <p className="text-sm">Arrastra imágenes o haz clic para seleccionar</p>
-        <p className="text-xs">PNG, JPG, WEBP · máx. 5 MB por imagen</p>
-        <input
-          id="gallery-upload"
-          type="file"
-          accept="image/*"
-          multiple
-          className="sr-only"
-          disabled={isBusy}
-          onChange={(e) => {
-            if (!e.target.files?.length) return
-            upload(e.target.files, {
-              metadata: vehiculoId ? { vehiculoId } : undefined,
-            })
-            e.target.value = ""
-          }}
-        />
-      </label>
+      {!vehiculoId ? (
+        <div className="flex h-32 flex-col items-center justify-center rounded-lg border border-dashed gap-2 text-muted-foreground opacity-60">
+          <UploadIcon className="size-6" aria-hidden="true" />
+          <p className="text-sm">Guarda el vehículo primero para añadir imágenes</p>
+        </div>
+      ) : (
+        <label
+          htmlFor="gallery-upload"
+          className="flex h-32 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed gap-2 text-muted-foreground transition-colors hover:bg-muted/50 has-[:disabled]:pointer-events-none has-[:disabled]:opacity-50"
+        >
+          <UploadIcon className="size-6" aria-hidden="true" />
+          <p className="text-sm">Haz clic para seleccionar imágenes</p>
+          <p className="text-xs">PNG, JPG, WEBP · máx. 5 MB por imagen</p>
+          <input
+            id="gallery-upload"
+            type="file"
+            accept="image/*"
+            multiple
+            className="sr-only"
+            disabled={isBusy}
+            onChange={(e) => {
+              if (!e.target.files?.length) return
+              upload(e.target.files, {
+                metadata: { vehiculoId },
+              })
+              e.target.value = ""
+            }}
+          />
+        </label>
+      )}
 
       {/* Per-file upload progress */}
       {isUploading && progresses.length > 0 && (
         <ul className="flex flex-col gap-1" aria-label="Progreso de subida">
           {progresses.map((file) => (
             <li
-              key={file.objectInfo.key}
+              key={file.objectInfo?.key || file.name}
               className="flex items-center gap-2 text-sm text-muted-foreground"
             >
               <span className="flex-1 truncate">{file.name}</span>
