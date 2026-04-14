@@ -1,27 +1,17 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import {
-  type Control,
-  type UseFormRegister,
-  type FieldErrors,
-  Controller,
-} from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 import { Upload } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FieldError } from "@/components/forms/field-error";
 import type { PurchaseFormData } from "@/features/comprar/validations/purchase";
 
-interface TransferFormProps {
-  register: UseFormRegister<PurchaseFormData>;
-  control: Control<PurchaseFormData>;
-  errors: FieldErrors<PurchaseFormData>;
-}
-
 const ACCEPTED_EXTENSIONS = ".jpg,.jpeg,.png,.pdf";
 
-export function TransferForm({ register, control, errors }: TransferFormProps) {
+export function TransferForm() {
+  const { register, control, formState: { errors } } = useFormContext<PurchaseFormData>();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState<string | null>(null);
 

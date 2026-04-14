@@ -1,19 +1,17 @@
 "use client";
 
-import { type Control, Controller } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 import { CreditCard, Building2 } from "lucide-react";
 import type { PurchaseFormData } from "@/features/comprar/validations/purchase";
-
-interface PaymentMethodTabsProps {
-  control: Control<PurchaseFormData>;
-}
 
 const TABS = [
   { value: "card" as const, label: "Tarjeta de credito / debito", icon: CreditCard },
   { value: "transfer" as const, label: "Transferencia bancaria", icon: Building2 },
 ];
 
-export function PaymentMethodTabs({ control }: PaymentMethodTabsProps) {
+export function PaymentMethodTabs() {
+  const { control } = useFormContext<PurchaseFormData>();
+
   return (
     <Controller
       control={control}

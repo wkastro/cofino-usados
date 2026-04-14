@@ -1,27 +1,17 @@
 "use client";
 
-import { useForm, type UseFormHandleSubmit, type UseFormRegister, type FieldErrors, type Control } from "react-hook-form";
+import { useForm, type UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { purchaseSchema, type PurchaseFormData } from "@/features/comprar/validations/purchase";
 
 interface UsePurchaseFormReturn {
-  register: UseFormRegister<PurchaseFormData>;
-  control: Control<PurchaseFormData>;
-  handleSubmit: UseFormHandleSubmit<PurchaseFormData>;
-  errors: FieldErrors<PurchaseFormData>;
-  isSubmitting: boolean;
+  form: UseFormReturn<PurchaseFormData>;
   paymentMethod: PurchaseFormData["paymentMethod"];
   onSubmit: (data: PurchaseFormData) => void;
 }
 
 export function usePurchaseForm(): UsePurchaseFormReturn {
-  const {
-    register,
-    control,
-    handleSubmit,
-    watch,
-    formState: { errors, isSubmitting },
-  } = useForm<PurchaseFormData>({
+  const form = useForm<PurchaseFormData>({
     resolver: zodResolver(purchaseSchema),
     defaultValues: {
       paymentMethod: "card",
@@ -40,20 +30,12 @@ export function usePurchaseForm(): UsePurchaseFormReturn {
     },
   });
 
-  const paymentMethod = watch("paymentMethod");
+  const paymentMethod = form.watch("paymentMethod");
 
   function onSubmit(data: PurchaseFormData) {
     console.log("Purchase submitted:", data);
     // TODO: server action for payment processing
   }
 
-  return {
-    register,
-    control,
-    handleSubmit,
-    errors,
-    isSubmitting,
-    paymentMethod,
-    onSubmit,
-  };
+  return { form, paymentMethod, onSubmit };
 }

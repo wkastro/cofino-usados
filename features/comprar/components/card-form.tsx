@@ -1,6 +1,6 @@
 "use client";
 
-import { type Control, type UseFormRegister, type FieldErrors, Controller } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -14,12 +14,6 @@ import {
 import { FieldError } from "@/components/forms/field-error";
 import type { PurchaseFormData } from "@/features/comprar/validations/purchase";
 
-interface CardFormProps {
-  register: UseFormRegister<PurchaseFormData>;
-  control: Control<PurchaseFormData>;
-  errors: FieldErrors<PurchaseFormData>;
-}
-
 const MONTHS = Array.from({ length: 12 }, (_, i) =>
   String(i + 1).padStart(2, "0")
 );
@@ -28,7 +22,9 @@ const YEARS = Array.from({ length: 10 }, (_, i) =>
   String(new Date().getFullYear() + i)
 );
 
-export function CardForm({ register, control, errors }: CardFormProps) {
+export function CardForm() {
+  const { register, control, formState: { errors } } = useFormContext<PurchaseFormData>();
+
   return (
     <div className="space-y-5">
       <h3 className="text-fs-md font-semibold">
