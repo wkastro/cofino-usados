@@ -4,28 +4,17 @@ import { VehicleCard } from "@/components/global/vehicle-card";
 import { NoResults } from "@/components/global/no-results";
 import { VehicleCardSkeletonGrid } from "@/components/global/vehicle-card-skeleton";
 import { useFilterLoading } from "@/features/filters/context/filter-loading-context";
-import { AdvancedFiltersButton } from "@/features/filters/components/advanced-filters-button";
 import type { VehicleResponse } from "@/types/vehiculo/vehiculo";
-import type { EtiquetaComercial } from "@/types/filters/filters";
-import type { RangeValues } from "@/features/filters/types/advanced-filters";
 import Link from "next/link";
 
 interface VehicleGridProps {
   vehicles: VehicleResponse;
-  showAdvancedFiltersButton?: boolean;
-  etiquetas?: EtiquetaComercial[];
-  priceRange?: RangeValues;
-  minYear?: number;
-  kilometrajeRange?: RangeValues;
+  actions?: React.ReactNode;
 }
 
 export function VehicleGrid({
   vehicles,
-  showAdvancedFiltersButton = false,
-  etiquetas = [],
-  priceRange,
-  minYear,
-  kilometrajeRange,
+  actions,
 }: VehicleGridProps): React.ReactElement {
   const { isPending } = useFilterLoading();
 
@@ -40,14 +29,7 @@ export function VehicleGrid({
           <h2 className="font-semibold text-[#111111] tracking-tight">
             Autos recomendados
           </h2>
-          {showAdvancedFiltersButton ? (
-            <AdvancedFiltersButton
-              etiquetas={etiquetas}
-              priceRange={priceRange}
-              minYear={minYear}
-              kilometrajeRange={kilometrajeRange}
-            />
-          ) : null}
+          {actions}
         </div>
 
         {vehicles.vehiculos.length === 0 ? (

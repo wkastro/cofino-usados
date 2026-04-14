@@ -1,4 +1,5 @@
 import { VehicleGrid } from "@/features/filters/components/vehicle-grid";
+import { AdvancedFiltersButton } from "@/features/filters/components/advanced-filters-button";
 import { getCachedVehiculos, getCachedEtiquetas, getCachedPriceRange, getCachedMinYear, getCachedKilometrajeRange } from "@/app/actions/vehiculo.cached";
 import { parseSearchParamsToFilters } from "@/lib/filters/parse-search-params";
 import type { SearchParams } from "@/types/filters/filters";
@@ -26,11 +27,16 @@ export async function HomeVehicleGrid({
   return (
     <VehicleGrid
       vehicles={vehicles}
-      showAdvancedFiltersButton={showAdvancedFiltersButton}
-      etiquetas={etiquetaOptions}
-      priceRange={priceRange}
-      minYear={minYear}
-      kilometrajeRange={kilometrajeRange}
+      actions={
+        showAdvancedFiltersButton ? (
+          <AdvancedFiltersButton
+            etiquetas={etiquetaOptions}
+            priceRange={priceRange}
+            minYear={minYear}
+            kilometrajeRange={kilometrajeRange}
+          />
+        ) : undefined
+      }
     />
   );
 }

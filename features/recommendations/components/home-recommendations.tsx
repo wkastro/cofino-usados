@@ -1,6 +1,7 @@
 import type React from "react";
 import { getCachedHomeRecommendations } from "../actions/recommendations.cached";
 import { VehicleGrid } from "@/features/filters/components/vehicle-grid";
+import { AdvancedFiltersButton } from "@/features/filters/components/advanced-filters-button";
 import {
   getCachedEtiquetas,
   getCachedPriceRange,
@@ -36,11 +37,14 @@ export async function HomeRecommendations({
         pages: 1,
         page: 1,
       }}
-      showAdvancedFiltersButton
-      etiquetas={etiquetaOptions}
-      priceRange={priceRange}
-      minYear={minYear}
-      kilometrajeRange={kilometrajeRange}
+      actions={
+        <AdvancedFiltersButton
+          etiquetas={etiquetaOptions}
+          priceRange={priceRange}
+          minYear={minYear}
+          kilometrajeRange={kilometrajeRange}
+        />
+      }
     />
   );
 }
