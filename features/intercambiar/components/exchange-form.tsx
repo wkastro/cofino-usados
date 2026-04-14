@@ -82,7 +82,8 @@ export function ExchangeForm() {
         className="mt-8 w-full max-w-md space-y-5"
       >
         {/* Step 1: Vehicle Info */}
-        <div className={step === 0 ? "space-y-5" : "hidden"}>
+        {step === 0 && (
+        <div className="space-y-5">
           {/* Placa */}
           <div className="space-y-2">
             <Label htmlFor="placa" className="font-bold">
@@ -261,9 +262,11 @@ export function ExchangeForm() {
             </div>
           )}
         </div>
+        )}
 
         {/* Step 2: Contact Info */}
-        <div className={step === 1 ? "space-y-5" : "hidden"}>
+        {step === 1 && (
+        <div className="space-y-5">
           {/* Nombre completo */}
           <div className="space-y-2">
             <Label htmlFor="fullName" className="font-bold">
@@ -324,6 +327,7 @@ export function ExchangeForm() {
             <FieldError message={errors.expectedPrice?.message} />
           </div>
         </div>
+        )}
 
         {/* Action buttons */}
         {step === 0 ? (
