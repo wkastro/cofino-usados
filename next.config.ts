@@ -2,13 +2,15 @@ import type { NextConfig } from "next";
 
 const isDev = process.env.NODE_ENV === "development";
 
+const S3_HOSTNAME = "cofalusados.s3.us-east-2.amazonaws.com";
+
 const cspHeader = `
   default-src 'self';
   script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""};
   style-src 'self' 'unsafe-inline';
   img-src 'self' blob: data: https:;
   font-src 'self' data:;
-  connect-src 'self';
+  connect-src 'self' https://${S3_HOSTNAME};
   object-src 'none';
   base-uri 'self';
   form-action 'self';
@@ -46,6 +48,12 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: S3_HOSTNAME,
+      },
+    ],
   },
   async headers() {
     return [
@@ -57,7 +65,6 @@ const nextConfig: NextConfig = {
   },
   serverExternalPackages: ["bcrypt"],
   cacheComponents: true,
-  // bundle-barrel-imports: auto-transform barrel imports to direct imports at build time
   experimental: {
     optimizePackageImports: [
       "lucide-react",
