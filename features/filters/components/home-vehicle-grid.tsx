@@ -6,12 +6,10 @@ import type { SearchParams } from "@/types/filters/filters";
 
 interface HomeVehicleGridProps {
   searchParams: Promise<SearchParams>;
-  showAdvancedFiltersButton?: boolean;
 }
 
 export async function HomeVehicleGrid({
   searchParams,
-  showAdvancedFiltersButton = true,
 }: HomeVehicleGridProps): Promise<React.ReactElement> {
   const resolvedParams = await searchParams;
   const filters = parseSearchParamsToFilters(resolvedParams);
@@ -28,14 +26,12 @@ export async function HomeVehicleGrid({
     <VehicleGrid
       vehicles={vehicles}
       actions={
-        showAdvancedFiltersButton ? (
-          <AdvancedFiltersButton
-            etiquetas={etiquetaOptions}
-            priceRange={priceRange}
-            minYear={minYear}
-            kilometrajeRange={kilometrajeRange}
-          />
-        ) : undefined
+        <AdvancedFiltersButton
+          etiquetas={etiquetaOptions}
+          priceRange={priceRange}
+          minYear={minYear}
+          kilometrajeRange={kilometrajeRange}
+        />
       }
     />
   );
