@@ -125,7 +125,7 @@ export function SearchFilterBar({
                 variant="dark"
                 onClick={onClearFilters}
                 disabled={!hasActiveFilters}
-                className="flex-1 lg:flex-none rounded-full font-semibold"
+                className="flex-1 lg:flex-none rounded-full font-semibold h-11"
               >
                 <HugeiconsIcon
                   icon={FilterRemoveIcon}
