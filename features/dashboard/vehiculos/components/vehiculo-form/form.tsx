@@ -17,7 +17,6 @@ import { StepEspecificaciones } from "./steps/step-especificaciones"
 import { StepPrecios } from "./steps/step-precios"
 import { StepClasificacion } from "./steps/step-clasificacion"
 import { StepGaleria } from "./steps/step-galeria"
-import { localUrlAdapter } from "./upload-adapter"
 import type { VehiculoAdmin, VehiculoRelationOptions } from "../../types/vehiculo"
 
 const STEPS = [
@@ -90,7 +89,6 @@ export function VehiculoForm({ mode, vehiculo, options }: VehiculoFormProps) {
               <StepGaleria
                 vehiculoId={vehiculo?.id ?? null}
                 initialImages={vehiculo?.galeria ?? []}
-                adapter={localUrlAdapter}
               />
             )}
           </CardContent>
