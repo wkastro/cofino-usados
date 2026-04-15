@@ -20,7 +20,6 @@ import { ImageIcon, TrashIcon, GripVertical, UploadIcon } from "lucide-react"
 import { toast } from "sonner"
 import Image from "next/image"
 import { useUploadFiles } from "@/features/s3/use-upload-files"
-import { Button } from "@/features/dashboard/components/ui/button"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -80,7 +79,7 @@ function SortableGaleriaItem({
       </div>
 
       {/* Hover overlay */}
-      <div className="absolute inset-0 flex items-start justify-between p-1.5 opacity-0 transition-opacity group-hover:opacity-100 bg-black/30">
+      <div className="absolute inset-0 flex items-start justify-between p-1.5 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100 bg-black/30">
         {/* Drag handle */}
         <button
           type="button"
@@ -124,6 +123,7 @@ interface StepGaleriaProps {
 export function StepGaleria({ vehiculoId, initialImages }: StepGaleriaProps) {
   const [images, setImages] = useState<GaleriaItem[]>(initialImages)
   const [imageToDelete, setImageToDelete] = useState<GaleriaItem | null>(null)
+  const [isDragging, setIsDragging] = useState(false)
   const [isPending, startTransition] = useTransition()
 
   const nextOrdenRef = useRef(initialImages.length)
@@ -194,6 +194,7 @@ export function StepGaleria({ vehiculoId, initialImages }: StepGaleriaProps) {
   }
 
   function handleDragEnd(event: DragEndEvent) {
+    if (isBusy) return
     const { active, over } = event
     if (!over || active.id === over.id) return
 
@@ -219,7 +220,6 @@ export function StepGaleria({ vehiculoId, initialImages }: StepGaleriaProps) {
     })
   }
 
-  const [isDragging, setIsDragging] = useState(false)
   const isBusy = isUploading || isPending
 
   function handleDrop(e: React.DragEvent<HTMLLabelElement>) {
