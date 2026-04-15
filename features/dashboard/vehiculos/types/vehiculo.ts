@@ -1,8 +1,7 @@
-import type { EstadoVenta, Transmision, Combustible, Traccion } from "@/generated/prisma/enums"
-
 export interface SelectOption {
   id: string
   nombre: string
+  slug?: string
 }
 
 export interface VehiculoRelationOptions {
@@ -10,6 +9,16 @@ export interface VehiculoRelationOptions {
   categorias: SelectOption[]
   sucursales: SelectOption[]
   etiquetas: SelectOption[]
+  transmisiones: SelectOption[]
+  combustibles: SelectOption[]
+  tracciones: SelectOption[]
+  estados: SelectOption[]
+}
+
+export interface EspecificacionInfo {
+  id: string
+  nombre: string
+  slug: string
 }
 
 export interface VehiculoRow {
@@ -21,9 +30,9 @@ export interface VehiculoRow {
   precio: number
   kilometraje: number
   anio: number
-  estado: EstadoVenta
-  transmision: Transmision
-  combustible: Combustible
+  estadoVenta: EspecificacionInfo
+  transmision: EspecificacionInfo
+  combustible: EspecificacionInfo
   marca: string
   categoria: string
   sucursal: string
@@ -41,10 +50,10 @@ export interface VehiculoAdmin {
   kilometraje: number
   motor: string | null
   anio: number
-  estado: EstadoVenta
-  transmision: Transmision
-  combustible: Combustible
-  traccion: Traccion
+  estadoId: string
+  transmisionId: string
+  combustibleId: string
+  traccionId: string
   color_interior: string | null
   color_exterior: string | null
   descripcion: string | null
@@ -68,6 +77,7 @@ export interface VehiculosAdminResponse {
   total: number
   pages: number
   page: number
+  estadoOptions: SelectOption[]
 }
 
 export type ActionSuccess<T = undefined> = {

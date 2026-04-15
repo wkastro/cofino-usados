@@ -6,7 +6,6 @@ export async function getCachedMarcasOptions(): Promise<SelectOption[]> {
   "use cache"
   cacheLife("hours")
   cacheTag("admin-marcas-options")
-
   return prisma.marca.findMany({
     where: { estado: true },
     select: { id: true, nombre: true },
@@ -18,7 +17,6 @@ export async function getCachedCategoriasOptions(): Promise<SelectOption[]> {
   "use cache"
   cacheLife("hours")
   cacheTag("admin-categorias-options")
-
   return prisma.categoria.findMany({
     where: { estado: true },
     select: { id: true, nombre: true },
@@ -30,7 +28,6 @@ export async function getCachedSucursalesOptions(): Promise<SelectOption[]> {
   "use cache"
   cacheLife("hours")
   cacheTag("admin-sucursales-options")
-
   return prisma.sucursal.findMany({
     where: { estado: true },
     select: { id: true, nombre: true },
@@ -42,10 +39,53 @@ export async function getCachedEtiquetasOptions(): Promise<SelectOption[]> {
   "use cache"
   cacheLife("hours")
   cacheTag("admin-etiquetas-options")
-
   return prisma.etiquetaComercial.findMany({
     where: { estado: true },
     select: { id: true, nombre: true },
+    orderBy: { nombre: "asc" },
+  })
+}
+
+export async function getCachedTransmisionesOptions(): Promise<SelectOption[]> {
+  "use cache"
+  cacheLife("hours")
+  cacheTag("admin-transmisiones")
+  return prisma.transmision.findMany({
+    where: { estado: true },
+    select: { id: true, nombre: true },
+    orderBy: { nombre: "asc" },
+  })
+}
+
+export async function getCachedCombustiblesOptions(): Promise<SelectOption[]> {
+  "use cache"
+  cacheLife("hours")
+  cacheTag("admin-combustibles")
+  return prisma.combustible.findMany({
+    where: { estado: true },
+    select: { id: true, nombre: true },
+    orderBy: { nombre: "asc" },
+  })
+}
+
+export async function getCachedTraccionesOptions(): Promise<SelectOption[]> {
+  "use cache"
+  cacheLife("hours")
+  cacheTag("admin-tracciones")
+  return prisma.traccion.findMany({
+    where: { estado: true },
+    select: { id: true, nombre: true },
+    orderBy: { nombre: "asc" },
+  })
+}
+
+export async function getCachedEstadosOptions(): Promise<SelectOption[]> {
+  "use cache"
+  cacheLife("hours")
+  cacheTag("admin-estados")
+  return prisma.estadoVenta.findMany({
+    where: { estado: true },
+    select: { id: true, nombre: true, slug: true },
     orderBy: { nombre: "asc" },
   })
 }
@@ -55,12 +95,17 @@ export async function getCachedRelationOptions(): Promise<VehiculoRelationOption
   cacheLife("hours")
   cacheTag("admin-relation-options")
 
-  const [marcas, categorias, sucursales, etiquetas] = await Promise.all([
-    getCachedMarcasOptions(),
-    getCachedCategoriasOptions(),
-    getCachedSucursalesOptions(),
-    getCachedEtiquetasOptions(),
-  ])
+  const [marcas, categorias, sucursales, etiquetas, transmisiones, combustibles, tracciones, estados] =
+    await Promise.all([
+      getCachedMarcasOptions(),
+      getCachedCategoriasOptions(),
+      getCachedSucursalesOptions(),
+      getCachedEtiquetasOptions(),
+      getCachedTransmisionesOptions(),
+      getCachedCombustiblesOptions(),
+      getCachedTraccionesOptions(),
+      getCachedEstadosOptions(),
+    ])
 
-  return { marcas, categorias, sucursales, etiquetas }
+  return { marcas, categorias, sucursales, etiquetas, transmisiones, combustibles, tracciones, estados }
 }

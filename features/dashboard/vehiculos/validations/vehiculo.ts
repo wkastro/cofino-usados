@@ -1,5 +1,4 @@
 import * as z from "zod"
-import { EstadoVenta, Transmision, Combustible, Traccion } from "@/generated/prisma/enums"
 
 export const vehiculoSchema = z.object({
   nombre: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
@@ -14,10 +13,10 @@ export const vehiculoSchema = z.object({
     .int()
     .min(1900, "Año inválido")
     .max(new Date().getFullYear() + 2, "Año inválido"),
-  estado: z.nativeEnum(EstadoVenta),
-  transmision: z.nativeEnum(Transmision),
-  combustible: z.nativeEnum(Combustible),
-  traccion: z.nativeEnum(Traccion),
+  estadoId: z.string().uuid("Selecciona un estado"),
+  transmisionId: z.string().uuid("Selecciona una transmisión"),
+  combustibleId: z.string().uuid("Selecciona un combustible"),
+  traccionId: z.string().uuid("Selecciona una tracción"),
   color_interior: z.string().optional().default("").transform(v => v?.trim() || null),
   color_exterior: z.string().optional().default("").transform(v => v?.trim() || null),
   descripcion: z.string().optional().default("").transform(v => v?.trim() || null),
