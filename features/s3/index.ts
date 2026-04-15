@@ -1,6 +1,8 @@
 // features/s3/index.ts
 
 export { buildPublicUrl } from "./keys"
+export { useUploadFiles } from "./use-upload-files"
+export type { UploadProgress, UploadedFile, FailedFile } from "./use-upload-files"
 
 /** Type-safe route name constants — use these instead of raw strings. */
 export const UPLOAD_ROUTES = {

@@ -67,7 +67,7 @@ export function VehiculoForm({ mode, vehiculo, options, initialStep }: VehiculoF
       <Stepper steps={STEPS.map((s) => s.label)} currentStep={currentStep} />
 
       {/* Step Card */}
-      <form onSubmit={onSubmit}>
+      <form>
         <Card>
           <CardHeader>
             <CardTitle>{STEPS[currentStep].label}</CardTitle>
@@ -107,7 +107,7 @@ export function VehiculoForm({ mode, vehiculo, options, initialStep }: VehiculoF
             Anterior
           </Button>
           {isLastStep ? (
-            <Button type="submit" disabled={isPending}>
+            <Button type="button" onClick={onSubmit} disabled={isPending}>
               {isPending
                 ? (mode === "create" ? "Creando..." : "Guardando...")
                 : (mode === "create" ? "Crear vehículo" : "Guardar cambios")}

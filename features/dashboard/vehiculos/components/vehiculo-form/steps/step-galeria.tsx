@@ -4,14 +4,14 @@ import { useRef, useState, useTransition } from "react"
 import { ImageIcon, TrashIcon, ArrowUpIcon, UploadIcon } from "lucide-react"
 import { toast } from "sonner"
 import Image from "next/image"
-import { useUploadFiles } from "@better-upload/client"
+import { useUploadFiles } from "@/features/s3/use-upload-files"
 import { Button } from "@/features/dashboard/components/ui/button"
 import {
   addGaleriaImage,
   removeGaleriaImage,
   reorderGaleriaImages,
 } from "../../../actions/vehiculo.actions"
-import { UPLOAD_ROUTES, buildPublicUrl } from "@/features/s3"
+import { UPLOAD_ROUTES } from "@/features/s3"
 import type { GaleriaItem } from "../../../types/vehiculo"
 
 interface StepGaleriaProps {
@@ -30,7 +30,7 @@ export function StepGaleria({ vehiculoId, initialImages }: StepGaleriaProps) {
     route: UPLOAD_ROUTES.vehiculoImages,
     onUploadComplete: ({ files }) => {
       files.forEach((file) => {
-        const url = buildPublicUrl(file.objectInfo.key)
+        const url = file.objectInfo.url
         const orden = nextOrdenRef.current++
 
         if (!vehiculoId) {
@@ -103,7 +103,18 @@ export function StepGaleria({ vehiculoId, initialImages }: StepGaleriaProps) {
     })
   }
 
+  const [isDragging, setIsDragging] = useState(false)
   const isBusy = isUploading || isPending
+
+  function handleDrop(e: React.DragEvent<HTMLLabelElement>) {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsDragging(false)
+    if (isBusy || !vehiculoId) return
+    const files = e.dataTransfer.files
+    if (!files?.length) return
+    upload(files, { metadata: { vehiculoId } })
+  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -116,10 +127,14 @@ export function StepGaleria({ vehiculoId, initialImages }: StepGaleriaProps) {
       ) : (
         <label
           htmlFor="gallery-upload"
-          className="flex h-32 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed gap-2 text-muted-foreground transition-colors hover:bg-muted/50 has-[:disabled]:pointer-events-none has-[:disabled]:opacity-50"
+          onDragOver={(e) => { e.preventDefault(); e.stopPropagation() }}
+          onDragEnter={(e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(true) }}
+          onDragLeave={(e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(false) }}
+          onDrop={handleDrop}
+          className={`flex h-32 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed gap-2 text-muted-foreground transition-colors hover:bg-muted/50 has-[:disabled]:pointer-events-none has-[:disabled]:opacity-50${isDragging ? " bg-muted/70 border-primary" : ""}`}
         >
           <UploadIcon className="size-6" aria-hidden="true" />
-          <p className="text-sm">Haz clic para seleccionar imágenes</p>
+          <p className="text-sm">{isDragging ? "Suelta para subir" : "Haz clic o arrastra imágenes aquí"}</p>
           <p className="text-xs">PNG, JPG, WEBP · máx. 5 MB por imagen</p>
           <input
             id="gallery-upload"
@@ -144,7 +159,7 @@ export function StepGaleria({ vehiculoId, initialImages }: StepGaleriaProps) {
         <ul className="flex flex-col gap-1" aria-label="Progreso de subida">
           {progresses.map((file) => (
             <li
-              key={file.objectInfo?.key || file.name}
+              key={file.name}
               className="flex items-center gap-2 text-sm text-muted-foreground"
             >
               <span className="flex-1 truncate">{file.name}</span>
