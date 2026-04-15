@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useCallback } from "react"
 import { PlusIcon, SearchIcon, XIcon } from "lucide-react"
 import {
   flexRender,
@@ -36,12 +36,12 @@ export function EspecificacionesTab({ tipo, titulo, data }: EspecificacionesTabP
 
   const { search, setSearch, filtered, clearSearch } = useEspecificacionesTable(data)
 
-  function handleEdit(row: Especificacion) {
+  const handleEdit = useCallback((row: Especificacion) => {
     setSelectedRow(row)
     setEditOpen(true)
-  }
+  }, [])
 
-  const columns = useMemo(() => getEspecificacionesColumns(tipo, handleEdit), [tipo])
+  const columns = useMemo(() => getEspecificacionesColumns(tipo, handleEdit), [tipo, handleEdit])
 
   const table = useReactTable<Especificacion>({
     data: filtered,

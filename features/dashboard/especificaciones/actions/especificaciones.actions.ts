@@ -14,6 +14,7 @@ const CACHE_TAGS: Record<EspecificacionTipo, string> = {
   estado: "admin-estados",
 }
 
+// Prisma dynamic delegate — no generic overload available for runtime model selection
 function getDelegate(tipo: EspecificacionTipo) {
   switch (tipo) {
     case "transmision": return prisma.transmision
@@ -46,8 +47,8 @@ export async function createEspecificacion(
     updateTag(CACHE_TAGS[tipo])
     updateTag("admin-all-especificaciones")
     return { ok: true, message: "Registro creado.", data: { id: record.id } }
-  } catch (error: any) {
-    if (error?.code === "P2002") {
+  } catch (error) {
+    if ((error as any)?.code === "P2002") {
       return { ok: false, message: "Ya existe un registro con ese nombre o slug." }
     }
     console.error(`[createEspecificacion:${tipo}]`, error)
@@ -79,8 +80,8 @@ export async function updateEspecificacion(
     updateTag(CACHE_TAGS[tipo])
     updateTag("admin-all-especificaciones")
     return { ok: true, message: "Registro actualizado." }
-  } catch (error: any) {
-    if (error?.code === "P2002") {
+  } catch (error) {
+    if ((error as any)?.code === "P2002") {
       return { ok: false, message: "Ya existe un registro con ese nombre o slug." }
     }
     console.error(`[updateEspecificacion:${tipo}]`, error)
