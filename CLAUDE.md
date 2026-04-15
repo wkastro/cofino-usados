@@ -39,27 +39,43 @@ npm run lint      # Run ESLint
 ### Directory Layout
 
 ```
-app/              # Next.js pages and API routes
+app/                # App Router (grouped routes, dashboard, API, server actions)
+  (site)/           # Public pages (`/`, `/comprar`, `/registro`, etc.)
+  dashboard/        # Admin area (protected routes)
+  api/              # Route handlers (`auth`, `upload`)
+  actions/          # Server actions
 components/
-  ui/             # Base shadcn/Radix UI components
-  layout/         # Header, footer, navbar, container
-  global/         # Shared components (vehicle-card, logo)
-  sections/       # Page-level sections (VehicleGrid)
-  forms/          # Reusable form fields
-  auth/           # Auth guards, social buttons
+  ui/               # Base shadcn/Radix UI components
+  layout/           # Header, footer, navbar, container
+  global/           # Shared/presentational components
+  sections/         # Page-level sections (home, etc.)
+  forms/            # Reusable form fields
+  auth/             # Auth guards and social buttons
 features/
-  auth-users/     # User login/register (components + hooks)
-  auth-dashboard/ # Admin login/register (components + hooks)
-  test-drive/     # Test drive form (component + hook)
-  filters/        # Search bars (home-search-bar, search-filter-bar)
-  sections/home/  # Hero section
+  auth-users/       # User auth flows (components/hooks/validations)
+  auth-dashboard/   # Admin auth flows
+  comprar/          # Compra/listado domain
+  dashboard/        # Dashboard domain modules
+  favoritos/        # Favorites domain
+  filters/          # Search/filter logic + UI + context
+  intercambiar/     # Trade-in flow
+  reviews/          # Reviews domain
+  recommendations/  # Recommendation widgets/actions
+  vehicle-detail/   # Vehicle detail page modules
+  test-drive/       # Test drive flow
+  certificados/     # Certificates section
+  s3/               # File upload helpers/hooks
 lib/
-  hooks/          # useVehicleFavorites
-  validations/    # Zod schemas
-  formatters/     # vehicle.ts (currency, km, blindaje)
-  constants/      # Nav, auth, test-drive constants
-auth.ts           # NextAuth config (two credential providers)
-prisma/schema.prisma
+  validations/      # Shared Zod schemas
+  formatters/       # Domain formatters (`vehicle.ts`)
+  constants/        # Shared constants (auth, navigation, labels)
+  filters/          # Query/URL parsing helpers for vehicle filters
+  prisma.ts         # Prisma client singleton
+types/              # Shared TypeScript types
+prisma/             # Prisma schema + migrations + seed scripts
+generated/prisma/   # Generated Prisma client output
+public/             # Static assets (images, brands, fonts, media)
+auth.ts             # NextAuth config
 ```
 
 ### Authentication
