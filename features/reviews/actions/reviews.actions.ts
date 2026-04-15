@@ -75,10 +75,10 @@ export async function upsertReview(
   });
 
   revalidateTag(`reviews-${data.vehiculoId}`, "hours");
-  revalidatePath(`/catalogo/${vehicle.slug}`);
+  revalidatePath(`/comprar/${vehicle.slug}`);
 
   if (data.vehiculoSlug !== vehicle.slug) {
-    revalidatePath(`/catalogo/${data.vehiculoSlug}`);
+    revalidatePath(`/comprar/${data.vehiculoSlug}`);
   }
 
   return {

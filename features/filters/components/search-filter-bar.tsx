@@ -109,7 +109,7 @@ export function SearchFilterBar({
                   </SelectTrigger>
                   <SelectContent position="popper">
                     {transmissions.map((transmission) => (
-                      <SelectItem key={transmission.id} value={transmission.id}>
+                      <SelectItem key={transmission.slug} value={transmission.slug}>
                         {transmission.nombre}
                       </SelectItem>
                     ))}

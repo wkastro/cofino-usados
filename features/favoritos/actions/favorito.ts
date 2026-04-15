@@ -50,7 +50,10 @@ export async function getFavoriteVehiculos(): Promise<Vehiculo[]> {
   if (!session?.user?.id) return [];
 
   const favoritos = await prisma.favorito.findMany({
-    where: { userId: session.user.id },
+    where: {
+      userId: session.user.id,
+      vehiculo: { estadoVenta: { slug: { not: "facturado" } } },
+    },
     select: {
       vehiculo: {
         select: {

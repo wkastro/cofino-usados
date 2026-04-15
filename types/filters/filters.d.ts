@@ -9,7 +9,7 @@ interface SlugEntity extends BaseEntity {
 
 export type Category = SlugEntity;
 export type Brand = SlugEntity;
-export type Transmission = BaseEntity;
+export type Transmission = SlugEntity;
 export type EtiquetaComercial = SlugEntity;
 
 export interface VehicleFilters {

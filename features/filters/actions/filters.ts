@@ -22,13 +22,12 @@ export async function getBrands() {
 
 export type BrandsResult = Awaited<ReturnType<typeof getBrands>>;
 
-const TRANSMISSION_OPTIONS = [
-  { id: "automatico", nombre: "Automático" },
-  { id: "manual", nombre: "Manual" },
-];
-
 export async function getTransmissions() {
-  return TRANSMISSION_OPTIONS;
+  return prisma.transmision.findMany({
+    where: { estado: true },
+    select: { id: true, nombre: true, slug: true },
+    orderBy: { nombre: "asc" },
+  });
 }
 
 export type TransmissionsResult = Awaited<ReturnType<typeof getTransmissions>>;

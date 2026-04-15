@@ -1,5 +1,4 @@
-import { getCachedCategories, getCachedBrands } from "@/app/actions/vehiculo.cached";
-import { getTransmissions } from "@/features/filters/actions/filters";
+import { getCachedCategories, getCachedBrands, getCachedTransmissions } from "@/app/actions/vehiculo.cached";
 import { HomeSearchBar } from "@/features/filters/components/home-search-bar";
 import type { SearchParams } from "@/types/filters/filters";
 
@@ -12,7 +11,7 @@ export async function HomeSearchBarContent({ searchParams, className }: HomeSear
   const [categories, brands, transmissions] = await Promise.all([
     getCachedCategories(),
     getCachedBrands(),
-    getTransmissions(),
+    getCachedTransmissions(),
   ]);
 
   return (

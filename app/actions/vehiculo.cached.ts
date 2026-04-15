@@ -1,9 +1,9 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { getVehicleBySlug, getVehiculos } from "./vehiculo";
-import { getCategories, getBrands, getEtiquetas, getPriceRange, getMinYear, getKilometrajeRange } from "@/features/filters/actions/filters";
+import { getCategories, getBrands, getEtiquetas, getPriceRange, getMinYear, getKilometrajeRange, getTransmissions } from "@/features/filters/actions/filters";
 import type { VehicleFilters } from "@/types/filters/filters";
 import type { VehicleDetail, VehicleResponse } from "@/types/vehiculo/vehiculo";
-import type { CategoriesResult, BrandsResult, EtiquetasResult, PriceRangeResult, MinYearResult, KilometrajeRangeResult } from "@/features/filters/actions/filters";
+import type { CategoriesResult, BrandsResult, EtiquetasResult, PriceRangeResult, MinYearResult, KilometrajeRangeResult, TransmissionsResult } from "@/features/filters/actions/filters";
 
 export async function getCachedVehicleBySlug(slug: string): Promise<VehicleDetail | null> {
   "use cache";
@@ -71,4 +71,12 @@ export async function getCachedKilometrajeRange(): Promise<KilometrajeRangeResul
   cacheTag("kilometraje-range");
 
   return getKilometrajeRange();
+}
+
+export async function getCachedTransmissions(): Promise<TransmissionsResult> {
+  "use cache";
+  cacheLife("weeks");
+  cacheTag("transmissions");
+
+  return getTransmissions();
 }
