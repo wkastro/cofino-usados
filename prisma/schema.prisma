@@ -119,26 +119,22 @@ model Vehiculo {
   kilometraje         Int
   motor               String?
   anio                Int
-  // Enum temporales — se eliminan en Fase 2
-  estado_enum         EstadoVentaEnum    @default(Disponible) @map("estado_enum")
-  transmision_enum    TransmisionEnum    @map("transmision_enum")
-  combustible_enum    CombustibleEnum    @map("combustible_enum")
-  traccion_enum       TraccionEnum       @map("traccion_enum")
-  // Nuevas FKs nullable — se harán required en Fase 2
-  transmisionId       String?            @db.Char(36)
-  combustibleId       String?            @db.Char(36)
-  traccionId          String?            @db.Char(36)
-  estadoId            String?            @db.Char(36)
+  transmisionId       String             @db.Char(36)
+  combustibleId       String             @db.Char(36)
+  traccionId          String             @db.Char(36)
+  estadoId            String             @db.Char(36)
   sucursalId          String             @db.Char(36)
   marcaId             String             @db.Char(36)
   categoriaId         String             @db.Char(36)
-  transmision         Transmision?       @relation(fields: [transmisionId], references: [id])
-  combustible         Combustible?       @relation(fields: [combustibleId], references: [id])
-  traccion            Traccion?          @relation(fields: [traccionId], references: [id])
-  estadoVenta         EstadoVenta?       @relation(fields: [estadoId], references: [id])
   color_interior      String?
   color_exterior      String?
   descripcion         String?            @db.Text
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+  transmision         Transmision        @relation(fields: [transmisionId], references: [id])
+  combustible         Combustible        @relation(fields: [combustibleId], references: [id])
+  traccion            Traccion           @relation(fields: [traccionId], references: [id])
+  estadoVenta         EstadoVenta        @relation(fields: [estadoId], references: [id])
   marca               Marca              @relation(fields: [marcaId], references: [id])
   sucursal            Sucursal           @relation(fields: [sucursalId], references: [id])
   categoria           Categoria          @relation(fields: [categoriaId], references: [id])
@@ -147,8 +143,6 @@ model Vehiculo {
   galeria             Galeria[]
   favoritos           Favorito[]
   reviews             Review[]
-  createdAt           DateTime           @default(now())
-  updatedAt           DateTime           @updatedAt
 
   @@index([precio])
   @@index([kilometraje])
@@ -264,32 +258,7 @@ model Favorito {
   @@index([vehiculoId])
 }
 
-// ─── ENUMS (temporales — se eliminan en Fase 2) ───────────────────────────────
-
-enum EstadoVentaEnum {
-  Disponible @map("Disponible")
-  Reservado  @map("Reservado")
-  Facturado  @map("Facturado")
-}
-
-enum TransmisionEnum {
-  Automatico @map("Automático")
-  Manual     @map("Manual")
-}
-
-enum CombustibleEnum {
-  Gasolina  @map("Gasolina")
-  Diesel    @map("Diesel")
-  Hibrido   @map("Híbrido")
-  Electrico @map("Eléctrico")
-}
-
-enum TraccionEnum {
-  T4X4 @map("4x4")
-  T4X2 @map("4x2")
-  AWD
-  T4WD @map("4WD")
-}
+// ─── ENUMS ───────────────────────────────────────────────────────────────────
 
 enum Role {
   ADMIN
