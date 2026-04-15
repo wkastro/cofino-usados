@@ -64,59 +64,111 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+// ─── ESPECIFICACIONES ────────────────────────────────────────────────────────
+
+model Transmision {
+  id        String     @id @default(uuid()) @db.Char(36)
+  nombre    String     @unique
+  slug      String     @unique
+  estado    Boolean    @default(true)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  vehiculos Vehiculo[]
+}
+
+model Combustible {
+  id        String     @id @default(uuid()) @db.Char(36)
+  nombre    String     @unique
+  slug      String     @unique
+  estado    Boolean    @default(true)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  vehiculos Vehiculo[]
+}
+
+model Traccion {
+  id        String     @id @default(uuid()) @db.Char(36)
+  nombre    String     @unique
+  slug      String     @unique
+  estado    Boolean    @default(true)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  vehiculos Vehiculo[]
+}
+
+model EstadoVenta {
+  id        String     @id @default(uuid()) @db.Char(36)
+  nombre    String     @unique
+  slug      String     @unique
+  estado    Boolean    @default(true)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  vehiculos Vehiculo[]
+}
+
 // ─── VEHÍCULOS ───────────────────────────────────────────────────────────────
 
 model Vehiculo {
-  id             String                     @id @default(uuid()) @db.Char(36)
-  nombre         String
-  slug           String                     @unique
-  codigo         String?
-  placa          String                     @unique
-  precio          Decimal                    @db.Decimal(12, 2)
-  preciodescuento Decimal?                   @db.Decimal(12, 2)
-  kilometraje    Int
-  motor          String?
-  anio           Int
-  estado         EstadoVenta                @default(Disponible)
-  sucursalId     String                     @db.Char(36)
-  marcaId        String                     @db.Char(36)
-  categoriaId    String                     @db.Char(36)
-  transmision    Transmision
-  combustible    Combustible
-  createdAt      DateTime                   @default(now())
-  updatedAt      DateTime                   @updatedAt
-  color_interior String?
-  color_exterior String?
-  descripcion    String?                    @db.Text
-  traccion       Traccion
-  marca          Marca                      @relation(fields: [marcaId], references: [id])
-  sucursal       Sucursal                   @relation(fields: [sucursalId], references: [id])
-  categoria      Categoria                  @relation(fields: [categoriaId], references: [id])
-  etiquetaComercialId String?              @db.Char(36)
-  etiquetaComercial   EtiquetaComercial?   @relation(fields: [etiquetaComercialId], references: [id])
+  id                  String             @id @default(uuid()) @db.Char(36)
+  nombre              String
+  slug                String             @unique
+  codigo              String?
+  placa               String             @unique
+  precio              Decimal            @db.Decimal(12, 2)
+  preciodescuento     Decimal?           @db.Decimal(12, 2)
+  kilometraje         Int
+  motor               String?
+  anio                Int
+  // Enum temporales — se eliminan en Fase 2
+  estado_enum         EstadoVentaEnum    @default(Disponible) @map("estado_enum")
+  transmision_enum    TransmisionEnum    @map("transmision_enum")
+  combustible_enum    CombustibleEnum    @map("combustible_enum")
+  traccion_enum       TraccionEnum       @map("traccion_enum")
+  // Nuevas FKs nullable — se harán required en Fase 2
+  transmisionId       String?            @db.Char(36)
+  combustibleId       String?            @db.Char(36)
+  traccionId          String?            @db.Char(36)
+  estadoId            String?            @db.Char(36)
+  sucursalId          String             @db.Char(36)
+  marcaId             String             @db.Char(36)
+  categoriaId         String             @db.Char(36)
+  transmision         Transmision?       @relation(fields: [transmisionId], references: [id])
+  combustible         Combustible?       @relation(fields: [combustibleId], references: [id])
+  traccion            Traccion?          @relation(fields: [traccionId], references: [id])
+  estadoVenta         EstadoVenta?       @relation(fields: [estadoId], references: [id])
+  color_interior      String?
+  color_exterior      String?
+  descripcion         String?            @db.Text
+  marca               Marca              @relation(fields: [marcaId], references: [id])
+  sucursal            Sucursal           @relation(fields: [sucursalId], references: [id])
+  categoria           Categoria          @relation(fields: [categoriaId], references: [id])
+  etiquetaComercialId String?            @db.Char(36)
+  etiquetaComercial   EtiquetaComercial? @relation(fields: [etiquetaComercialId], references: [id])
   galeria             Galeria[]
-  favoritos      Favorito[]
-  reviews        Review[]
+  favoritos           Favorito[]
+  reviews             Review[]
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
 
   @@index([precio])
   @@index([kilometraje])
   @@index([anio])
   @@index([sucursalId])
   @@index([marcaId])
-  @@index([combustible])
-  @@index([transmision])
-  @@index([traccion])
+  @@index([combustibleId])
+  @@index([transmisionId])
+  @@index([traccionId])
   @@index([sucursalId, precio])
-  @@index([categoriaId, combustible])
+  @@index([categoriaId, combustibleId])
   @@index([categoriaId])
-  @@index([estado])
+  @@index([estadoId])
   @@index([codigo])
-  @@index([estado, precio])
-  @@index([estado, categoriaId])
-  @@index([estado, marcaId])
-  @@index([estado, combustible])
-  @@index([estado, transmision])
-  @@index([estado, traccion])
+  @@index([estadoId, precio])
+  @@index([estadoId, categoriaId])
+  @@index([estadoId, marcaId])
+  @@index([estadoId, combustibleId])
+  @@index([estadoId, transmisionId])
+  @@index([estadoId, traccionId])
   @@index([etiquetaComercialId])
 }
 
@@ -212,27 +264,27 @@ model Favorito {
   @@index([vehiculoId])
 }
 
-// ─── ENUMS ───────────────────────────────────────────────────────────────────
+// ─── ENUMS (temporales — se eliminan en Fase 2) ───────────────────────────────
 
-enum EstadoVenta {
+enum EstadoVentaEnum {
   Disponible @map("Disponible")
   Reservado  @map("Reservado")
   Facturado  @map("Facturado")
 }
 
-enum Transmision {
+enum TransmisionEnum {
   Automatico @map("Automático")
   Manual     @map("Manual")
 }
 
-enum Combustible {
+enum CombustibleEnum {
   Gasolina  @map("Gasolina")
   Diesel    @map("Diesel")
   Hibrido   @map("Híbrido")
   Electrico @map("Eléctrico")
 }
 
-enum Traccion {
+enum TraccionEnum {
   T4X4 @map("4x4")
   T4X2 @map("4x2")
   AWD
