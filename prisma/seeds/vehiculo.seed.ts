@@ -1,4 +1,4 @@
-import { PrismaClient, Transmision, Combustible, EstadoVenta, Traccion } from "../../generated/prisma/client";
+import { PrismaClient } from "../../generated/prisma/client";
 
 const vehiculos = [
   // ── SUVs (12) ─────────────────────────────────────────────────────────────────
@@ -95,33 +95,34 @@ const vehiculos = [
   { nombre: "CHANGAN UNI-T 2024 - 4050",                slug: "changan-uni-t-2024-4050",                codigo: "4050", placa: "P512NHU", precio: 175000, preciodescuento: 156250, kilometraje:   5500, motor: 1500, anio: 2024, traccion: "4x2", color_exterior: "Blanco Glaciar",       color_interior: "Negro Rojo",  transmision: "Automático", combustible: "Gasolina",  estado: "Reservado",  marca: "Changan",   categoria: "Suv",       sucursal: "Agencia Roosevelt" },
 ];
 
-const TRACCION_MAP: Record<string, Traccion> = {
-  "4x4": Traccion.T4X4,
-  "4x2": Traccion.T4X2,
-  "AWD": Traccion.AWD,
-  "4WD": Traccion.T4WD,
+// Slugs de las especificaciones según seed-especificaciones.ts
+const TRACCION_SLUG_MAP: Record<string, string> = {
+  "4x4": "4x4",
+  "4x2": "4x2",
+  "AWD": "awd",
+  "4WD": "4wd",
 };
 
-const TRANSMISION_MAP: Record<string, Transmision> = {
-  "Automático": Transmision.Automatico,
-  Manual:       Transmision.Manual,
+const TRANSMISION_SLUG_MAP: Record<string, string> = {
+  "Automático": "automatico",
+  Manual:       "manual",
 };
 
-const ESTADO_MAP: Record<string, EstadoVenta> = {
-  Disponible: EstadoVenta.Disponible,
-  Reservado:  EstadoVenta.Reservado,
-  Facturado:  EstadoVenta.Facturado,
+const ESTADO_SLUG_MAP: Record<string, string> = {
+  Disponible: "disponible",
+  Reservado:  "reservado",
+  Facturado:  "facturado",
 };
 
-const COMBUSTIBLE_MAP: Record<string, Combustible> = {
-  Gasolina:  Combustible.Gasolina,
-  Diesel:    Combustible.Diesel,
-  Hibrido:   Combustible.Hibrido,
-  Electrico: Combustible.Electrico,
+const COMBUSTIBLE_SLUG_MAP: Record<string, string> = {
+  Gasolina:  "gasolina",
+  Diesel:    "diesel",
+  Hibrido:   "hibrido",
+  Electrico: "electrico",
 };
 
 export async function seedVehiculos(prisma: PrismaClient) {
-  // Precarga catálogos como mapas nombre → id
+  // Precarga catálogos como mapas nombre/slug → id
   const marcaMap = Object.fromEntries(
     (await prisma.marca.findMany({ select: { id: true, nombre: true } })).map(m => [m.nombre, m.id])
   );
@@ -130,6 +131,18 @@ export async function seedVehiculos(prisma: PrismaClient) {
   );
   const sucursalMap = Object.fromEntries(
     (await prisma.sucursal.findMany({ select: { id: true, nombre: true } })).map(s => [s.nombre, s.id])
+  );
+  const traccionMap = Object.fromEntries(
+    (await prisma.traccion.findMany({ select: { id: true, slug: true } })).map(t => [t.slug, t.id])
+  );
+  const transmisionMap = Object.fromEntries(
+    (await prisma.transmision.findMany({ select: { id: true, slug: true } })).map(t => [t.slug, t.id])
+  );
+  const estadoMap = Object.fromEntries(
+    (await prisma.estadoVenta.findMany({ select: { id: true, slug: true } })).map(e => [e.slug, e.id])
+  );
+  const combustibleMap = Object.fromEntries(
+    (await prisma.combustible.findMany({ select: { id: true, slug: true } })).map(c => [c.slug, c.id])
   );
 
   let created = 0;
@@ -149,13 +162,18 @@ export async function seedVehiculos(prisma: PrismaClient) {
       continue;
     }
 
-    const combustible = COMBUSTIBLE_MAP[v.combustible];
+    const combustibleSlug = COMBUSTIBLE_SLUG_MAP[v.combustible];
+    const combustibleId = combustibleSlug ? combustibleMap[combustibleSlug] : undefined;
 
-    if (!combustible) {
+    if (!combustibleId) {
       console.warn(`  [vehiculos] ${v.placa} — combustible inválido (${v.combustible}) — omitido.`);
       omitted++;
       continue;
     }
+
+    const traccionId   = traccionMap[TRACCION_SLUG_MAP[v.traccion] ?? "4x2"] ?? traccionMap["4x2"];
+    const transmisionId = transmisionMap[TRANSMISION_SLUG_MAP[v.transmision] ?? "manual"] ?? transmisionMap["manual"];
+    const estadoId      = estadoMap[ESTADO_SLUG_MAP[v.estado] ?? "disponible"] ?? estadoMap["disponible"];
 
     const existing = await prisma.vehiculo.findUnique({
       where: { placa: v.placa },
@@ -163,22 +181,22 @@ export async function seedVehiculos(prisma: PrismaClient) {
     });
 
     const data = {
-      nombre:         v.nombre,
-      slug:           v.slug,
-      placa:          v.placa,
-      codigo:         v.codigo,
-      precio:         v.precio,
-      preciodescuento:   v.preciodescuento,
-      kilometraje:    v.kilometraje,
-      motor:          String(v.motor),
-      anio:           v.anio,
-      traccion:       TRACCION_MAP[v.traccion] ?? Traccion.T4X2,
-      color_interior: v.color_interior,
-      color_exterior: v.color_exterior,
-      transmision:    TRANSMISION_MAP[v.transmision] ?? Transmision.Manual,
-      combustible,
-      estado:         ESTADO_MAP[v.estado] ?? EstadoVenta.Disponible,
-      descripcion:    `Vehículo ${v.nombre} en excelente estado, con ${v.kilometraje.toLocaleString()} km recorridos. Transmisión ${v.transmision.toLowerCase()}, motor ${v.motor} cc, tracción ${v.traccion}. Color exterior ${v.color_exterior.toLowerCase()}, interior ${v.color_interior.toLowerCase()}. Disponible en ${v.sucursal}.`,
+      nombre:          v.nombre,
+      slug:            v.slug,
+      placa:           v.placa,
+      codigo:          v.codigo,
+      precio:          v.precio,
+      preciodescuento: v.preciodescuento,
+      kilometraje:     v.kilometraje,
+      motor:           String(v.motor),
+      anio:            v.anio,
+      traccionId,
+      color_interior:  v.color_interior,
+      color_exterior:  v.color_exterior,
+      transmisionId,
+      combustibleId,
+      estadoId,
+      descripcion:     `Vehículo ${v.nombre} en excelente estado, con ${v.kilometraje.toLocaleString()} km recorridos. Transmisión ${v.transmision.toLowerCase()}, motor ${v.motor} cc, tracción ${v.traccion}. Color exterior ${v.color_exterior.toLowerCase()}, interior ${v.color_interior.toLowerCase()}. Disponible en ${v.sucursal}.`,
       marcaId,
       categoriaId,
       sucursalId,

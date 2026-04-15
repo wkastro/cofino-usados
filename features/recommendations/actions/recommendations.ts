@@ -25,9 +25,9 @@ const RECOMMENDATION_SELECT = {
   kilometraje: true,
   motor: true,
   anio: true,
-  traccion: true,
-  transmision: true,
-  combustible: true,
+  traccion: { select: { nombre: true } },
+  transmision: { select: { nombre: true } },
+  combustible: { select: { nombre: true } },
   color_exterior: true,
   marca: { select: { id: true, nombre: true } },
   categoria: { select: { id: true, nombre: true } },
@@ -51,9 +51,9 @@ type PrismaVehicleRow = {
   kilometraje: number;
   motor: string | null;
   anio: number;
-  traccion: string;
-  transmision: string;
-  combustible: string;
+  traccion: { nombre: string };
+  transmision: { nombre: string };
+  combustible: { nombre: string };
   color_exterior: string | null;
   marca: { id: string; nombre: string };
   categoria: { id: string; nombre: string };
@@ -68,9 +68,9 @@ function formatVehicle(row: PrismaVehicleRow): Vehiculo {
     precio: Number(row.precio),
     preciodescuento: row.preciodescuento != null ? Number(row.preciodescuento) : null,
     color_exterior: row.color_exterior ?? "",
-    traccion: row.traccion as string,
-    transmision: row.transmision as string,
-    combustible: row.combustible as string,
+    traccion: row.traccion.nombre,
+    transmision: row.transmision.nombre,
+    combustible: row.combustible.nombre,
   };
 }
 
@@ -171,7 +171,7 @@ export async function getSimilarVehicles(slug: string): Promise<Vehiculo[]> {
     const remaining = SIMILAR_LIMIT - collected.length;
     const rows = await prisma.vehiculo.findMany({
       where: {
-        estado: NOT_FACTURADO,
+        ...NOT_FACTURADO,
         ...where,
         id: { notIn: Array.from(collectedIds) },
       },

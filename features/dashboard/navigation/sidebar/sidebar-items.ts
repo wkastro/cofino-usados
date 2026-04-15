@@ -1,4 +1,4 @@
-import { Car, LayoutDashboard, SquareArrowUpRight, type LucideIcon } from "lucide-react";
+import { Car, LayoutDashboard, Settings2Icon, SquareArrowUpRight, type LucideIcon } from "lucide-react";
 
 export interface NavSubItem {
   title: string;
@@ -39,25 +39,17 @@ export const sidebarItems: NavGroup[] = [
   },
   {
     id: 2,
-    label: "Catálogo",
     items: [
       {
         title: "Vehículos",
         url: "/dashboard/vehiculos",
         icon: Car,
       },
-    ],
-  },
-  {
-    id: 3,
-    label: "More",
-    items: [
       {
-        title: "Coming Soon",
-        url: "/dashboard/coming-soon",
-        icon: SquareArrowUpRight,
-        comingSoon: true,
-      },
+        title: "Especificaciones",
+        url: "/dashboard/especificaciones",
+        icon: Settings2Icon,
+      }
     ],
-  },
+  }
 ];

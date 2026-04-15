@@ -88,60 +88,6 @@ async function main() {
   ])
 
   console.log("Seed: tablas de especificaciones pobladas")
-
-  // ─── Backfill Vehiculo ────────────────────────────────────────────────────
-  const transmisionMap = Object.fromEntries(transmisiones.map((t) => [t.nombre, t.id]))
-  const combustibleMap = Object.fromEntries(combustibles.map((c) => [c.nombre, c.id]))
-  const traccionMap = Object.fromEntries(tracciones.map((t) => [t.nombre, t.id]))
-  const estadoMap = Object.fromEntries(estados.map((e) => [e.nombre, e.id]))
-
-  const vehiculos = await prisma.vehiculo.findMany({
-    select: {
-      id: true,
-      transmision_enum: true,
-      combustible_enum: true,
-      traccion_enum: true,
-      estado_enum: true,
-    },
-  })
-
-  console.log(`Backfill: ${vehiculos.length} vehículos`)
-
-  const TRANSMISION_ENUM_MAP: Record<string, string> = {
-    Automatico: "Automático",
-    Manual: "Manual",
-  }
-  const COMBUSTIBLE_ENUM_MAP: Record<string, string> = {
-    Gasolina: "Gasolina",
-    Diesel: "Diesel",
-    Hibrido: "Híbrido",
-    Electrico: "Eléctrico",
-  }
-  const TRACCION_ENUM_MAP: Record<string, string> = {
-    T4X4: "4x4",
-    T4X2: "4x2",
-    AWD: "AWD",
-    T4WD: "4WD",
-  }
-  const ESTADO_ENUM_MAP: Record<string, string> = {
-    Disponible: "Disponible",
-    Reservado: "Reservado",
-    Facturado: "Facturado",
-  }
-
-  for (const v of vehiculos) {
-    await prisma.vehiculo.update({
-      where: { id: v.id },
-      data: {
-        transmisionId: transmisionMap[TRANSMISION_ENUM_MAP[v.transmision_enum]],
-        combustibleId: combustibleMap[COMBUSTIBLE_ENUM_MAP[v.combustible_enum]],
-        traccionId: traccionMap[TRACCION_ENUM_MAP[v.traccion_enum]],
-        estadoId: estadoMap[ESTADO_ENUM_MAP[v.estado_enum]],
-      },
-    })
-  }
-
-  console.log("Backfill completado")
 }
 
 main()

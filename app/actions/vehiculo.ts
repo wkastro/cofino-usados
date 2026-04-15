@@ -31,9 +31,9 @@ export async function getVehiculos(
         kilometraje: true,
         motor: true,
         anio: true,
-        traccion: true,
-        transmision: true,
-        combustible: true,
+        traccion: { select: { nombre: true } },
+        transmision: { select: { nombre: true } },
+        combustible: { select: { nombre: true } },
         color_exterior: true,
         marca: { select: { id: true, nombre: true } },
         categoria: { select: { id: true, nombre: true } },
@@ -60,9 +60,9 @@ export async function getVehiculos(
     precio: Number(vehicle.precio),
     preciodescuento: vehicle.preciodescuento != null ? Number(vehicle.preciodescuento) : null,
     color_exterior: vehicle.color_exterior ?? "",
-    traccion: vehicle.traccion as string,
-    transmision: vehicle.transmision as string,
-    combustible: vehicle.combustible as string,
+    traccion: vehicle.traccion.nombre,
+    transmision: vehicle.transmision.nombre,
+    combustible: vehicle.combustible.nombre,
   }));
 
   return {
@@ -77,7 +77,7 @@ export async function getVehicleBySlug(
   slug: string,
 ): Promise<VehicleDetail | null> {
   const vehicle = await prisma.vehiculo.findFirst({
-    where: { slug, estado: NOT_FACTURADO },
+    where: { slug, ...NOT_FACTURADO },
     select: {
       id: true,
       nombre: true,
@@ -87,9 +87,9 @@ export async function getVehicleBySlug(
       kilometraje: true,
       motor: true,
       anio: true,
-      traccion: true,
-      transmision: true,
-      combustible: true,
+      traccion: { select: { nombre: true } },
+      transmision: { select: { nombre: true } },
+      combustible: { select: { nombre: true } },
       color_exterior: true,
       color_interior: true,
       descripcion: true,
@@ -115,9 +115,9 @@ export async function getVehicleBySlug(
     color_exterior: vehicle.color_exterior ?? "",
     color_interior: vehicle.color_interior ?? "",
     descripcion: vehicle.descripcion ?? null,
-    traccion: vehicle.traccion as string,
-    transmision: vehicle.transmision as string,
-    combustible: vehicle.combustible as string,
+    traccion: vehicle.traccion.nombre,
+    transmision: vehicle.transmision.nombre,
+    combustible: vehicle.combustible.nombre,
   };
 }
 

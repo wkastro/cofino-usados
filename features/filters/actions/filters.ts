@@ -45,14 +45,14 @@ export type EtiquetasResult = Awaited<ReturnType<typeof getEtiquetas>>;
 
 export async function getPriceRange() {
   const result = await prisma.vehiculo.aggregate({
-    where: { estado: { not: "Facturado" } },
+    where: { estadoVenta: { slug: { not: "facturado" } } },
     _min: { precio: true },
     _max: { precio: true },
   });
 
   return {
-    min: Number(result._min.precio ?? 0),
-    max: Number(result._max.precio ?? 0),
+    min: Number(result._min?.precio ?? 0),
+    max: Number(result._max?.precio ?? 0),
   };
 }
 
@@ -60,25 +60,25 @@ export type PriceRangeResult = Awaited<ReturnType<typeof getPriceRange>>;
 
 export async function getMinYear() {
   const result = await prisma.vehiculo.aggregate({
-    where: { estado: { not: "Facturado" } },
+    where: { estadoVenta: { slug: { not: "facturado" } } },
     _min: { anio: true },
   });
 
-  return result._min.anio ?? new Date().getFullYear();
+  return result._min?.anio ?? new Date().getFullYear();
 }
 
 export type MinYearResult = Awaited<ReturnType<typeof getMinYear>>;
 
 export async function getKilometrajeRange() {
   const result = await prisma.vehiculo.aggregate({
-    where: { estado: { not: "Facturado" } },
+    where: { estadoVenta: { slug: { not: "facturado" } } },
     _min: { kilometraje: true },
     _max: { kilometraje: true },
   });
 
   return {
-    min: result._min.kilometraje ?? 0,
-    max: result._max.kilometraje ?? 0,
+    min: result._min?.kilometraje ?? 0,
+    max: result._max?.kilometraje ?? 0,
   };
 }
 
