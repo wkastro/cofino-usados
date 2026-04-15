@@ -3,9 +3,8 @@
 
 import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
-import { EllipsisVerticalIcon, PencilIcon, TrashIcon, CircleDotIcon } from "lucide-react"
+import { EllipsisVerticalIcon, PencilIcon, TrashIcon } from "lucide-react"
 import { toast } from "sonner"
-import { EstadoVenta } from "@/generated/prisma/enums"
 import { Button } from "@/features/dashboard/components/ui/button"
 import {
   DropdownMenu,
@@ -13,9 +12,6 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/features/dashboard/components/ui/dropdown-menu"
 import {
@@ -28,10 +24,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/features/dashboard/components/ui/alert-dialog"
-import { deleteVehiculo, changeEstadoVehiculo } from "../../actions/vehiculo.actions"
+import { deleteVehiculo } from "../../actions/vehiculo.actions"
 import type { VehiculoRow } from "../../types/vehiculo"
-
-const ESTADOS = Object.values(EstadoVenta)
 
 interface RowActionsProps {
   row: VehiculoRow
@@ -44,17 +38,6 @@ export function RowActions({ row }: RowActionsProps) {
 
   function handleEdit() {
     router.push(`/dashboard/vehiculos/${row.id}/editar`)
-  }
-
-  function handleChangeEstado(estado: EstadoVenta) {
-    startTransition(async () => {
-      const result = await changeEstadoVehiculo(row.id, estado)
-      if (result.ok) {
-        toast.success(result.message)
-      } else {
-        toast.error(result.message)
-      }
-    })
   }
 
   function handleConfirmDelete() {
@@ -91,23 +74,6 @@ export function RowActions({ row }: RowActionsProps) {
             <PencilIcon className="mr-2 size-4" />
             Editar
           </DropdownMenuItem>
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger>
-              <CircleDotIcon className="mr-2 size-4" />
-              Cambiar estado
-            </DropdownMenuSubTrigger>
-            <DropdownMenuSubContent>
-              {ESTADOS.map((estado) => (
-                <DropdownMenuItem
-                  key={estado}
-                  disabled={estado === row.estado}
-                  onClick={() => handleChangeEstado(estado)}
-                >
-                  {estado}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuSubContent>
-          </DropdownMenuSub>
           <DropdownMenuSeparator />
           <DropdownMenuItem variant="destructive" onClick={() => setDeleteOpen(true)}>
             <TrashIcon className="mr-2 size-4" />

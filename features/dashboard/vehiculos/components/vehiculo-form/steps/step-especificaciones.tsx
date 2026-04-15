@@ -2,7 +2,6 @@
 
 import { Controller } from "react-hook-form"
 import type { Control, FieldErrors } from "react-hook-form"
-import { EstadoVenta, Transmision, Combustible, Traccion } from "@/generated/prisma/enums"
 import { Label } from "@/features/dashboard/components/ui/label"
 import {
   Select,
@@ -13,85 +12,109 @@ import {
   SelectValue,
 } from "@/features/dashboard/components/ui/select"
 import type { VehiculoInput } from "../../../validations/vehiculo"
-
-const TRANSMISIONES = Object.values(Transmision)
-const COMBUSTIBLES = Object.values(Combustible)
-const TRACCIONES = Object.values(Traccion)
-const ESTADOS = Object.values(EstadoVenta)
+import type { SelectOption } from "../../../types/vehiculo"
 
 interface StepEspecificacionesProps {
   control: Control<VehiculoInput>
   errors: FieldErrors<VehiculoInput>
+  transmisiones: SelectOption[]
+  combustibles: SelectOption[]
+  tracciones: SelectOption[]
+  estados: SelectOption[]
 }
 
-export function StepEspecificaciones({ control, errors }: StepEspecificacionesProps) {
+export function StepEspecificaciones({
+  control,
+  errors,
+  transmisiones,
+  combustibles,
+  tracciones,
+  estados,
+}: StepEspecificacionesProps) {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
       <div className="flex flex-col gap-1.5">
-        <Label className="text-xs uppercase text-muted-foreground tracking-wide">Transmisión *</Label>
+        <Label className="text-xs uppercase tracking-wide text-muted-foreground">Transmisión *</Label>
         <Controller
-          name="transmision"
+          name="transmisionId"
           control={control}
           render={({ field }) => (
             <Select value={field.value} onValueChange={field.onChange}>
               <SelectTrigger><SelectValue placeholder="Seleccionar" /></SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  {TRANSMISIONES.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                  {transmisiones.map((t) => (
+                    <SelectItem key={t.id} value={t.id}>{t.nombre}</SelectItem>
+                  ))}
                 </SelectGroup>
               </SelectContent>
             </Select>
           )}
         />
-        {errors.transmision && <p className="text-xs text-destructive">{errors.transmision.message}</p>}
+        {errors.transmisionId && (
+          <p className="text-xs text-destructive">{errors.transmisionId.message}</p>
+        )}
       </div>
+
       <div className="flex flex-col gap-1.5">
-        <Label className="text-xs uppercase text-muted-foreground tracking-wide">Combustible *</Label>
+        <Label className="text-xs uppercase tracking-wide text-muted-foreground">Combustible *</Label>
         <Controller
-          name="combustible"
+          name="combustibleId"
           control={control}
           render={({ field }) => (
             <Select value={field.value} onValueChange={field.onChange}>
               <SelectTrigger><SelectValue placeholder="Seleccionar" /></SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  {COMBUSTIBLES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                  {combustibles.map((c) => (
+                    <SelectItem key={c.id} value={c.id}>{c.nombre}</SelectItem>
+                  ))}
                 </SelectGroup>
               </SelectContent>
             </Select>
           )}
         />
-        {errors.combustible && <p className="text-xs text-destructive">{errors.combustible.message}</p>}
+        {errors.combustibleId && (
+          <p className="text-xs text-destructive">{errors.combustibleId.message}</p>
+        )}
       </div>
+
       <div className="flex flex-col gap-1.5">
-        <Label className="text-xs uppercase text-muted-foreground tracking-wide">Tracción *</Label>
+        <Label className="text-xs uppercase tracking-wide text-muted-foreground">Tracción *</Label>
         <Controller
-          name="traccion"
+          name="traccionId"
           control={control}
           render={({ field }) => (
             <Select value={field.value} onValueChange={field.onChange}>
               <SelectTrigger><SelectValue placeholder="Seleccionar" /></SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  {TRACCIONES.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                  {tracciones.map((t) => (
+                    <SelectItem key={t.id} value={t.id}>{t.nombre}</SelectItem>
+                  ))}
                 </SelectGroup>
               </SelectContent>
             </Select>
           )}
         />
-        {errors.traccion && <p className="text-xs text-destructive">{errors.traccion.message}</p>}
+        {errors.traccionId && (
+          <p className="text-xs text-destructive">{errors.traccionId.message}</p>
+        )}
       </div>
+
       <div className="flex flex-col gap-1.5">
-        <Label className="text-xs uppercase text-muted-foreground tracking-wide">Estado</Label>
+        <Label className="text-xs uppercase tracking-wide text-muted-foreground">Estado</Label>
         <Controller
-          name="estado"
+          name="estadoId"
           control={control}
           render={({ field }) => (
             <Select value={field.value} onValueChange={field.onChange}>
               <SelectTrigger><SelectValue placeholder="Seleccionar" /></SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  {ESTADOS.map((e) => <SelectItem key={e} value={e}>{e}</SelectItem>)}
+                  {estados.map((e) => (
+                    <SelectItem key={e.id} value={e.id}>{e.nombre}</SelectItem>
+                  ))}
                 </SelectGroup>
               </SelectContent>
             </Select>

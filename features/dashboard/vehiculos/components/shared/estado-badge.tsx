@@ -1,15 +1,12 @@
-import { EstadoVenta } from "@/generated/prisma/enums"
 import { cn } from "@/features/dashboard/lib/utils"
 
-const ESTADO_CONFIG: Record<
-  EstadoVenta,
-  { label: string; dotClass: string; wrapperClass: string }
-> = {
+type EstadoConfig = { label: string; dotClass: string; wrapperClass: string }
+
+const ESTADO_CONFIG: Record<string, EstadoConfig> = {
   Disponible: {
     label: "Disponible",
     dotClass: "bg-primary",
-    wrapperClass:
-      "bg-primary/20 text-primary-foreground border border-primary/40",
+    wrapperClass: "bg-primary/20 text-primary-foreground border border-primary/40",
   },
   Reservado: {
     label: "Reservado",
@@ -25,7 +22,7 @@ const ESTADO_CONFIG: Record<
 }
 
 interface EstadoBadgeProps {
-  estado: EstadoVenta
+  estado: string
 }
 
 export function EstadoBadge({ estado }: EstadoBadgeProps) {
@@ -41,10 +38,7 @@ export function EstadoBadge({ estado }: EstadoBadgeProps) {
         config.wrapperClass,
       )}
     >
-      <span
-        className={cn("size-1.5 shrink-0 rounded-full", config.dotClass)}
-        aria-hidden="true"
-      />
+      <span className={cn("size-1.5 shrink-0 rounded-full", config.dotClass)} aria-hidden="true" />
       {config.label}
     </span>
   )

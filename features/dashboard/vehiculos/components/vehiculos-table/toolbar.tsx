@@ -67,8 +67,8 @@ export function VehiculosToolbar({ table }: ToolbarProps) {
             <SelectGroup>
               <SelectItem value={ALL_VALUE}>Todos los estados</SelectItem>
               {table.estadoOptions.map((e) => (
-                <SelectItem key={e} value={e}>
-                  {e}
+                <SelectItem key={e.id} value={e.slug ?? e.nombre}>
+                  {e.nombre}
                 </SelectItem>
               ))}
             </SelectGroup>

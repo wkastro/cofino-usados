@@ -1,14 +1,14 @@
 import { cacheLife, cacheTag } from "next/cache"
 import { prisma } from "@/lib/prisma"
-import { EstadoVenta } from "@/generated/prisma/enums"
 import type { VehiculoRow, VehiculosAdminResponse, VehiculoAdmin } from "../types/vehiculo"
+import { getCachedEstadosOptions } from "./relations.queries"
 
 const PAGE_SIZE = 20
 
 export async function getCachedVehiculosAdmin(
   page = 1,
   search = "",
-  estado?: string,
+  estadoSlug?: string,
 ): Promise<VehiculosAdminResponse> {
   "use cache"
   cacheLife("minutes")
@@ -22,15 +22,14 @@ export async function getCachedVehiculosAdmin(
         { codigo: { contains: search.trim() } },
       ],
     }),
-    ...(estado &&
-      (Object.values(EstadoVenta) as string[]).includes(estado) && {
-        estado: estado as EstadoVenta,
-      }),
+    ...(estadoSlug && {
+      estadoVenta: { slug: estadoSlug },
+    }),
   }
 
   const clampedPage = Math.max(1, page)
 
-  const [rawVehiculos, total] = await prisma.$transaction([
+  const [rawVehiculos, total, estadoOptions] = await Promise.all([
     prisma.vehiculo.findMany({
       where,
       select: {
@@ -42,9 +41,9 @@ export async function getCachedVehiculosAdmin(
         precio: true,
         kilometraje: true,
         anio: true,
-        estado: true,
-        transmision: true,
-        combustible: true,
+        estadoVenta: { select: { id: true, nombre: true, slug: true } },
+        transmision: { select: { id: true, nombre: true, slug: true } },
+        combustible: { select: { id: true, nombre: true, slug: true } },
         createdAt: true,
         marca: { select: { nombre: true } },
         categoria: { select: { nombre: true } },
@@ -55,6 +54,7 @@ export async function getCachedVehiculosAdmin(
       take: PAGE_SIZE,
     }),
     prisma.vehiculo.count({ where }),
+    getCachedEstadosOptions(),
   ])
 
   const vehiculos: VehiculoRow[] = rawVehiculos.map((v) => ({
@@ -66,7 +66,7 @@ export async function getCachedVehiculosAdmin(
     precio: parseFloat(v.precio.toString()),
     kilometraje: v.kilometraje,
     anio: v.anio,
-    estado: v.estado,
+    estadoVenta: v.estadoVenta,
     transmision: v.transmision,
     combustible: v.combustible,
     marca: v.marca.nombre,
@@ -80,6 +80,7 @@ export async function getCachedVehiculosAdmin(
     total,
     pages: Math.ceil(total / PAGE_SIZE),
     page: clampedPage,
+    estadoOptions,
   }
 }
 
@@ -101,10 +102,10 @@ export async function getCachedVehiculoAdminById(id: string): Promise<VehiculoAd
       kilometraje: true,
       motor: true,
       anio: true,
-      estado: true,
-      transmision: true,
-      combustible: true,
-      traccion: true,
+      estadoId: true,
+      transmisionId: true,
+      combustibleId: true,
+      traccionId: true,
       color_interior: true,
       color_exterior: true,
       descripcion: true,

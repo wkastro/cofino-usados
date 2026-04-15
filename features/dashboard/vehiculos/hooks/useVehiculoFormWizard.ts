@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation"
 import { useForm, type Resolver, type UseFormReturn } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
-import { EstadoVenta, Transmision, Combustible, Traccion } from "@/generated/prisma/enums"
 import { vehiculoSchema, type VehiculoInput } from "../validations/vehiculo"
 import { createVehiculo, updateVehiculo } from "../actions/vehiculo.actions"
 import type { VehiculoAdmin, ActionResult } from "../types/vehiculo"
@@ -14,7 +13,7 @@ const TOTAL_STEPS = 5
 
 const STEP_FIELDS: Record<number, (keyof VehiculoInput)[]> = {
   0: ["nombre", "placa", "anio", "kilometraje"],
-  1: ["transmision", "combustible", "traccion"],
+  1: ["transmisionId", "combustibleId", "traccionId"],
   2: ["precio"],
   3: ["marcaId", "categoriaId", "sucursalId"],
   4: [],
@@ -37,7 +36,11 @@ interface UseVehiculoFormWizardReturn {
   isLastStep: boolean
 }
 
-export function useVehiculoFormWizard({ mode, vehiculo, initialStep = 0 }: UseVehiculoFormWizardOptions): UseVehiculoFormWizardReturn {
+export function useVehiculoFormWizard({
+  mode,
+  vehiculo,
+  initialStep = 0,
+}: UseVehiculoFormWizardOptions): UseVehiculoFormWizardReturn {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [currentStep, setCurrentStep] = useState(initialStep)
@@ -54,10 +57,10 @@ export function useVehiculoFormWizard({ mode, vehiculo, initialStep = 0 }: UseVe
       kilometraje: vehiculo?.kilometraje ?? 0,
       motor: vehiculo?.motor ?? "",
       anio: vehiculo?.anio ?? new Date().getFullYear(),
-      estado: vehiculo?.estado ?? EstadoVenta.Disponible,
-      transmision: vehiculo?.transmision ?? Transmision.Automatico,
-      combustible: vehiculo?.combustible ?? Combustible.Gasolina,
-      traccion: vehiculo?.traccion ?? Traccion.T4X2,
+      estadoId: vehiculo?.estadoId ?? "",
+      transmisionId: vehiculo?.transmisionId ?? "",
+      combustibleId: vehiculo?.combustibleId ?? "",
+      traccionId: vehiculo?.traccionId ?? "",
       color_interior: vehiculo?.color_interior ?? "",
       color_exterior: vehiculo?.color_exterior ?? "",
       descripcion: vehiculo?.descripcion ?? "",

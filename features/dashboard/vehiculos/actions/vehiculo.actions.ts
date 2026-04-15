@@ -1,21 +1,21 @@
 "use server"
 
-import { revalidateTag, revalidatePath, updateTag } from "next/cache"
+import { revalidatePath } from "next/cache"
+import { updateTag } from "next/cache"
 import { requireAdmin } from "@/lib/auth-guard"
 import { prisma } from "@/lib/prisma"
 import { vehiculoSchema, galeriaImageSchema } from "../validations/vehiculo"
 import { generateVehiculoSlug } from "../lib/slug"
 import type { VehiculoInput } from "../validations/vehiculo"
 import type { ActionResult } from "../types/vehiculo"
-import { EstadoVenta } from "@/generated/prisma/enums"
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function revalidateVehiculoCaches(slug?: string, id?: string): void {
   updateTag("admin-vehiculos")
-  revalidateTag("vehicle-list", "hours")
-  revalidateTag("home-recommendations", "hours")
-  if (slug) revalidateTag(`vehicle-${slug}`, "days")
+  updateTag("vehicle-list")
+  updateTag("home-recommendations")
+  if (slug) updateTag(`vehicle-${slug}`)
   if (id) updateTag(`admin-vehiculo-${id}`)
 }
 
@@ -44,7 +44,6 @@ export async function createVehiculo(
   if (!marca) return { ok: false, message: "La marca seleccionada no existe." }
 
   let slug = generateVehiculoSlug(data.nombre, marca.nombre, data.anio, data.placa)
-
   const existing = await prisma.vehiculo.findUnique({ where: { slug }, select: { id: true } })
   if (existing) slug = `${slug}-${Date.now()}`
 
@@ -61,10 +60,10 @@ export async function createVehiculo(
         kilometraje: data.kilometraje,
         motor: data.motor ?? null,
         anio: data.anio,
-        estado: data.estado,
-        transmision: data.transmision,
-        combustible: data.combustible,
-        traccion: data.traccion,
+        estadoId: data.estadoId,
+        transmisionId: data.transmisionId,
+        combustibleId: data.combustibleId,
+        traccionId: data.traccionId,
         color_interior: data.color_interior ?? null,
         color_exterior: data.color_exterior ?? null,
         descripcion: data.descripcion ?? null,
@@ -81,12 +80,7 @@ export async function createVehiculo(
   }
 
   revalidateVehiculoCaches(vehiculo.slug, vehiculo.id)
-
-  return {
-    ok: true,
-    message: "Vehículo creado exitosamente.",
-    data: { id: vehiculo.id, slug: vehiculo.slug },
-  }
+  return { ok: true, message: "Vehículo creado exitosamente.", data: { id: vehiculo.id, slug: vehiculo.slug } }
 }
 
 // ─── Update ──────────────────────────────────────────────────────────────────
@@ -108,10 +102,7 @@ export async function updateVehiculo(
 
   const data = parsed.data
 
-  const current = await prisma.vehiculo.findUnique({
-    where: { id },
-    select: { slug: true },
-  })
+  const current = await prisma.vehiculo.findUnique({ where: { id }, select: { slug: true } })
   if (!current) return { ok: false, message: "Vehículo no encontrado." }
 
   try {
@@ -126,10 +117,10 @@ export async function updateVehiculo(
         kilometraje: data.kilometraje,
         motor: data.motor ?? null,
         anio: data.anio,
-        estado: data.estado,
-        transmision: data.transmision,
-        combustible: data.combustible,
-        traccion: data.traccion,
+        estadoId: data.estadoId,
+        transmisionId: data.transmisionId,
+        combustibleId: data.combustibleId,
+        traccionId: data.traccionId,
         color_interior: data.color_interior ?? null,
         color_exterior: data.color_exterior ?? null,
         descripcion: data.descripcion ?? null,
@@ -146,7 +137,6 @@ export async function updateVehiculo(
 
   revalidateVehiculoCaches(current.slug, id)
   revalidatePath(`/catalogo/${current.slug}`)
-
   return { ok: true, message: "Vehículo actualizado exitosamente." }
 }
 
@@ -155,10 +145,7 @@ export async function updateVehiculo(
 export async function deleteVehiculo(id: string): Promise<ActionResult> {
   await requireAdmin()
 
-  const vehiculo = await prisma.vehiculo.findUnique({
-    where: { id },
-    select: { slug: true },
-  })
+  const vehiculo = await prisma.vehiculo.findUnique({ where: { id }, select: { slug: true } })
   if (!vehiculo) return { ok: false, message: "Vehículo no encontrado." }
 
   try {
@@ -170,34 +157,7 @@ export async function deleteVehiculo(id: string): Promise<ActionResult> {
 
   revalidateVehiculoCaches(vehiculo.slug, id)
   revalidatePath(`/catalogo/${vehiculo.slug}`)
-
   return { ok: true, message: "Vehículo eliminado." }
-}
-
-// ─── Cambiar estado ───────────────────────────────────────────────────────────
-
-export async function changeEstadoVehiculo(
-  id: string,
-  estado: EstadoVenta,
-): Promise<ActionResult> {
-  await requireAdmin()
-
-  const vehiculo = await prisma.vehiculo.findUnique({
-    where: { id },
-    select: { slug: true },
-  })
-  if (!vehiculo) return { ok: false, message: "Vehículo no encontrado." }
-
-  try {
-    await prisma.vehiculo.update({ where: { id }, data: { estado } })
-  } catch (error) {
-    console.error("[changeEstadoVehiculo]", error)
-    return { ok: false, message: "Error al cambiar el estado del vehículo." }
-  }
-
-  revalidateVehiculoCaches(vehiculo.slug, id)
-
-  return { ok: true, message: `Estado cambiado a ${estado}.` }
 }
 
 // ─── Galería ─────────────────────────────────────────────────────────────────
@@ -230,7 +190,6 @@ export async function addGaleriaImage(
   }
 
   updateTag(`admin-vehiculo-${vehiculoId}`)
-
   return { ok: true, message: "Imagen añadida.", data: created }
 }
 
@@ -248,7 +207,6 @@ export async function removeGaleriaImage(
   }
 
   updateTag(`admin-vehiculo-${vehiculoId}`)
-
   return { ok: true, message: "Imagen eliminada." }
 }
 
@@ -273,6 +231,5 @@ export async function reorderGaleriaImages(
   }
 
   updateTag(`admin-vehiculo-${vehiculoId}`)
-
   return { ok: true, message: "Galería reordenada." }
 }

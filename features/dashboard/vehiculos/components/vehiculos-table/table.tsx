@@ -30,7 +30,7 @@ interface VehiculosTableProps {
 }
 
 export function VehiculosTable({ data }: VehiculosTableProps) {
-  const tableHook = useVehiculosTable()
+  const tableHook = useVehiculosTable(data.estadoOptions)
 
   const table = useReactTable<VehiculoRow>({
     data: data.vehiculos,

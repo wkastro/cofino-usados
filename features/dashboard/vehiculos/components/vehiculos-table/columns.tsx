@@ -66,9 +66,9 @@ export const vehiculosColumns: ColumnDef<VehiculoRow>[] = [
     ),
   },
   {
-    accessorKey: "estado",
+    accessorKey: "estadoVenta",
     header: "Estado",
-    cell: ({ row }) => <EstadoBadge estado={row.original.estado} />,
+    cell: ({ row }) => <EstadoBadge estado={row.original.estadoVenta.nombre} />,
   },
   {
     id: "actions",

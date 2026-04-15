@@ -96,7 +96,14 @@ export function VehiculoForm({ mode, vehiculo, options, initialStep }: VehiculoF
               <StepInfoGeneral register={register} errors={errors} />
             )}
             {currentStep === 1 && (
-              <StepEspecificaciones control={control} errors={errors} />
+              <StepEspecificaciones
+                control={control}
+                errors={errors}
+                transmisiones={options.transmisiones}
+                combustibles={options.combustibles}
+                tracciones={options.tracciones}
+                estados={options.estados}
+              />
             )}
             {currentStep === 2 && (
               <StepPrecios register={register} errors={errors} />

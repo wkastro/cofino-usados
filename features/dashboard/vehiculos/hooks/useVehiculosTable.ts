@@ -2,9 +2,7 @@
 
 import { useRouter, useSearchParams, usePathname } from "next/navigation"
 import { useCallback, useRef, useTransition } from "react"
-import { EstadoVenta } from "@/generated/prisma/enums"
-
-const ESTADOS = Object.values(EstadoVenta)
+import type { SelectOption } from "../types/vehiculo"
 
 export interface UseVehiculosTableReturn {
   search: string
@@ -16,10 +14,10 @@ export interface UseVehiculosTableReturn {
   setPage: (value: number) => void
   clearFilters: () => void
   hasActiveFilters: boolean
-  estadoOptions: string[]
+  estadoOptions: SelectOption[]
 }
 
-export function useVehiculosTable(): UseVehiculosTableReturn {
+export function useVehiculosTable(estadoOptions: SelectOption[]): UseVehiculosTableReturn {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -39,7 +37,6 @@ export function useVehiculosTable(): UseVehiculosTableReturn {
           params.set(key, value)
         }
       }
-      // Whenever filters change, reset to page 1
       if (!("page" in updates)) params.set("page", "1")
       startTransition(() => {
         router.push(`${pathname}?${params.toString()}`, { scroll: false })
@@ -70,10 +67,7 @@ export function useVehiculosTable(): UseVehiculosTableReturn {
     [pushParams],
   )
 
-  const clearFilters = useCallback(
-    () => pushParams({ q: null, estado: null }),
-    [pushParams],
-  )
+  const clearFilters = useCallback(() => pushParams({ q: null, estado: null }), [pushParams])
 
   return {
     search,
@@ -85,6 +79,6 @@ export function useVehiculosTable(): UseVehiculosTableReturn {
     setPage,
     clearFilters,
     hasActiveFilters: !!(search || estado),
-    estadoOptions: ESTADOS,
+    estadoOptions,
   }
 }
