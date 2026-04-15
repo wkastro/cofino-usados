@@ -10,7 +10,7 @@ const cspHeader = `
   style-src 'self' 'unsafe-inline';
   img-src 'self' blob: data: https:;
   font-src 'self' data:;
-  connect-src 'self' https://${S3_HOSTNAME};
+  connect-src 'self';
   object-src 'none';
   base-uri 'self';
   form-action 'self';

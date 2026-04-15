@@ -9,10 +9,10 @@ import { ReviewsRoot } from "@/features/reviews/components/reviews-root";
 import type { VehicleImage } from "@/types/vehiculo/vehiculo";
 
 // rendering-hoist-jsx: static data hoisted to module level
-const fallbackImages: VehicleImage[] = [
-  { id: "img-001", url: "/single/cover_single_vehicle1.jpg", orden: 1 },
+const FALLBACK_IMAGES: VehicleImage[] = [
+  { id: "img-001", url: "/single/cover_single_vehicle1.jpg", orden: 0 },
   { id: "img-002", url: "/single/cover_single_vehicle2.jpg", orden: 1 },
-  { id: "img-003", url: "/single/cover_single_vehicle3.jpg", orden: 1 },
+  { id: "img-003", url: "/single/cover_single_vehicle3.jpg", orden: 2 },
 ];
 
 interface VehicleDetailProps {
@@ -29,7 +29,10 @@ export async function VehicleDetail({ params }: VehicleDetailProps): Promise<Rea
     <>
       {/* Main content */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-        <VehicleGallery images={fallbackImages} vehicleName={vehicle.nombre} />
+        <VehicleGallery
+          images={vehicle.galeria.length > 0 ? vehicle.galeria : FALLBACK_IMAGES}
+          vehicleName={vehicle.nombre}
+        />
         <VehicleInfo
           nombre={vehicle.nombre}
           slug={vehicle.slug}

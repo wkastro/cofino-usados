@@ -41,6 +41,11 @@ export async function getVehiculos(
         etiquetaComercial: {
           select: { nombre: true, slug: true },
         },
+        galeria: {
+          select: { id: true, url: true, orden: true },
+          orderBy: { orden: "asc" },
+          take: 1,
+        },
       },
       orderBy: { createdAt: "desc" },
       skip: (clampedPage - 1) * clampedPageSize,

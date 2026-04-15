@@ -35,6 +35,11 @@ const RECOMMENDATION_SELECT = {
   etiquetaComercial: {
     select: { nombre: true, slug: true },
   },
+  galeria: {
+    select: { id: true, url: true, orden: true },
+    orderBy: { orden: "asc" as const },
+    take: 1,
+  },
 } as const;
 
 type PrismaVehicleRow = {
@@ -54,6 +59,7 @@ type PrismaVehicleRow = {
   categoria: { id: string; nombre: string };
   sucursal: { id: string; nombre: string };
   etiquetaComercial: { nombre: string; slug: string } | null;
+  galeria: { id: string; url: string; orden: number }[];
 };
 
 function formatVehicle(row: PrismaVehicleRow): Vehiculo {

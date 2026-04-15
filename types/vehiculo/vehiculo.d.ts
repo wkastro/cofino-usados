@@ -23,6 +23,7 @@ export interface Vehiculo {
   marca: VehicleRelation;
   categoria: VehicleRelation;
   etiquetaComercial: EtiquetaComercialDetail | null;
+  galeria: VehicleImage[];
 }
 
 export interface VehicleRelation {

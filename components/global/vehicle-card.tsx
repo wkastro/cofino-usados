@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import {
   Heart,
   Info,
@@ -33,6 +34,10 @@ interface VehicleCardProps {
 export function VehicleCard({ vehicle }: VehicleCardProps): React.ReactElement {
   const { isFavorite, toggleFavorite } = useFavorites();
   const favorited = isFavorite(vehicle.id);
+  const [imgError, setImgError] = useState(false);
+
+  const hasGaleria = !imgError && vehicle.galeria[0]?.url != null;
+  const imgSrc = hasGaleria ? vehicle.galeria[0].url : "/car.png";
 
   return (
     <article className="group space-y-2 relative w-full max-w-[24rem] rounded-lg bg-card text-card-foreground border border-border p-6 pb-4 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.06)] flex flex-col justify-between overflow-hidden">
@@ -81,14 +86,15 @@ export function VehicleCard({ vehicle }: VehicleCardProps): React.ReactElement {
       </div>
 
       {/* IMAGEN */}
-      <div className="relative h-44 w-full mix-blend-multiply dark:mix-blend-normal my-2">
+      <div className="relative h-44 w-full my-2">
         <Image
-          src={"/car.png"}
-          alt={`Vehículo usado ${vehicle.marca} del año ${vehicle.anio} a la venta`}
+          src={imgSrc}
+          alt={`Vehículo usado ${vehicle.marca.nombre} del año ${vehicle.anio} a la venta`}
           fill
           sizes="(max-width: 768px) 100vw, 384px"
-          className="object-contain"
+          className={hasGaleria ? "object-cover rounded-lg" : "object-contain mix-blend-multiply dark:mix-blend-normal"}
           loading="lazy"
+          onError={() => setImgError(true)}
         />
       </div>
 
