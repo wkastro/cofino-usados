@@ -1,6 +1,6 @@
 "use server"
 
-import { revalidateTag } from "next/cache"
+import { updateTag } from "next/cache"
 import { requireAdmin } from "@/lib/auth-guard"
 import { prisma } from "@/lib/prisma"
 import { especificacionSchema } from "../validations/especificacion"
@@ -43,8 +43,8 @@ export async function createEspecificacion(
       data: { nombre: parsed.data.nombre, slug: parsed.data.slug },
       select: { id: true },
     })
-    revalidateTag(CACHE_TAGS[tipo])
-    revalidateTag("admin-all-especificaciones")
+    updateTag(CACHE_TAGS[tipo])
+    updateTag("admin-all-especificaciones")
     return { ok: true, message: "Registro creado.", data: { id: record.id } }
   } catch (error: any) {
     if (error?.code === "P2002") {
@@ -76,8 +76,8 @@ export async function updateEspecificacion(
       where: { id },
       data: { nombre: parsed.data.nombre, slug: parsed.data.slug },
     })
-    revalidateTag(CACHE_TAGS[tipo])
-    revalidateTag("admin-all-especificaciones")
+    updateTag(CACHE_TAGS[tipo])
+    updateTag("admin-all-especificaciones")
     return { ok: true, message: "Registro actualizado." }
   } catch (error: any) {
     if (error?.code === "P2002") {
@@ -111,8 +111,8 @@ export async function deleteEspecificacion(
 
   try {
     await (getDelegate(tipo) as any).delete({ where: { id } })
-    revalidateTag(CACHE_TAGS[tipo])
-    revalidateTag("admin-all-especificaciones")
+    updateTag(CACHE_TAGS[tipo])
+    updateTag("admin-all-especificaciones")
     return { ok: true, message: "Registro eliminado." }
   } catch (error) {
     console.error(`[deleteEspecificacion:${tipo}]`, error)
@@ -129,8 +129,8 @@ export async function toggleEstadoEspecificacion(
 
   try {
     await (getDelegate(tipo) as any).update({ where: { id }, data: { estado } })
-    revalidateTag(CACHE_TAGS[tipo])
-    revalidateTag("admin-all-especificaciones")
+    updateTag(CACHE_TAGS[tipo])
+    updateTag("admin-all-especificaciones")
     return { ok: true, message: estado ? "Registro activado." : "Registro desactivado." }
   } catch (error) {
     console.error(`[toggleEstadoEspecificacion:${tipo}]`, error)
