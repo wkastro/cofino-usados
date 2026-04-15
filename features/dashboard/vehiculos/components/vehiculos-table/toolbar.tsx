@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react"
 import Link from "next/link"
-import { SearchIcon, XIcon, PlusIcon, FilterIcon } from "lucide-react"
+import { SearchIcon, XIcon, PlusIcon, ChevronDownIcon } from "lucide-react"
 import { Button } from "@/features/dashboard/components/ui/button"
 import { Input } from "@/features/dashboard/components/ui/input"
 import {
@@ -24,7 +24,6 @@ const ALL_VALUE = "all"
 export function VehiculosToolbar({ table }: ToolbarProps) {
   const inputRef = useRef<HTMLInputElement>(null)
 
-  // Sync input with URL on external navigation
   useEffect(() => {
     if (inputRef.current && inputRef.current.value !== table.search) {
       inputRef.current.value = table.search
@@ -40,10 +39,14 @@ export function VehiculosToolbar({ table }: ToolbarProps) {
   }
 
   return (
-    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex flex-1 items-center gap-2">
-        <div className="relative flex-1 max-w-xs">
-          <SearchIcon aria-hidden="true" className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
+        {/* Search */}
+        <div className="relative flex-1 sm:max-w-sm">
+          <SearchIcon
+            aria-hidden="true"
+            className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+          />
           <Input
             ref={inputRef}
             defaultValue={table.search}
@@ -53,33 +56,43 @@ export function VehiculosToolbar({ table }: ToolbarProps) {
             className="pl-9"
           />
         </div>
-        <Select
-          value={table.estado || ALL_VALUE}
-          onValueChange={handleEstadoChange}
-        >
-          <SelectTrigger className="w-[140px]" size="default">
-            <FilterIcon aria-hidden="true" className="size-4 mr-1 text-muted-foreground" />
+
+        {/* Estado filter */}
+        <Select value={table.estado || ALL_VALUE} onValueChange={handleEstadoChange}>
+          <SelectTrigger className="w-36 shrink-0" size="default">
             <SelectValue placeholder="Estado" />
+            <ChevronDownIcon aria-hidden="true" className="ml-auto size-3.5 shrink-0 text-muted-foreground" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectItem value={ALL_VALUE}>Todos</SelectItem>
+              <SelectItem value={ALL_VALUE}>Todos los estados</SelectItem>
               {table.estadoOptions.map((e) => (
-                <SelectItem key={e} value={e}>{e}</SelectItem>
+                <SelectItem key={e} value={e}>
+                  {e}
+                </SelectItem>
               ))}
             </SelectGroup>
           </SelectContent>
         </Select>
+
+        {/* Clear filters */}
         {table.hasActiveFilters && (
-          <Button variant="ghost" size="sm" onClick={table.clearFilters}>
-            <XIcon aria-hidden="true" className="size-4 mr-1" />
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={table.clearFilters}
+            className="text-muted-foreground hover:text-foreground shrink-0"
+          >
+            <XIcon aria-hidden="true" className="mr-1 size-3.5" />
             Limpiar
           </Button>
         )}
       </div>
-      <Button asChild size="sm">
+
+      {/* Primary CTA */}
+      <Button asChild size="sm" className="shrink-0">
         <Link href="/dashboard/vehiculos/nuevo">
-          <PlusIcon aria-hidden="true" className="size-4 mr-1" />
+          <PlusIcon aria-hidden="true" className="mr-1.5 size-4" />
           Nuevo vehículo
         </Link>
       </Button>

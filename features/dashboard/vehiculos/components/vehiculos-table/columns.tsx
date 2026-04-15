@@ -10,11 +10,11 @@ import type { VehiculoRow } from "../../types/vehiculo"
 export const vehiculosColumns: ColumnDef<VehiculoRow>[] = [
   {
     accessorKey: "nombre",
-    header: "Nombre",
+    header: "Vehículo",
     cell: ({ row }) => (
-      <div className="min-w-45">
-        <p className="font-medium leading-tight">{row.original.nombre}</p>
-        <p className="text-xs text-muted-foreground">{row.original.placa}</p>
+      <div className="min-w-44 max-w-56">
+        <p className="truncate font-medium leading-tight">{row.original.nombre}</p>
+        <p className="mt-0.5 text-xs tabular-nums text-muted-foreground">{row.original.placa}</p>
       </div>
     ),
     enableHiding: false,
@@ -22,23 +22,29 @@ export const vehiculosColumns: ColumnDef<VehiculoRow>[] = [
   {
     accessorKey: "marca",
     header: "Marca",
-    cell: ({ row }) => <span className="text-sm">{row.original.marca}</span>,
+    cell: ({ row }) => (
+      <span className="text-sm text-muted-foreground">{row.original.marca}</span>
+    ),
   },
   {
     accessorKey: "tipo",
     header: "Tipo",
-    cell: ({ row }) => <span className="text-sm">{row.original.categoria}</span>,
+    cell: ({ row }) => (
+      <span className="text-sm text-muted-foreground">{row.original.categoria}</span>
+    ),
   },
   {
     accessorKey: "anio",
     header: "Año",
-    cell: ({ row }) => <span className="text-sm tabular-nums">{row.original.anio}</span>,
+    cell: ({ row }) => (
+      <span className="text-sm tabular-nums text-muted-foreground">{row.original.anio}</span>
+    ),
   },
   {
     accessorKey: "precio",
     header: () => <div className="text-right">Precio</div>,
     cell: ({ row }) => (
-      <div className="text-right font-medium tabular-nums">
+      <div className="text-right font-semibold tabular-nums">
         {formatCurrency(row.original.precio)}
       </div>
     ),
@@ -55,7 +61,9 @@ export const vehiculosColumns: ColumnDef<VehiculoRow>[] = [
   {
     accessorKey: "sucursal",
     header: "Sucursal",
-    cell: ({ row }) => <span className="text-sm">{row.original.sucursal}</span>,
+    cell: ({ row }) => (
+      <span className="text-sm text-muted-foreground">{row.original.sucursal}</span>
+    ),
   },
   {
     accessorKey: "estado",

@@ -51,16 +51,25 @@ export function VehiculoForm({ mode, vehiculo, options, initialStep }: VehiculoF
   return (
     <div className="flex flex-col gap-6">
       {/* Header */}
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" asChild>
-          <Link href="/dashboard/vehiculos">
-            <ArrowLeftIcon className="size-5" />
-            <span className="sr-only">Volver</span>
+      <div className="flex flex-col gap-1">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Button variant="ghost" size="icon" className="size-7 shrink-0" asChild>
+            <Link href="/dashboard/vehiculos">
+              <ArrowLeftIcon className="size-4" />
+              <span className="sr-only">Volver</span>
+            </Link>
+          </Button>
+          <Link
+            href="/dashboard/vehiculos"
+            className="hover:text-foreground transition-colors"
+          >
+            Vehículos
           </Link>
-        </Button>
-        <h1 className="text-xl font-semibold">
-          {mode === "create" ? "Nuevo vehículo" : `Editar: ${vehiculo?.nombre}`}
-        </h1>
+          <span>/</span>
+          <span className="text-foreground font-medium truncate">
+            {mode === "create" ? "Nuevo vehículo" : (vehiculo?.nombre ?? "Editar")}
+          </span>
+        </div>
       </div>
 
       {/* Stepper */}
@@ -69,11 +78,20 @@ export function VehiculoForm({ mode, vehiculo, options, initialStep }: VehiculoF
       {/* Step Card */}
       <form>
         <Card>
-          <CardHeader>
-            <CardTitle>{STEPS[currentStep].label}</CardTitle>
-            <CardDescription>{STEPS[currentStep].description}</CardDescription>
+          <CardHeader className="border-b pb-4">
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <CardTitle className="text-base">{STEPS[currentStep].label}</CardTitle>
+                <CardDescription className="mt-0.5 text-sm">
+                  {STEPS[currentStep].description}
+                </CardDescription>
+              </div>
+              <span className="shrink-0 rounded-full bg-muted px-2 py-0.5 text-xs tabular-nums text-muted-foreground">
+                {currentStep + 1} / {STEPS.length}
+              </span>
+            </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-5">
             {currentStep === 0 && (
               <StepInfoGeneral register={register} errors={errors} />
             )}
@@ -96,14 +114,14 @@ export function VehiculoForm({ mode, vehiculo, options, initialStep }: VehiculoF
         </Card>
 
         {/* Navigation */}
-        <div className="flex justify-between mt-4">
+        <div className="mt-4 flex items-center justify-between">
           <Button
             type="button"
             variant="outline"
             onClick={goPrev}
             disabled={isFirstStep}
           >
-            <ArrowLeftIcon className="size-4 mr-1" />
+            <ArrowLeftIcon className="mr-1 size-4" />
             Anterior
           </Button>
           {isLastStep ? (
@@ -115,7 +133,7 @@ export function VehiculoForm({ mode, vehiculo, options, initialStep }: VehiculoF
           ) : (
             <Button type="button" onClick={() => void goNext()}>
               Siguiente
-              <ArrowRightIcon className="size-4 ml-1" />
+              <ArrowRightIcon className="ml-1 size-4" />
             </Button>
           )}
         </div>
