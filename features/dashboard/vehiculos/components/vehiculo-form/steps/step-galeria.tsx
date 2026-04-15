@@ -1,11 +1,36 @@
 "use client"
 
 import { useRef, useState, useTransition } from "react"
-import { ImageIcon, TrashIcon, ArrowUpIcon, UploadIcon } from "lucide-react"
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core"
+import {
+  SortableContext,
+  rectSortingStrategy,
+  useSortable,
+  arrayMove,
+} from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
+import { ImageIcon, TrashIcon, GripVertical, UploadIcon } from "lucide-react"
 import { toast } from "sonner"
 import Image from "next/image"
 import { useUploadFiles } from "@/features/s3/use-upload-files"
 import { Button } from "@/features/dashboard/components/ui/button"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/features/dashboard/components/ui/alert-dialog"
 import {
   addGaleriaImage,
   removeGaleriaImage,
@@ -14,6 +39,83 @@ import {
 import { UPLOAD_ROUTES } from "@/features/s3"
 import type { GaleriaItem } from "../../../types/vehiculo"
 
+// ─── Subcomponent ─────────────────────────────────────────────────────────────
+
+interface SortableGaleriaItemProps {
+  img: GaleriaItem
+  index: number
+  isBusy: boolean
+  onDeleteRequest: (img: GaleriaItem) => void
+}
+
+function SortableGaleriaItem({
+  img,
+  index,
+  isBusy,
+  onDeleteRequest,
+}: SortableGaleriaItemProps) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({ id: img.id, disabled: isBusy })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  }
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="group relative overflow-hidden rounded-lg border"
+    >
+      <div className="relative aspect-video bg-muted">
+        <Image
+          src={img.url}
+          alt={`Imagen ${index + 1}`}
+          fill
+          className="object-cover"
+          sizes="(max-width: 640px) 50vw, 33vw"
+        />
+      </div>
+
+      {/* Hover overlay */}
+      <div className="absolute inset-0 flex items-start justify-between p-1.5 opacity-0 transition-opacity group-hover:opacity-100 bg-black/30">
+        {/* Drag handle */}
+        <button
+          type="button"
+          className="flex size-8 cursor-grab items-center justify-center rounded-md bg-white/20 text-white backdrop-blur-sm hover:bg-white/30 disabled:cursor-not-allowed disabled:opacity-50 active:cursor-grabbing"
+          disabled={isBusy}
+          aria-label="Arrastrar para reordenar"
+          {...attributes}
+          {...listeners}
+        >
+          <GripVertical className="size-4" aria-hidden="true" />
+        </button>
+
+        {/* Delete button */}
+        <button
+          type="button"
+          className="flex size-8 items-center justify-center rounded-md bg-destructive text-destructive-foreground shadow hover:bg-destructive/90 disabled:pointer-events-none disabled:opacity-50 transition-colors"
+          onClick={() => onDeleteRequest(img)}
+          disabled={isBusy}
+          aria-label="Eliminar imagen"
+        >
+          <TrashIcon className="size-4" aria-hidden="true" />
+        </button>
+      </div>
+
+      {index === 0 && (
+        <span className="absolute bottom-1 left-1 rounded bg-black/60 px-1 text-[10px] text-white">
+          Principal
+        </span>
+      )}
+    </div>
+  )
+}
+
+// ─── Main component ───────────────────────────────────────────────────────────
+
 interface StepGaleriaProps {
   vehiculoId: string | null
   initialImages: GaleriaItem[]
@@ -21,10 +123,14 @@ interface StepGaleriaProps {
 
 export function StepGaleria({ vehiculoId, initialImages }: StepGaleriaProps) {
   const [images, setImages] = useState<GaleriaItem[]>(initialImages)
+  const [imageToDelete, setImageToDelete] = useState<GaleriaItem | null>(null)
   const [isPending, startTransition] = useTransition()
 
-  // Tracks the next orden value without causing re-renders
   const nextOrdenRef = useRef(initialImages.length)
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
+  )
 
   const { upload, progresses, isPending: isUploading } = useUploadFiles({
     route: UPLOAD_ROUTES.vehiculoImages,
@@ -65,15 +171,21 @@ export function StepGaleria({ vehiculoId, initialImages }: StepGaleriaProps) {
     },
   })
 
-  function handleRemove(galeriaId: string) {
-    if (!vehiculoId || galeriaId.startsWith("pending-")) {
-      setImages((prev) => prev.filter((img) => img.id !== galeriaId))
+  function handleConfirmDelete() {
+    if (!imageToDelete) return
+    const target = imageToDelete
+    setImageToDelete(null)
+
+    // pending images (no vehiculoId) — remove locally only
+    if (!vehiculoId || target.id.startsWith("pending-")) {
+      setImages((prev) => prev.filter((img) => img.id !== target.id))
       return
     }
+
     startTransition(async () => {
-      const result = await removeGaleriaImage(galeriaId, vehiculoId)
+      const result = await removeGaleriaImage(target.id, vehiculoId)
       if (result.ok) {
-        setImages((prev) => prev.filter((img) => img.id !== galeriaId))
+        setImages((prev) => prev.filter((img) => img.id !== target.id))
         toast.success(result.message)
       } else {
         toast.error(result.message)
@@ -81,11 +193,15 @@ export function StepGaleria({ vehiculoId, initialImages }: StepGaleriaProps) {
     })
   }
 
-  function handleMoveUp(index: number) {
-    if (index === 0) return
-    const previous = [...images]
-    const reordered = [...images]
-    ;[reordered[index - 1], reordered[index]] = [reordered[index], reordered[index - 1]]
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event
+    if (!over || active.id === over.id) return
+
+    const oldIndex = images.findIndex((img) => img.id === active.id)
+    const newIndex = images.findIndex((img) => img.id === over.id)
+
+    const previous = images
+    const reordered = arrayMove(images, oldIndex, newIndex)
     const withOrden = reordered.map((img, i) => ({ ...img, orden: i }))
     setImages(withOrden)
 
@@ -145,9 +261,7 @@ export function StepGaleria({ vehiculoId, initialImages }: StepGaleriaProps) {
             disabled={isBusy}
             onChange={(e) => {
               if (!e.target.files?.length) return
-              upload(e.target.files, {
-                metadata: { vehiculoId },
-              })
+              upload(e.target.files, { metadata: { vehiculoId } })
               e.target.value = ""
             }}
           />
@@ -176,53 +290,53 @@ export function StepGaleria({ vehiculoId, initialImages }: StepGaleriaProps) {
           <p className="text-sm">No hay imágenes todavía</p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-          {images.map((img, index) => (
-            <div key={img.id} className="group relative overflow-hidden rounded-lg border">
-              <div className="relative aspect-video bg-muted">
-                <Image
-                  src={img.url}
-                  alt={`Imagen ${index + 1}`}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 640px) 50vw, 33vw"
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={images.map((img) => img.id)}
+            strategy={rectSortingStrategy}
+          >
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {images.map((img, index) => (
+                <SortableGaleriaItem
+                  key={img.id}
+                  img={img}
+                  index={index}
+                  isBusy={isBusy}
+                  onDeleteRequest={setImageToDelete}
                 />
-              </div>
-              <div className="absolute inset-0 flex items-center justify-center gap-1 bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
-                {index > 0 && (
-                  <Button
-                    type="button"
-                    size="icon"
-                    variant="secondary"
-                    className="size-7"
-                    onClick={() => handleMoveUp(index)}
-                    disabled={isBusy}
-                  >
-                    <ArrowUpIcon className="size-3" aria-hidden="true" />
-                    <span className="sr-only">Subir</span>
-                  </Button>
-                )}
-                <Button
-                  type="button"
-                  size="icon"
-                  variant="destructive"
-                  className="size-7"
-                  onClick={() => handleRemove(img.id)}
-                  disabled={isBusy}
-                >
-                  <TrashIcon className="size-3" aria-hidden="true" />
-                  <span className="sr-only">Eliminar</span>
-                </Button>
-              </div>
-              {index === 0 && (
-                <span className="absolute bottom-1 left-1 rounded bg-black/60 px-1 text-[10px] text-white">
-                  Principal
-                </span>
-              )}
+              ))}
             </div>
-          ))}
-        </div>
+          </SortableContext>
+        </DndContext>
       )}
+
+      {/* Delete confirmation dialog */}
+      <AlertDialog
+        open={imageToDelete !== null}
+        onOpenChange={(open) => { if (!open) setImageToDelete(null) }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Eliminar imagen?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta acción no se puede deshacer. La imagen será eliminada permanentemente de la galería.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={handleConfirmDelete}
+            >
+              Eliminar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }
