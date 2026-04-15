@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { AwsClient } from "aws4fetch"
 import { auth } from "@/auth"
-import { generateKey } from "@/features/s3/keys"
+import { generateKey, buildPublicUrl } from "@/features/s3/keys"
 
 type FileCategory = "images" | "videos" | "documents"
 
@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const publicUrl = `https://${process.env.NEXT_PUBLIC_AWS_BASE_URL}/${key}`
+    const publicUrl = buildPublicUrl(key)
     uploaded.push({ key, url: publicUrl, name: file.name })
   }
 

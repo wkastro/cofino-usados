@@ -1,12 +1,10 @@
 type FileCategory = "images" | "videos" | "documents"
 type EntityType = "vehiculos"
 
-/**
- * Sanitizes a filename to be safe for use in an S3 key.
- * Replaces any character that is not alphanumeric, dot, dash, or underscore with a dash.
- */
+const UNSAFE_CHARS = /[^a-zA-Z0-9._-]/g
+
 function sanitize(filename: string): string {
-  return filename.replace(/[^a-zA-Z0-9._-]/g, "-").toLowerCase()
+  return filename.replace(UNSAFE_CHARS, "-").toLowerCase()
 }
 
 /**

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 export interface UploadProgress {
   name: string
@@ -20,18 +20,23 @@ export interface FailedFile {
 interface UseUploadFilesOptions {
   route: string
   onUploadComplete?: (result: { files: UploadedFile[] }) => void
-  onUploadFail?: (result: { failedFiles: FailedFile[] }) => void
-  onError?: (error: Error) => void
+  onUploadFail?: (result: { failedFiles: FailedFile[]; error: Error }) => void
 }
 
 export function useUploadFiles({
   route,
   onUploadComplete,
   onUploadFail,
-  onError,
 }: UseUploadFilesOptions) {
   const [progresses, setProgresses] = useState<UploadProgress[]>([])
   const [isPending, setIsPending] = useState(false)
+  const xhrRef = useRef<XMLHttpRequest | null>(null)
+
+  useEffect(() => {
+    return () => {
+      xhrRef.current?.abort()
+    }
+  }, [])
 
   async function upload(
     files: FileList | File[],
@@ -57,10 +62,10 @@ export function useUploadFiles({
     }
 
     try {
-      // Use XHR to track upload progress to the server
       const result = await new Promise<{ files: Array<{ key: string; url: string; name: string }> }>(
         (resolve, reject) => {
           const xhr = new XMLHttpRequest()
+          xhrRef.current = xhr
 
           xhr.upload.onprogress = (e) => {
             if (!e.lengthComputable) return
@@ -91,8 +96,6 @@ export function useUploadFiles({
         },
       )
 
-      setProgresses(fileArray.map((f) => ({ name: f.name, progress: 1 })))
-
       const uploadedFiles: UploadedFile[] = result.files.map((f) => ({
         name: f.name,
         objectInfo: { key: f.key, url: f.url },
@@ -102,8 +105,7 @@ export function useUploadFiles({
     } catch (err) {
       const error = err instanceof Error ? err : new Error("Error desconocido")
       const failedFiles: FailedFile[] = fileArray.map((f) => ({ name: f.name, error }))
-      onUploadFail?.({ failedFiles })
-      onError?.(error)
+      onUploadFail?.({ failedFiles, error })
     } finally {
       setIsPending(false)
       setProgresses([])

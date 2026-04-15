@@ -166,9 +166,6 @@ export function StepGaleria({ vehiculoId, initialImages }: StepGaleriaProps) {
         toast.error(`Error al subir ${f.name}: ${f.error.message}`)
       })
     },
-    onError: (error) => {
-      toast.error(error.message ?? "Error al subir la imagen")
-    },
   })
 
   function handleConfirmDelete() {
