@@ -1,4 +1,5 @@
 export { buildPublicUrl } from "./keys"
+export { deleteS3Object } from "./delete"
 export { useUploadFiles } from "./use-upload-files"
 export type { UploadProgress, UploadedFile, FailedFile } from "./use-upload-files"
 

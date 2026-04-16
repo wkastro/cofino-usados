@@ -12,6 +12,12 @@ import { Label } from "@/features/dashboard/components/ui/label"
 import { useClasificacionForm } from "../../hooks/useClasificacionForm"
 import type { ClasificacionTipo } from "../../types/clasificacion"
 
+const PLACEHOLDERS: Record<ClasificacionTipo, { nombre: string; slug: string }> = {
+  marca: { nombre: "Ej. Toyota", slug: "Ej. toyota" },
+  categoria: { nombre: "Ej. Sedán", slug: "Ej. sedan" },
+  etiquetaComercial: { nombre: "Ej. Oferta del mes", slug: "Ej. oferta-del-mes" },
+}
+
 interface CreateDialogProps {
   tipo: ClasificacionTipo
   open: boolean
@@ -37,7 +43,7 @@ export function CreateDialog({ tipo, open, onOpenChange }: CreateDialogProps) {
             <Label htmlFor="create-nombre">Nombre</Label>
             <Input
               id="create-nombre"
-              placeholder="Ej. Toyota"
+              placeholder={PLACEHOLDERS[tipo].nombre}
               {...register("nombre")}
               onChange={(e) => handleNombreChange(e.target.value)}
             />
@@ -49,7 +55,7 @@ export function CreateDialog({ tipo, open, onOpenChange }: CreateDialogProps) {
             <Label htmlFor="create-slug">Slug</Label>
             <Input
               id="create-slug"
-              placeholder="Ej. toyota"
+              placeholder={PLACEHOLDERS[tipo].slug}
               {...register("slug")}
             />
             {errors.slug && (

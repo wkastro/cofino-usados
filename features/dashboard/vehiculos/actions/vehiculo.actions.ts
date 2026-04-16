@@ -8,6 +8,7 @@ import { vehiculoSchema, galeriaImageSchema } from "../validations/vehiculo"
 import { generateVehiculoSlug } from "../lib/slug"
 import type { VehiculoInput } from "../validations/vehiculo"
 import type { ActionResult } from "../types/vehiculo"
+import { deleteS3Object } from "@/features/s3/delete"
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -221,11 +222,20 @@ export async function removeGaleriaImage(
 ): Promise<ActionResult> {
   await requireAdmin()
 
+  let imageUrl: string | undefined
+
   try {
-    await prisma.galeria.delete({ where: { id: galeriaId, vehiculoId } })
+    const image = await prisma.galeria.findUnique({ where: { id: galeriaId, vehiculoId } })
+    if (!image) return { ok: false, message: "Imagen no encontrada o no pertenece a este vehículo." }
+    imageUrl = image.url
+    await prisma.galeria.delete({ where: { id: galeriaId } })
   } catch (error) {
     console.error("[removeGaleriaImage]", error)
     return { ok: false, message: "Imagen no encontrada o no pertenece a este vehículo." }
+  }
+
+  if (imageUrl) {
+    await deleteS3Object(imageUrl)
   }
 
   updateTag(`admin-vehiculo-${vehiculoId}`)
