@@ -5,10 +5,21 @@ import { revalidateTag } from "next/cache";
 
 export async function getCategories() {
   return prisma.categoria.findMany({
+    where: { estado: true },
     select: { id: true, nombre: true, slug: true },
     orderBy: { nombre: "asc" },
   });
 }
+
+export async function getCombustibles() {
+  return prisma.combustible.findMany({
+    where: { estado: true },
+    select: { id: true, nombre: true, slug: true },
+    orderBy: { nombre: "asc" },
+  });
+}
+
+export type CombustiblesResult = Awaited<ReturnType<typeof getCombustibles>>;
 
 export type CategoriesResult = Awaited<ReturnType<typeof getCategories>>;
 

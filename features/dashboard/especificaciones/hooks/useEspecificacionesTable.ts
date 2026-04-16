@@ -1,15 +1,19 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useMemo } from "react"
 import type { Especificacion } from "../types/especificacion"
 
 export function useEspecificacionesTable(data: Especificacion[]) {
   const [search, setSearch] = useState("")
 
-  const filtered = data.filter(
-    (item) =>
-      item.nombre.toLowerCase().includes(search.toLowerCase()) ||
-      item.slug.toLowerCase().includes(search.toLowerCase()),
+  const filtered = useMemo(
+    () =>
+      data.filter(
+        (item) =>
+          item.nombre.toLowerCase().includes(search.toLowerCase()) ||
+          item.slug.toLowerCase().includes(search.toLowerCase()),
+      ),
+    [data, search],
   )
 
   const clearSearch = useCallback(() => setSearch(""), [])

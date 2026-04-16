@@ -128,6 +128,7 @@ export function EspecificacionesTab({ tipo, titulo, data }: EspecificacionesTabP
 
       <CreateDialog tipo={tipo} open={createOpen} onOpenChange={setCreateOpen} />
       <EditDialog
+        key={selectedRow?.id}
         tipo={tipo}
         row={selectedRow}
         open={editOpen}

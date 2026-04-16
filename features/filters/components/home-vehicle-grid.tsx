@@ -1,6 +1,6 @@
 import { VehicleGrid } from "@/features/filters/components/vehicle-grid";
 import { AdvancedFiltersButton } from "@/features/filters/components/advanced-filters-button";
-import { getCachedVehiculos, getCachedEtiquetas, getCachedPriceRange, getCachedMinYear, getCachedKilometrajeRange } from "@/app/actions/vehiculo.cached";
+import { getCachedVehiculos, getCachedEtiquetas, getCachedPriceRange, getCachedMinYear, getCachedKilometrajeRange, getCachedCombustibles } from "@/app/actions/vehiculo.cached";
 import { parseSearchParamsToFilters } from "@/lib/filters/parse-search-params";
 import type { SearchParams } from "@/types/filters/filters";
 
@@ -14,9 +14,10 @@ export async function HomeVehicleGrid({
   const resolvedParams = await searchParams;
   const filters = parseSearchParamsToFilters(resolvedParams);
 
-  const [vehicles, etiquetaOptions, priceRange, minYear, kilometrajeRange] = await Promise.all([
+  const [vehicles, etiquetaOptions, combustibles, priceRange, minYear, kilometrajeRange] = await Promise.all([
     getCachedVehiculos(1, filters),
     getCachedEtiquetas(),
+    getCachedCombustibles(),
     getCachedPriceRange(),
     getCachedMinYear(),
     getCachedKilometrajeRange(),
@@ -28,6 +29,7 @@ export async function HomeVehicleGrid({
       actions={
         <AdvancedFiltersButton
           etiquetas={etiquetaOptions}
+          combustibles={combustibles}
           priceRange={priceRange}
           minYear={minYear}
           kilometrajeRange={kilometrajeRange}

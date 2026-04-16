@@ -6,6 +6,7 @@ import {
   getCachedPriceRange,
   getCachedMinYear,
   getCachedKilometrajeRange,
+  getCachedCombustibles,
 } from "@/app/actions/vehiculo.cached";
 import { parseSearchParamsToFilters } from "@/lib/filters/parse-search-params";
 import type { SearchParams, VehicleFilters } from "@/types/filters/filters";
@@ -44,12 +45,13 @@ export async function VehicleListingGrid({
     ...lockedFilters,
   };
 
-  const [vehicles, etiquetaOptions, priceRange, minYear, kilometrajeRange] =
+  const [vehicles, etiquetaOptions, combustibles, priceRange, minYear, kilometrajeRange] =
     await Promise.all([
       getCachedVehiculos(1, filters, pageSize),
       lockedFilters != null && "etiqueta" in lockedFilters
         ? Promise.resolve([])
         : getCachedEtiquetas(),
+      getCachedCombustibles(),
       getCachedPriceRange(),
       getCachedMinYear(),
       getCachedKilometrajeRange(),
@@ -65,6 +67,7 @@ export async function VehicleListingGrid({
         showFilters ? (
           <AdvancedFiltersButton
             etiquetas={etiquetaOptions}
+            combustibles={combustibles}
             priceRange={priceRange}
             minYear={minYear}
             kilometrajeRange={kilometrajeRange}

@@ -5,6 +5,7 @@ import {
   getCachedPriceRange,
   getCachedMinYear,
   getCachedKilometrajeRange,
+  getCachedCombustibles,
 } from "@/app/actions/vehiculo.cached";
 import { parseSearchParamsToFilters } from "@/lib/filters/parse-search-params";
 import type { SearchParams } from "@/types/filters/filters";
@@ -25,8 +26,9 @@ export async function CertificadosVehicleGrid({
     etiqueta: CERTIFICADOS_ETIQUETA_SLUG,
   };
 
-  const [vehicles, priceRange, minYear, kilometrajeRange] = await Promise.all([
+  const [vehicles, combustibles, priceRange, minYear, kilometrajeRange] = await Promise.all([
     getCachedVehiculos(1, filters, CERTIFICADOS_PAGE_SIZE),
+    getCachedCombustibles(),
     getCachedPriceRange(),
     getCachedMinYear(),
     getCachedKilometrajeRange(),
@@ -40,6 +42,7 @@ export async function CertificadosVehicleGrid({
       title="Autos Certificados"
       actions={
         <AdvancedFiltersButton
+          combustibles={combustibles}
           priceRange={priceRange}
           minYear={minYear}
           kilometrajeRange={kilometrajeRange}

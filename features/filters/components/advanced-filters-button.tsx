@@ -17,7 +17,6 @@ import {
   useAdvancedFilters,
   CURRENT_YEAR,
 } from "@/features/filters/hooks/useAdvancedFilters";
-import { COMBUSTIBLE_OPTIONS } from "@/features/filters/constants/advanced-filters";
 import { FilterSection } from "@/features/filters/components/filter-section";
 import { CheckboxFilter } from "@/features/filters/components/checkbox-filter";
 import { PriceRangeFilter } from "@/features/filters/components/price-range-filter";
@@ -25,9 +24,11 @@ import { YearFilter } from "@/features/filters/components/year-filter";
 import { KilometrajeRangeFilter } from "@/features/filters/components/kilometraje-range-filter";
 import type { EtiquetaComercial } from "@/types/filters/filters";
 import type { RangeValues } from "@/features/filters/types/advanced-filters";
+import type { CombustiblesResult } from "@/features/filters/actions/filters";
 
 // rerender-memo-with-default-value: hoist default non-primitive props to stable constants
 const DEFAULT_ETIQUETAS: EtiquetaComercial[] = [];
+const DEFAULT_COMBUSTIBLES: CombustiblesResult = [];
 const DEFAULT_PRICE_RANGE: RangeValues = { min: 0, max: 1000000 };
 const DEFAULT_KILOMETRAJE_RANGE: RangeValues = { min: 0, max: 500000 };
 
@@ -35,6 +36,7 @@ interface AdvancedFiltersButtonProps {
   className?: string;
   label?: string;
   etiquetas?: EtiquetaComercial[];
+  combustibles?: CombustiblesResult;
   priceRange?: RangeValues;
   minYear?: number;
   kilometrajeRange?: RangeValues;
@@ -44,6 +46,7 @@ export function AdvancedFiltersButton({
   className,
   label = "Filtros avanzados",
   etiquetas = DEFAULT_ETIQUETAS,
+  combustibles = DEFAULT_COMBUSTIBLES,
   priceRange = DEFAULT_PRICE_RANGE,
   minYear = 2000,
   kilometrajeRange = DEFAULT_KILOMETRAJE_RANGE,
@@ -70,6 +73,11 @@ export function AdvancedFiltersButton({
   const etiquetaOptions = useMemo(
     () => etiquetas.map((e) => ({ value: e.slug, label: e.nombre })),
     [etiquetas]
+  );
+
+  const combustibleOptions = useMemo(
+    () => combustibles.map((c) => ({ value: c.slug, label: c.nombre })),
+    [combustibles]
   );
 
   return (
@@ -109,13 +117,15 @@ export function AdvancedFiltersButton({
             </FilterSection>
           )}
 
-          <FilterSection title="Combustible">
-            <CheckboxFilter
-              options={COMBUSTIBLE_OPTIONS}
-              selected={state.combustible}
-              onChange={setCombustible}
-            />
-          </FilterSection>
+          {combustibleOptions.length > 0 && (
+            <FilterSection title="Combustible">
+              <CheckboxFilter
+                options={combustibleOptions}
+                selected={state.combustible}
+                onChange={setCombustible}
+              />
+            </FilterSection>
+          )}
 
           <FilterSection title="Precio">
             <PriceRangeFilter

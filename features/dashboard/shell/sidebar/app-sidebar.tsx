@@ -42,9 +42,16 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild className="h-auto py-2 [&_svg]:size-auto group-data-[collapsible=icon]:p-0!">
+            <SidebarMenuButton
+              asChild
+              className="h-auto py-2 [&_svg]:size-auto group-data-[collapsible=icon]:p-0!"
+            >
               <Link prefetch={false} href="/dashboard/default">
-                {isCollapsed ? <LogoIcon className="h-auto w-full" /> : <Logo className="h-7 w-auto" />}
+                {isCollapsed ? (
+                  <LogoIcon className="h-auto w-full" />
+                ) : (
+                  <Logo className="h-7 w-auto" />
+                )}
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
