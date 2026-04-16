@@ -2,41 +2,65 @@
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Logo } from "@/components/global/logo";
 import { useAdminLoginForm } from "@/features/auth-dashboard/hooks/useAdminLoginForm";
 
 export function LoginForm() {
   const { state, formAction, isPending } = useAdminLoginForm();
 
   return (
-    <div className="w-full max-w-md p-8 space-y-6 text-card-foreground rounded-lg shadow-md flex flex-col items-center">
-      <Logo className="text-foreground h-10 w-auto" />
-      <h2 className="font-bold text-center w-full">Panel de Administración</h2>
-      <form action={formAction} className="space-y-4 w-full">
-        <div className="space-y-2">
-          <Label htmlFor="email">Correo Electrónico</Label>
+    <div className="w-full space-y-8">
+      <div className="space-y-1">
+        <h1 className="text-2xl font-semibold tracking-tight text-neutral-900">
+          Iniciar sesión
+        </h1>
+        <p className="text-sm text-neutral-500">
+          Ingresa tus credenciales de administrador
+        </p>
+      </div>
+
+      <form action={formAction} className="space-y-5">
+        <div className="space-y-1.5">
+          <Label
+            htmlFor="email"
+            className="text-sm font-medium text-neutral-700"
+          >
+            Correo electrónico
+          </Label>
           <Input
             id="email"
             name="email"
             type="email"
-            placeholder="correo@ejemplo.com"
+            placeholder="admin@cofino.cl"
             required
+            className="h-11 border-neutral-200 focus-visible:ring-neutral-900 focus-visible:border-neutral-900"
           />
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="password">Contraseña</Label>
+        <div className="space-y-1.5">
+          <Label
+            htmlFor="password"
+            className="text-sm font-medium text-neutral-700"
+          >
+            Contraseña
+          </Label>
           <Input
             id="password"
             name="password"
             type="password"
-            placeholder="********"
+            placeholder="••••••••"
             required
+            className="h-11 border-neutral-200 focus-visible:ring-neutral-900 focus-visible:border-neutral-900"
           />
         </div>
+
         {state.error && (
-          <p className="text-xs text-red-500 ml-4">{state.error}</p>
+          <p className="text-sm text-red-500">{state.error}</p>
         )}
-        <button type="submit" className="bg-btn-lime" disabled={isPending}>
+
+        <button
+          type="submit"
+          disabled={isPending}
+          className="w-full h-11 bg-neutral-900 text-white text-sm font-medium rounded-md hover:bg-neutral-800 active:bg-neutral-950 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+        >
           {isPending ? "Iniciando sesión..." : "Entrar"}
         </button>
       </form>
