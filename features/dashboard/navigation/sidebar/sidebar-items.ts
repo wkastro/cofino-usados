@@ -1,4 +1,4 @@
-import { Car, LayoutDashboard, Settings2Icon, SquareArrowUpRight, type LucideIcon } from "lucide-react";
+import { Car, LayoutDashboard, Settings2Icon, type LucideIcon } from "lucide-react";
 
 export interface NavSubItem {
   title: string;
@@ -31,15 +31,10 @@ export const sidebarItems: NavGroup[] = [
     label: "Dashboard",
     items: [
       {
-        title: "Default",
+        title: "Inicio",
         url: "/dashboard/default",
         icon: LayoutDashboard,
       },
-    ],
-  },
-  {
-    id: 2,
-    items: [
       {
         title: "Vehículos",
         url: "/dashboard/vehiculos",

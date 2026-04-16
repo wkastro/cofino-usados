@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-import { Logo } from "@/components/global/logo";
+import { Logo, LogoIcon } from "@/components/global/logo";
 
 import {
   Sidebar,
@@ -12,6 +12,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/features/dashboard/components/ui/sidebar";
 import { sidebarItems } from "@/features/dashboard/navigation/sidebar/sidebar-items";
 import { useAppSidebar } from "./hooks/useAppSidebar";
@@ -33,15 +34,17 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
     variant: props.variant,
     collapsible: props.collapsible,
   });
+  const { state } = useSidebar();
+  const isCollapsed = state === "collapsed";
 
   return (
     <Sidebar {...props} variant={variant} collapsible={collapsible}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild className="h-auto py-2 [&_svg]:size-auto">
+            <SidebarMenuButton asChild className="h-auto py-2 [&_svg]:size-auto group-data-[collapsible=icon]:p-0!">
               <Link prefetch={false} href="/dashboard/default">
-                <Logo className="h-7 w-auto" />
+                {isCollapsed ? <LogoIcon className="h-auto w-full" /> : <Logo className="h-7 w-auto" />}
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
