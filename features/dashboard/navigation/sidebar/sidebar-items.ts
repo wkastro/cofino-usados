@@ -1,4 +1,11 @@
-import { Car, LayoutDashboard, Settings2Icon, TagsIcon, type LucideIcon } from "lucide-react";
+import {
+  Car,
+  LayoutDashboard,
+  PanelsTopLeftIcon,
+  Settings2Icon,
+  TagsIcon,
+  type LucideIcon,
+} from "lucide-react";
 
 export interface NavSubItem {
   title: string;
@@ -28,7 +35,7 @@ export interface NavGroup {
 export const sidebarItems: NavGroup[] = [
   {
     id: 1,
-    label: "Dashboard",
+    label: "Dashboard Vehiculos",
     items: [
       {
         title: "Inicio",
@@ -49,7 +56,33 @@ export const sidebarItems: NavGroup[] = [
         title: "Clasificación",
         url: "/dashboard/clasificacion",
         icon: TagsIcon,
-      }
+      },
     ],
-  }
+  },
+  {
+    id: 2,
+    label: "Dashboard Páginas",
+    items: [
+      {
+        title: "Inicio",
+        url: "/dashboard/inicio",
+        icon: PanelsTopLeftIcon,
+      },
+      {
+        title: "Comprar",
+        url: "/dashboard/comprar",
+        icon: PanelsTopLeftIcon,
+      },
+      {
+        title: "Intercambiar",
+        url: "/dashboard/intercambiar",
+        icon: PanelsTopLeftIcon,
+      },
+      {
+        title: "Proximamente",
+        url: "/dashboard/proximamente",
+        icon: PanelsTopLeftIcon,
+      },
+    ],
+  },
 ];
