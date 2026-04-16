@@ -1,4 +1,4 @@
-import { Car, LayoutDashboard, Settings2Icon, type LucideIcon } from "lucide-react";
+import { Car, LayoutDashboard, Settings2Icon, TagsIcon, type LucideIcon } from "lucide-react";
 
 export interface NavSubItem {
   title: string;
@@ -44,6 +44,11 @@ export const sidebarItems: NavGroup[] = [
         title: "Especificaciones",
         url: "/dashboard/especificaciones",
         icon: Settings2Icon,
+      },
+      {
+        title: "Clasificación",
+        url: "/dashboard/clasificacion",
+        icon: TagsIcon,
       }
     ],
   }
