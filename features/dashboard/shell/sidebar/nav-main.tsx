@@ -200,7 +200,7 @@ export function NavMain({ items }: NavMainProps) {
             <SidebarMenuItem className="flex items-center gap-2">
               <SidebarMenuButton
                 tooltip="Quick Create"
-                className="min-w-8 bg-primary text-primary-foreground duration-200 ease-linear hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground"
+                className="min-w-8 bg-brand-dark text-brand-dark-foreground duration-200 ease-linear hover:bg-brand-dark/90 hover:text-brand-dark-foreground active:bg-brand-dark/90 active:text-brand-dark-foreground dark:bg-foreground dark:text-background dark:hover:bg-foreground/90 dark:active:bg-foreground/90"
               >
                 <PlusCircleIcon />
                 <span>Quick Create</span>
