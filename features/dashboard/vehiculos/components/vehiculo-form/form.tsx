@@ -1,40 +1,57 @@
-"use client"
+"use client";
 
-import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react"
-import Link from "next/link"
-import { Button } from "@/features/dashboard/components/ui/button"
+import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/features/dashboard/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/features/dashboard/components/ui/card"
-import { useVehiculoFormWizard } from "../../hooks/useVehiculoFormWizard"
-import { Stepper } from "./stepper"
-import { StepInfoGeneral } from "./steps/step-info-general"
-import { StepEspecificaciones } from "./steps/step-especificaciones"
-import { StepPrecios } from "./steps/step-precios"
-import { StepClasificacion } from "./steps/step-clasificacion"
-import { StepGaleria } from "./steps/step-galeria"
-import type { VehiculoAdmin, VehiculoRelationOptions } from "../../types/vehiculo"
+} from "@/features/dashboard/components/ui/card";
+import { useVehiculoFormWizard } from "../../hooks/useVehiculoFormWizard";
+import { Stepper } from "./stepper";
+import { StepInfoGeneral } from "./steps/step-info-general";
+import { StepEspecificaciones } from "./steps/step-especificaciones";
+import { StepPrecios } from "./steps/step-precios";
+import { StepClasificacion } from "./steps/step-clasificacion";
+import { StepGaleria } from "./steps/step-galeria";
+import type {
+  VehiculoAdmin,
+  VehiculoRelationOptions,
+} from "../../types/vehiculo";
 
 const STEPS = [
-  { label: "Info General",     description: "Información básica e identificación del vehículo." },
-  { label: "Especificaciones", description: "Transmisión, combustible, tracción y estado." },
-  { label: "Precios",          description: "Precios con y sin IVA." },
-  { label: "Clasificación",    description: "Marca, categoría, sucursal y etiqueta comercial." },
-  { label: "Galería",          description: "Imágenes del vehículo." },
-]
+  {
+    label: "Info General",
+    description: "Información básica e identificación del vehículo.",
+  },
+  {
+    label: "Especificaciones",
+    description: "Transmisión, combustible, tracción y estado.",
+  },
+  { label: "Precios", description: "Precios con y sin IVA." },
+  {
+    label: "Clasificación",
+    description: "Marca, categoría, sucursal y etiqueta comercial.",
+  },
+  { label: "Galería", description: "Imágenes del vehículo." },
+];
 
 interface VehiculoFormProps {
-  mode: "create" | "edit"
-  vehiculo?: VehiculoAdmin
-  options: VehiculoRelationOptions
-  initialStep?: number
+  mode: "create" | "edit";
+  vehiculo?: VehiculoAdmin;
+  options: VehiculoRelationOptions;
+  initialStep?: number;
 }
 
-export function VehiculoForm({ mode, vehiculo, options, initialStep }: VehiculoFormProps) {
+export function VehiculoForm({
+  mode,
+  vehiculo,
+  options,
+  initialStep,
+}: VehiculoFormProps) {
   const {
     form,
     onSubmit,
@@ -44,16 +61,25 @@ export function VehiculoForm({ mode, vehiculo, options, initialStep }: VehiculoF
     goPrev,
     isFirstStep,
     isLastStep,
-  } = useVehiculoFormWizard({ mode, vehiculo, initialStep })
+  } = useVehiculoFormWizard({ mode, vehiculo, initialStep });
 
-  const { register, control, formState: { errors } } = form
+  const {
+    register,
+    control,
+    formState: { errors },
+  } = form;
 
   return (
     <div className="flex flex-col gap-6">
       {/* Header */}
       <div className="flex flex-col gap-1">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Button variant="ghost" size="icon" className="size-7 shrink-0" asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="size-7 shrink-0"
+            asChild
+          >
             <Link href="/dashboard/vehiculos">
               <ArrowLeftIcon className="size-4" />
               <span className="sr-only">Volver</span>
@@ -67,7 +93,9 @@ export function VehiculoForm({ mode, vehiculo, options, initialStep }: VehiculoF
           </Link>
           <span>/</span>
           <span className="text-foreground font-medium truncate">
-            {mode === "create" ? "Nuevo vehículo" : (vehiculo?.nombre ?? "Editar")}
+            {mode === "create"
+              ? "Nuevo vehículo"
+              : (vehiculo?.nombre ?? "Editar")}
           </span>
         </div>
       </div>
@@ -81,7 +109,9 @@ export function VehiculoForm({ mode, vehiculo, options, initialStep }: VehiculoF
           <CardHeader className="border-b pb-4">
             <div className="flex items-start justify-between gap-2">
               <div>
-                <CardTitle className="text-base">{STEPS[currentStep].label}</CardTitle>
+                <CardTitle className="text-base">
+                  {STEPS[currentStep].label}
+                </CardTitle>
                 <CardDescription className="mt-0.5 text-sm">
                   {STEPS[currentStep].description}
                 </CardDescription>
@@ -109,7 +139,11 @@ export function VehiculoForm({ mode, vehiculo, options, initialStep }: VehiculoF
               <StepPrecios register={register} errors={errors} />
             )}
             {currentStep === 3 && (
-              <StepClasificacion control={control} errors={errors} options={options} />
+              <StepClasificacion
+                control={control}
+                errors={errors}
+                options={options}
+              />
             )}
             {currentStep === 4 && (
               <StepGaleria
@@ -134,8 +168,12 @@ export function VehiculoForm({ mode, vehiculo, options, initialStep }: VehiculoF
           {isLastStep ? (
             <Button type="button" onClick={onSubmit} disabled={isPending}>
               {isPending
-                ? (mode === "create" ? "Creando..." : "Guardando...")
-                : (mode === "create" ? "Crear vehículo" : "Guardar cambios")}
+                ? mode === "create"
+                  ? "Creando..."
+                  : "Guardando..."
+                : mode === "create"
+                  ? "Crear vehículo"
+                  : "Guardar cambios"}
             </Button>
           ) : (
             <Button type="button" onClick={() => void goNext()}>
@@ -146,5 +184,5 @@ export function VehiculoForm({ mode, vehiculo, options, initialStep }: VehiculoF
         </div>
       </form>
     </div>
-  )
+  );
 }

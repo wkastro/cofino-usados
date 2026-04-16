@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
 import {
   flexRender,
   getCoreRowModel,
   useReactTable,
-} from "@tanstack/react-table"
+} from "@tanstack/react-table";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
   ChevronsLeftIcon,
   ChevronsRightIcon,
-} from "lucide-react"
-import { Button } from "@/features/dashboard/components/ui/button"
+} from "lucide-react";
+import { Button } from "@/features/dashboard/components/ui/button";
 import {
   Table,
   TableBody,
@@ -19,18 +19,18 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/features/dashboard/components/ui/table"
-import { vehiculosColumns } from "./columns"
-import { VehiculosToolbar } from "./toolbar"
-import { useVehiculosTable } from "../../hooks/useVehiculosTable"
-import type { VehiculoRow, VehiculosAdminResponse } from "../../types/vehiculo"
+} from "@/features/dashboard/components/ui/table";
+import { vehiculosColumns } from "./columns";
+import { VehiculosToolbar } from "./toolbar";
+import { useVehiculosTable } from "../../hooks/useVehiculosTable";
+import type { VehiculoRow, VehiculosAdminResponse } from "../../types/vehiculo";
 
 interface VehiculosTableProps {
-  data: VehiculosAdminResponse
+  data: VehiculosAdminResponse;
 }
 
 export function VehiculosTable({ data }: VehiculosTableProps) {
-  const tableHook = useVehiculosTable(data.estadoOptions)
+  const tableHook = useVehiculosTable(data.estadoOptions);
 
   const table = useReactTable<VehiculoRow>({
     data: data.vehiculos,
@@ -44,12 +44,11 @@ export function VehiculosTable({ data }: VehiculosTableProps) {
         pageSize: 20,
       },
     },
-  })
+  });
 
   return (
     <div className="flex flex-col gap-4">
       <VehiculosToolbar table={tableHook} />
-
       <div className="overflow-hidden rounded-lg border bg-card">
         <Table>
           <TableHeader className="sticky top-0 z-10 bg-muted/60 backdrop-blur-sm">
@@ -63,7 +62,10 @@ export function VehiculosTable({ data }: VehiculosTableProps) {
                   >
                     {header.isPlaceholder
                       ? null
-                      : flexRender(header.column.columnDef.header, header.getContext())}
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -78,14 +80,20 @@ export function VehiculosTable({ data }: VehiculosTableProps) {
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={vehiculosColumns.length} className="h-48 text-center">
+                <TableCell
+                  colSpan={vehiculosColumns.length}
+                  className="h-48 text-center"
+                >
                   <div className="flex flex-col items-center gap-3 py-8 text-muted-foreground">
                     <div className="flex size-12 items-center justify-center rounded-full bg-muted">
                       <svg
@@ -105,8 +113,12 @@ export function VehiculosTable({ data }: VehiculosTableProps) {
                       </svg>
                     </div>
                     <div>
-                      <p className="text-sm font-medium">No se encontraron vehículos</p>
-                      <p className="text-xs mt-0.5">Intenta ajustar los filtros de búsqueda</p>
+                      <p className="text-sm font-medium">
+                        No se encontraron vehículos
+                      </p>
+                      <p className="text-xs mt-0.5">
+                        Intenta ajustar los filtros de búsqueda
+                      </p>
                     </div>
                   </div>
                 </TableCell>
@@ -119,14 +131,15 @@ export function VehiculosTable({ data }: VehiculosTableProps) {
       {/* Pagination */}
       <div className="flex items-center justify-between px-1">
         <p className="text-xs text-muted-foreground">
-          <span className="font-medium tabular-nums text-foreground">{data.total}</span>{" "}
+          <span className="font-medium tabular-nums text-foreground">
+            {data.total}
+          </span>{" "}
           vehículo{data.total !== 1 ? "s" : ""}
         </p>
         <div className="flex items-center gap-3">
           <span className="hidden text-xs text-muted-foreground tabular-nums lg:block">
             Página{" "}
-            <span className="font-medium text-foreground">{data.page}</span>
-            {" "}de{" "}
+            <span className="font-medium text-foreground">{data.page}</span> de{" "}
             <span className="font-medium text-foreground">{data.pages}</span>
           </span>
           <div className="flex items-center gap-1">
@@ -174,5 +187,5 @@ export function VehiculosTable({ data }: VehiculosTableProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }
