@@ -34,7 +34,7 @@ export function VehiculosTable({ data }: VehiculosTableProps) {
 
   const table = useReactTable<VehiculoRow>({
     data: data.vehiculos,
-    columns: vehiculosColumns,
+    columns: vehiculosColumns(data.estadoOptions),
     getCoreRowModel: getCoreRowModel(),
     manualPagination: true,
     pageCount: data.pages,
@@ -91,7 +91,7 @@ export function VehiculosTable({ data }: VehiculosTableProps) {
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={vehiculosColumns.length}
+                  colSpan={table.getAllColumns().length}
                   className="h-48 text-center"
                 >
                   <div className="flex flex-col items-center gap-3 py-8 text-muted-foreground">

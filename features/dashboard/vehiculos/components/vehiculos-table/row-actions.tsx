@@ -12,6 +12,9 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/features/dashboard/components/ui/dropdown-menu"
 import {
@@ -24,20 +27,33 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/features/dashboard/components/ui/alert-dialog"
-import { deleteVehiculo } from "../../actions/vehiculo.actions"
-import type { VehiculoRow } from "../../types/vehiculo"
+import { deleteVehiculo, updateVehiculoEstado } from "../../actions/vehiculo.actions"
+import { EstadoBadge } from "../shared/estado-badge"
+import type { SelectOption, VehiculoRow } from "../../types/vehiculo"
 
 interface RowActionsProps {
   row: VehiculoRow
+  estadoOptions: SelectOption[]
 }
 
-export function RowActions({ row }: RowActionsProps) {
+export function RowActions({ row, estadoOptions }: RowActionsProps) {
   const [isPending, startTransition] = useTransition()
   const [deleteOpen, setDeleteOpen] = useState(false)
   const router = useRouter()
 
   function handleEdit() {
     router.push(`/dashboard/vehiculos/${row.id}/editar`)
+  }
+
+  function handleEstadoChange(estadoId: string) {
+    startTransition(async () => {
+      const result = await updateVehiculoEstado(row.id, estadoId)
+      if (result.ok) {
+        toast.success(result.message)
+      } else {
+        toast.error(result.message)
+      }
+    })
   }
 
   function handleConfirmDelete() {
@@ -50,6 +66,8 @@ export function RowActions({ row }: RowActionsProps) {
       }
     })
   }
+
+  const otherEstados = estadoOptions.filter((e) => e.id !== row.estadoVenta.id)
 
   return (
     <>
@@ -65,7 +83,7 @@ export function RowActions({ row }: RowActionsProps) {
             <span className="sr-only">Acciones</span>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-44">
+        <DropdownMenuContent align="end" className="w-48">
           <DropdownMenuLabel className="text-xs text-muted-foreground font-normal">
             {row.nombre}
           </DropdownMenuLabel>
@@ -74,6 +92,23 @@ export function RowActions({ row }: RowActionsProps) {
             <PencilIcon className="mr-2 size-4" />
             Editar
           </DropdownMenuItem>
+          {otherEstados.length > 0 && (
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>
+                <EstadoBadge estado={row.estadoVenta.nombre} />
+              </DropdownMenuSubTrigger>
+              <DropdownMenuSubContent>
+                {otherEstados.map((estado) => (
+                  <DropdownMenuItem
+                    key={estado.id}
+                    onClick={() => handleEstadoChange(estado.id)}
+                  >
+                    <EstadoBadge estado={estado.nombre} />
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+          )}
           <DropdownMenuSeparator />
           <DropdownMenuItem variant="destructive" onClick={() => setDeleteOpen(true)}>
             <TrashIcon className="mr-2 size-4" />

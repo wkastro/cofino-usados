@@ -140,6 +140,28 @@ export async function updateVehiculo(
   return { ok: true, message: "Vehículo actualizado exitosamente." }
 }
 
+// ─── Update Estado ───────────────────────────────────────────────────────────
+
+export async function updateVehiculoEstado(
+  id: string,
+  estadoId: string,
+): Promise<ActionResult> {
+  await requireAdmin()
+
+  const vehiculo = await prisma.vehiculo.findUnique({ where: { id }, select: { slug: true } })
+  if (!vehiculo) return { ok: false, message: "Vehículo no encontrado." }
+
+  try {
+    await prisma.vehiculo.update({ where: { id }, data: { estadoId } })
+  } catch (error) {
+    console.error("[updateVehiculoEstado]", error)
+    return { ok: false, message: "Error al actualizar el estado." }
+  }
+
+  revalidateVehiculoCaches(vehiculo.slug, id)
+  return { ok: true, message: "Estado actualizado." }
+}
+
 // ─── Delete ──────────────────────────────────────────────────────────────────
 
 export async function deleteVehiculo(id: string): Promise<ActionResult> {
