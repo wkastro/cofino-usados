@@ -1,10 +1,10 @@
-export const dynamic = "force-dynamic"
-
+import { connection }         from "next/server"
 import { getPageContentRaw } from "@/features/cms/queries/page-content.queries"
 import { toContentMap }      from "@/features/cms/types/page-content"
 import { CmsPageEditor }     from "@/features/cms/engine/cms-page-editor"
 
 export default async function InicioEditorPage() {
+  await connection()
   const records        = await getPageContentRaw("inicio")
   const initialContent = toContentMap(records)
 
