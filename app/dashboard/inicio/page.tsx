@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic"
+
 import { getPageContentRaw } from "@/features/cms/queries/page-content.queries"
 import { toContentMap }      from "@/features/cms/types/page-content"
 import { CmsPageEditor }     from "@/features/cms/engine/cms-page-editor"
