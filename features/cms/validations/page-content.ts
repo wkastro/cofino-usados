@@ -6,7 +6,15 @@ function fieldToZod(field: FieldDefinition): z.ZodTypeAny {
     switch (field.type) {
       case "number":  return z.number()
       case "boolean": return z.boolean()
-      case "list":    return z.array(z.record(z.string(), z.unknown()))
+      case "list":
+        if (field.itemFields && field.itemFields.length > 0) {
+          const itemShape: Record<string, z.ZodTypeAny> = {}
+          for (const subField of field.itemFields) {
+            itemShape[subField.key] = fieldToZod(subField)
+          }
+          return z.array(z.object(itemShape))
+        }
+        return z.array(z.record(z.string(), z.unknown()))
       default:        return z.string()
     }
   })()

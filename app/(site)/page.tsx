@@ -47,7 +47,7 @@ export default async function Home({ searchParams }: HomeProps): Promise<React.R
     <FilterLoadingProvider>
       <Hero content={heroContent}>
         <Suspense>
-          <HomeSearchBarContent searchParams={searchParams} className="absolute bottom-6 left-0 right-0 z-30 hola" />
+          <HomeSearchBarContent searchParams={searchParams} className="absolute bottom-6 left-0 right-0 z-30" />
         </Suspense>
       </Hero>
 

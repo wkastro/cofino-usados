@@ -107,10 +107,14 @@ export async function POST(request: NextRequest) {
   const uploaded: Array<{ key: string; url: string; name: string }> = []
 
   for (const file of files) {
+    const rawPageSlug = formData.get("pageSlug") as string ?? "cms"
+    const rawBlockKey = formData.get("blockKey") as string ?? "block"
+    const safePageSlug = /^[a-z0-9-]+$/.test(rawPageSlug) ? rawPageSlug : "cms"
+    const safeBlockKey = /^[a-z0-9-]+$/.test(rawBlockKey) ? rawBlockKey : "block"
     const key = config.isCms
       ? generateCmsKey(
-          formData.get("pageSlug") as string ?? "cms",
-          formData.get("blockKey") as string ?? "block",
+          safePageSlug,
+          safeBlockKey,
           file.name,
         )
       : generateKey(config.category, "vehiculos", vehiculoId, file.name)

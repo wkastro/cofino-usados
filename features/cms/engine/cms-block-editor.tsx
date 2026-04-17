@@ -1,8 +1,9 @@
 "use client"
 
-import { useEffect, useTransition }     from "react"
+import { useEffect, useTransition }       from "react"
 import { useForm, FormProvider, useWatch } from "react-hook-form"
-import { zodResolver }                  from "@hookform/resolvers/zod"
+import type { Resolver }                  from "react-hook-form"
+import { zodResolver }                    from "@hookform/resolvers/zod"
 import { toast }                        from "sonner"
 import { Label }                        from "@/features/dashboard/components/ui/label"
 import type { BlockDefinition }         from "@/features/cms/types/block"
@@ -33,8 +34,8 @@ export function CmsBlockEditor({
 }: CmsBlockEditorProps) {
   const [isPending, startTransition] = useTransition()
   const schema  = buildBlockSchema(block.fields)
-  const methods = useForm({
-    resolver:      zodResolver(schema) as any,
+  const methods = useForm<Record<string, unknown>>({
+    resolver:      zodResolver(schema) as Resolver<Record<string, unknown>>,
     defaultValues: { ...block.defaultValue, ...currentValues } as Record<string, unknown>,
   })
 
@@ -49,7 +50,7 @@ export function CmsBlockEditor({
   return (
     <FormProvider {...methods}>
       <BlockFormWatcher onValuesChange={onValuesChange} />
-      <form onSubmit={methods.handleSubmit(onSubmit as any)} className="space-y-4">
+      <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-4">
         {block.fields.map((field) => (
           <div key={field.key} className="space-y-1">
             {field.type !== "boolean" && (

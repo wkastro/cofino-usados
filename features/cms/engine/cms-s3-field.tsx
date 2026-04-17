@@ -1,8 +1,9 @@
 "use client"
 
-import { useRef }          from "react"
-import { useFormContext }  from "react-hook-form"
-import { useUploadFiles }  from "@/features/s3/use-upload-files"
+import { useRef, useCallback } from "react"
+import { useFormContext }       from "react-hook-form"
+import { useUploadFiles }       from "@/features/s3/use-upload-files"
+import type { UploadedFile }    from "@/features/s3/use-upload-files"
 import type { FieldDefinition } from "@/features/cms/types/block"
 
 const ROUTE_MAP: Record<string, string> = {
@@ -32,11 +33,16 @@ export function CmsS3Field({ field, name }: CmsS3FieldProps) {
   const pageSlug = parts[0] ?? "cms"
   const blockKey = parts[1] ?? "block"
 
-  const { upload, isPending, progresses } = useUploadFiles({
-    route: ROUTE_MAP[field.type] ?? "cms-image",
-    onUploadComplete: ({ files }) => {
+  const handleUploadComplete = useCallback(
+    ({ files }: { files: UploadedFile[] }) => {
       if (files[0]) setValue(name, files[0].objectInfo.url, { shouldDirty: true })
     },
+    [name, setValue],
+  )
+
+  const { upload, isPending, progresses } = useUploadFiles({
+    route: ROUTE_MAP[field.type] ?? "cms-image",
+    onUploadComplete: handleUploadComplete,
   })
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
