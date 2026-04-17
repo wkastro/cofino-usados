@@ -11,6 +11,7 @@ import { seedVehiculos }         from "./seeds/vehiculo.seed";
 import { seedVehiculoImagenes }  from "./seeds/vehiculo-imagen.seed";
 import { seedVehiculoEtiquetas } from "./seeds/vehiculo-etiqueta.seed";
 import { seedReviews }           from "./seeds/review.seed";
+import { seedPageContent }       from "./seeds/page-content.seed";
 
 const adapter = new PrismaMariaDb(process.env.DATABASE_URL!);
 const prisma = new PrismaClient({ adapter });
@@ -25,6 +26,7 @@ const seeds = [
   { name: "Reviews",            fn: seedReviews },
   { name: "VehiculoImagenes",   fn: seedVehiculoImagenes },
   { name: "VehiculoEtiquetas",  fn: seedVehiculoEtiquetas },
+  { name: "PageContent",        fn: seedPageContent },
 ];
 
 async function main() {
