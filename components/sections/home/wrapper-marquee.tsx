@@ -1,25 +1,22 @@
-import Image from "next/image";
-import { EffectMarquee } from "@/components/global/effect-marquee";
+import Image from "next/image"
+import { EffectMarquee }       from "@/components/global/effect-marquee"
+import type { MarqueeContent } from "@/features/cms/blocks/inicio/marquee.block"
+import { marqueeBlock }        from "@/features/cms/blocks/inicio/marquee.block"
 
-const BRANDS = [
-  { name: "Toyota",     src: "/brands/toyota.svg" },
-  { name: "Audi",       src: "/brands/audi.svg" },
-  { name: "BYD",        src: "/brands/byd.svg" },
-  { name: "Land Rover", src: "/brands/landrover.svg" },
-  { name: "Lexus",      src: "/brands/lexus.svg" },
-  { name: "Renault",    src: "/brands/renault.svg" },
-];
+interface WrapperMarqueeProps {
+  content?: MarqueeContent
+}
 
-export default function WrapperMarquee() {
+export default function WrapperMarquee({ content = marqueeBlock.defaultValue }: WrapperMarqueeProps) {
   return (
     <section className="py-10">
-      <h2 className="text-center font-semibold mb-8">Marcas aliadas</h2>
+      <h2 className="text-center font-semibold mb-8">{content.titulo}</h2>
       <EffectMarquee speed={24} gap={64}>
-        {BRANDS.map((brand) => (
-          <div key={brand.name} className="relative w-28 h-10 shrink-0">
+        {content.items.map((brand) => (
+          <div key={brand.nombre} className="relative w-28 h-10 shrink-0">
             <Image
-              src={brand.src}
-              alt={brand.name}
+              src={brand.logoUrl}
+              alt={brand.nombre}
               fill
               sizes="112px"
               className="object-contain opacity-40 grayscale hover:opacity-80 hover:grayscale-0 transition-all duration-300"
@@ -28,5 +25,5 @@ export default function WrapperMarquee() {
         ))}
       </EffectMarquee>
     </section>
-  );
+  )
 }
