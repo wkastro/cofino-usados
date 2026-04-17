@@ -3,7 +3,7 @@ import { getPageContentRaw } from "@/features/cms/queries/page-content.queries"
 import { toContentMap }      from "@/features/cms/types/page-content"
 
 const CmsPageEditor = dynamic(
-  () => import("@/features/cms/engine/cms-page-editor").then((m) => m.CmsPageEditor),
+  () => import("@/features/cms/engine/cms-page-editor").then((m) => ({ default: m.CmsPageEditor })),
   { ssr: false }
 )
 
