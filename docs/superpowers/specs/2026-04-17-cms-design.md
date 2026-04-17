@@ -395,3 +395,13 @@ El motor, la BD, el caché y los uploads funcionan automáticamente. El sidebar 
 | Preview | Componentes reales con props del form | Preview 100% fiel, sin duplicación de markup |
 | SEO | Bloque `_seo` fijo, tab separado | Siempre presente, campos predecibles |
 | Eliminación S3 | Sincronizada al guardar/reemplazar | Consistencia BD ↔ S3, reutiliza lógica existente |
+
+---
+
+## 8. Prioridades de implementación
+
+1. **Rendimiento primero** — toda obtención de datos del CMS debe pasar por `use cache` con `cacheTag` y `cacheLife`. Ninguna página pública debe hacer queries a BD en cada render.
+2. **Reutilizar skills del proyecto** — usar los skills disponibles en `.claude/skills/` durante la implementación: `next-best-practices`, `next-cache-components`, `tailwind-css-patterns`, `shadcn`, `prisma-client-api`, `vercel-react-best-practices`, entre otros.
+3. **Patrones existentes** — seguir las convenciones del proyecto: React Hook Form + Zod para formularios, Server Actions para mutaciones, `use client` solo donde sea necesario, imports con alias `@/`.
+4. **Optimización de bundle** — los componentes del motor CMS son exclusivos del dashboard (admin-only). Deben cargarse con `dynamic()` desde las rutas del dashboard para no afectar el bundle de las páginas públicas.
+5. **Sin over-engineering** — implementar exactamente lo diseñado. No agregar abstracciones, hooks genéricos, ni features no solicitadas durante la implementación.
