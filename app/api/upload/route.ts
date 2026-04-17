@@ -1,30 +1,57 @@
 import { NextRequest, NextResponse } from "next/server"
 import { AwsClient } from "aws4fetch"
 import { auth } from "@/auth"
-import { generateKey, buildPublicUrl } from "@/features/s3/keys"
+import { generateKey, generateCmsKey, buildPublicUrl } from "@/features/s3/keys"
 
 type FileCategory = "images" | "videos" | "documents"
 
-const ROUTE_CONFIG = {
+const ROUTE_CONFIG: Record<
+  string,
+  { category: FileCategory; types: string[]; maxSize: number; maxFiles: number; isCms: boolean }
+> = {
   "vehiculo-images": {
-    category: "images" as FileCategory,
+    category: "images",
     types: ["image/"],
     maxSize: 5 * 1024 * 1024,
     maxFiles: 10,
+    isCms: false,
   },
   "vehiculo-videos": {
-    category: "videos" as FileCategory,
+    category: "videos",
     types: ["video/"],
     maxSize: 100 * 1024 * 1024,
     maxFiles: 3,
+    isCms: false,
   },
   "vehiculo-documents": {
-    category: "documents" as FileCategory,
+    category: "documents",
     types: ["application/pdf", "text/"],
     maxSize: 20 * 1024 * 1024,
     maxFiles: 5,
+    isCms: false,
   },
-} as const
+  "cms-image": {
+    category: "images",
+    types: ["image/jpeg", "image/png", "image/webp", "image/avif"],
+    maxSize: 5 * 1024 * 1024,
+    maxFiles: 1,
+    isCms: true,
+  },
+  "cms-video": {
+    category: "videos",
+    types: ["video/mp4", "video/webm"],
+    maxSize: 20 * 1024 * 1024,
+    maxFiles: 1,
+    isCms: true,
+  },
+  "cms-document": {
+    category: "documents",
+    types: ["application/pdf"],
+    maxSize: 5 * 1024 * 1024,
+    maxFiles: 1,
+    isCms: true,
+  },
+}
 
 export async function POST(request: NextRequest) {
   const session = await auth()
@@ -41,7 +68,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Ruta de upload inválida" }, { status: 400 })
   }
 
-  const config = ROUTE_CONFIG[route as keyof typeof ROUTE_CONFIG]
+  const config = ROUTE_CONFIG[route]
 
   if (!files.length) {
     return NextResponse.json({ error: "No se proporcionaron archivos" }, { status: 400 })
@@ -80,7 +107,13 @@ export async function POST(request: NextRequest) {
   const uploaded: Array<{ key: string; url: string; name: string }> = []
 
   for (const file of files) {
-    const key = generateKey(config.category, "vehiculos", vehiculoId, file.name)
+    const key = config.isCms
+      ? generateCmsKey(
+          formData.get("pageSlug") as string ?? "cms",
+          formData.get("blockKey") as string ?? "block",
+          file.name,
+        )
+      : generateKey(config.category, "vehiculos", vehiculoId, file.name)
     const s3Url = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`
     const buffer = await file.arrayBuffer()
 

@@ -34,3 +34,12 @@ export function generateKey(
 export function buildPublicUrl(key: string): string {
   return `https://${process.env.NEXT_PUBLIC_AWS_BASE_URL}/${key}`
 }
+
+/**
+ * Generates an S3 key for CMS content.
+ * Pattern: {pageSlug}/{blockKey}/{timestamp}-{sanitizedFilename}
+ * Example: inicio/hero/1714000000000-hero-video.mp4
+ */
+export function generateCmsKey(pageSlug: string, blockKey: string, filename: string): string {
+  return `${pageSlug}/${blockKey}/${Date.now()}-${sanitize(filename)}`
+}
