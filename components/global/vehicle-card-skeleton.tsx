@@ -1,6 +1,6 @@
 function Bone({ className }: { className?: string }) {
   return (
-    <div className={`animate-pulse rounded-md bg-muted ${className ?? ""}`} />
+    <div className={`motion-safe:animate-pulse rounded-md bg-muted ${className ?? ""}`} />
   );
 }
 
@@ -48,14 +48,22 @@ function SingleSkeleton() {
 
 interface VehicleCardSkeletonGridProps {
   count?: number;
+  title?: string;
 }
 
-export function VehicleCardSkeletonGrid({ count = 6 }: VehicleCardSkeletonGridProps): React.ReactElement {
+export function VehicleCardSkeletonGrid({
+  count = 6,
+  title = "Autos recomendados",
+}: VehicleCardSkeletonGridProps): React.ReactElement {
   return (
-    <section className="w-full py-12">
+    <section
+      className="w-full py-12"
+      aria-busy="true"
+      aria-label="Cargando vehículos"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="font-semibold text-[#111111] mb-10 tracking-tight">
-          Autos recomendados
+        <h2 className="font-semibold text-foreground mb-10 tracking-tight">
+          {title}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
           {Array.from({ length: count }).map((_, i) => (
@@ -66,5 +74,24 @@ export function VehicleCardSkeletonGrid({ count = 6 }: VehicleCardSkeletonGridPr
         </div>
       </div>
     </section>
+  );
+}
+
+export function SearchBarSkeleton(): React.ReactElement {
+  return (
+    <div
+      className="mt-4 w-full"
+      aria-busy="true"
+      aria-label="Cargando filtros"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <Bone className="h-10 w-full sm:w-48" />
+          <Bone className="h-10 w-full sm:w-48" />
+          <Bone className="h-10 w-full sm:w-48" />
+          <Bone className="h-10 w-full sm:w-32" />
+        </div>
+      </div>
+    </div>
   );
 }
