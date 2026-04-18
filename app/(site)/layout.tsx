@@ -18,7 +18,7 @@ export default function SiteLayout({
       >
         <Header />
       </Suspense>
-      <Suspense>{children}</Suspense>
+      <Suspense fallback={<div className="min-h-dvh" />}>{children}</Suspense>
       <Footer />
     </FavoritesProvider>
   );

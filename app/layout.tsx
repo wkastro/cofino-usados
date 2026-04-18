@@ -22,6 +22,7 @@ const clashDisplay = localFont({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXTAUTH_URL ?? "http://localhost:3000"),
   title: {
     default: "Cofiño Usados | Vehículos Seminuevos Certificados",
     template: "%s | Cofiño Usados",
