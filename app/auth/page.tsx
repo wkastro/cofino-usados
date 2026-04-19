@@ -1,9 +1,15 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { auth } from "@/auth";
 import { LoginForm } from "@/features/auth-dashboard/components/login-form";
 import { Logo } from "@/components/global/logo";
+
+export const metadata: Metadata = {
+  title: "Acceso Administrador",
+  robots: { index: false, follow: false },
+};
 
 export default function LoginPage() {
   return (
@@ -35,13 +41,13 @@ export default function LoginPage() {
           </Link>
         </div>
 
-        <div className="flex flex-1 items-center justify-center px-8 py-12">
+        <main className="flex flex-1 items-center justify-center px-8 py-12">
           <div className="w-full max-w-sm">
             <Suspense fallback={<LoginFormSkeleton />}>
               <LoginFormGate />
             </Suspense>
           </div>
-        </div>
+        </main>
       </div>
 
       {/* Right — brand panel */}
@@ -84,7 +90,7 @@ async function LoginFormGate() {
 
 function LoginFormSkeleton() {
   return (
-    <div className="w-full space-y-6" aria-hidden>
+    <div className="w-full space-y-6" role="status" aria-label="Cargando formulario" aria-hidden="true">
       <div className="h-8 w-32 bg-neutral-100 rounded animate-pulse" />
       <div className="space-y-2">
         <div className="h-4 w-20 bg-neutral-100 rounded animate-pulse" />

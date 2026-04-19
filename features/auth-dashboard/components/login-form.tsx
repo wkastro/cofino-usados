@@ -6,6 +6,7 @@ import { useAdminLoginForm } from "@/features/auth-dashboard/hooks/useAdminLogin
 
 export function LoginForm() {
   const { state, formAction, isPending } = useAdminLoginForm();
+  const hasError = Boolean(state.error);
 
   return (
     <div className="w-full space-y-8">
@@ -30,8 +31,11 @@ export function LoginForm() {
             id="email"
             name="email"
             type="email"
+            autoComplete="email"
             placeholder="admin@cofino.cl"
             required
+            aria-invalid={hasError ? true : undefined}
+            aria-describedby={hasError ? "login-error" : undefined}
             className="h-11 border-neutral-200 focus-visible:ring-neutral-900 focus-visible:border-neutral-900"
           />
         </div>
@@ -46,19 +50,25 @@ export function LoginForm() {
             id="password"
             name="password"
             type="password"
+            autoComplete="current-password"
             placeholder="••••••••"
             required
+            aria-invalid={hasError ? true : undefined}
+            aria-describedby={hasError ? "login-error" : undefined}
             className="h-11 border-neutral-200 focus-visible:ring-neutral-900 focus-visible:border-neutral-900"
           />
         </div>
 
-        {state.error && (
-          <p className="text-sm text-red-500">{state.error}</p>
+        {hasError && (
+          <p id="login-error" role="alert" className="text-sm text-red-500">
+            {state.error}
+          </p>
         )}
 
         <button
           type="submit"
           disabled={isPending}
+          aria-busy={isPending}
           className="w-full h-11 bg-neutral-900 text-white text-sm font-medium rounded-md hover:bg-neutral-800 active:bg-neutral-950 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
         >
           {isPending ? "Iniciando sesión..." : "Entrar"}

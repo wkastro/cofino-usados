@@ -2,6 +2,7 @@
 
 import { AuthError } from "next-auth"
 import { signIn, signOut } from "@/auth"
+import { unstable_rethrow } from "next/navigation"
 
 export async function adminLogin(
   _prevState: { error: string; success: boolean },
@@ -14,10 +15,10 @@ export async function adminLogin(
       redirect: false,
     })
   } catch (error) {
+    unstable_rethrow(error)
     if (error instanceof AuthError) {
       return { error: "Credenciales inválidas", success: false }
     }
-    // Re-lanzar NEXT_REDIRECT y errores inesperados para que Next los maneje.
     throw error
   }
 
