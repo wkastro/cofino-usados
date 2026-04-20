@@ -56,7 +56,12 @@ export function CmsBlockEditor({
             {field.type !== "boolean" && (
               <Label htmlFor={field.key}>
                 {field.label}
-                {field.required && <span className="text-destructive ml-1">*</span>}
+                {field.required && (
+                  <>
+                    <span className="text-destructive ml-1" aria-hidden="true">*</span>
+                    <span className="sr-only">(requerido)</span>
+                  </>
+                )}
               </Label>
             )}
             <CmsFieldRenderer field={field} name={field.key} />

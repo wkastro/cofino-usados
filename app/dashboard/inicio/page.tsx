@@ -1,7 +1,12 @@
+import type { Metadata }      from "next"
 import { connection }         from "next/server"
 import { getPageContentRaw } from "@/features/cms/queries/page-content.queries"
 import { toContentMap }      from "@/features/cms/types/page-content"
 import { CmsPageEditor }     from "@/features/cms/engine/cms-page-editor"
+
+export const metadata: Metadata = {
+  title: "Inicio | Dashboard",
+}
 
 export default async function InicioEditorPage() {
   await connection()

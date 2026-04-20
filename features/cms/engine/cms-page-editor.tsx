@@ -11,11 +11,12 @@ import { Label }    from "@/features/dashboard/components/ui/label"
 import { Input }    from "@/features/dashboard/components/ui/input"
 import { Textarea } from "@/features/dashboard/components/ui/textarea"
 import { getPageBlocks }  from "@/features/cms/registry"
-import { saveSeoContent } from "@/features/cms/actions/page-content.actions"
-import { seoSchema }      from "@/features/cms/validations/page-content"
-import { SEO_BLOCK_KEY }  from "@/features/cms/types/block"
-import type { PageContentMap } from "@/features/cms/types/page-content"
-import type { SeoContent }     from "@/features/cms/types/block"
+import { saveSeoContent }              from "@/features/cms/actions/page-content.actions"
+import { seoSchema }                   from "@/features/cms/validations/page-content"
+import type { SeoInput }               from "@/features/cms/validations/page-content"
+import { SEO_BLOCK_KEY }               from "@/features/cms/types/block"
+import type { PageContentMap }         from "@/features/cms/types/page-content"
+import type { SeoContent }             from "@/features/cms/types/block"
 import { CmsBlockEditor }  from "./cms-block-editor"
 import { CmsPreviewPanel } from "./cms-preview-panel"
 
@@ -34,9 +35,10 @@ export function CmsPageEditor({ pageSlug, initialContent }: CmsPageEditorProps) 
 
   const [isPending, startTransition] = useTransition()
 
-  const [splitPct, setSplitPct]  = useState(50)
-  const containerRef             = useRef<HTMLDivElement>(null)
-  const isDragging               = useRef(false)
+  const [splitPct, setSplitPct]    = useState(50)
+  const [isResizing, setIsResizing] = useState(false)
+  const containerRef               = useRef<HTMLDivElement>(null)
+  const isDragging                 = useRef(false)
 
   const onMouseMove = useCallback((e: MouseEvent) => {
     if (!isDragging.current || !containerRef.current) return
@@ -45,7 +47,10 @@ export function CmsPageEditor({ pageSlug, initialContent }: CmsPageEditorProps) 
     setSplitPct(Math.min(Math.max(pct, 20), 80))
   }, [])
 
-  const stopDrag = useCallback(() => { isDragging.current = false }, [])
+  const stopDrag = useCallback(() => {
+    isDragging.current = false
+    setIsResizing(false)
+  }, [])
 
   useEffect(() => {
     window.addEventListener("mousemove", onMouseMove)
@@ -61,8 +66,8 @@ export function CmsPageEditor({ pageSlug, initialContent }: CmsPageEditorProps) 
     ...((initialContent[SEO_BLOCK_KEY] ?? {}) as Partial<SeoContent>),
   }
 
-  const seoMethods = useForm({
-    resolver: zodResolver(seoSchema) as any,
+  const seoMethods = useForm<SeoInput>({
+    resolver: zodResolver(seoSchema),
     defaultValues: seoDefaults,
   })
 
@@ -73,7 +78,7 @@ export function CmsPageEditor({ pageSlug, initialContent }: CmsPageEditorProps) 
     )
   }
 
-  function onSeoSubmit(data: Record<string, unknown>) {
+  function onSeoSubmit(data: SeoInput) {
     startTransition(async () => {
       const result = await saveSeoContent(pageSlug, data)
       if (result.ok) toast.success(result.message)
@@ -94,7 +99,7 @@ export function CmsPageEditor({ pageSlug, initialContent }: CmsPageEditorProps) 
     <div
       ref={containerRef}
       className="flex gap-0 min-h-0"
-      style={{ userSelect: isDragging.current ? "none" : undefined }}
+      style={{ userSelect: isResizing ? "none" : undefined }}
     >
       <div className="space-y-4 overflow-y-auto min-w-0" style={{ width: `${splitPct}%` }}>
         <Tabs defaultValue="contenido">
@@ -109,6 +114,7 @@ export function CmsPageEditor({ pageSlug, initialContent }: CmsPageEditorProps) 
                 <button
                   key={block.key}
                   type="button"
+                  aria-pressed={activeBlockKey === block.key}
                   onClick={() => handleBlockChange(block.key)}
                   className={`inline-flex items-center rounded-md px-3 py-1.5 text-sm font-medium border transition-colors ${
                     activeBlockKey === block.key
@@ -136,7 +142,7 @@ export function CmsPageEditor({ pageSlug, initialContent }: CmsPageEditorProps) 
 
           <TabsContent value="seo" className="mt-4">
             <FormProvider {...seoMethods}>
-              <form onSubmit={seoMethods.handleSubmit(onSeoSubmit as any)} className="space-y-4">
+              <form onSubmit={seoMethods.handleSubmit(onSeoSubmit)} className="space-y-4">
                 {SEO_FIELDS.map(({ key, label, type }) => (
                   <div key={key} className="space-y-1">
                     <Label htmlFor={key}>{label}</Label>
@@ -160,10 +166,20 @@ export function CmsPageEditor({ pageSlug, initialContent }: CmsPageEditorProps) 
         </Tabs>
       </div>
 
-      {/* Divider */}
       <div
-        onMouseDown={() => { isDragging.current = true }}
-        className="hidden xl:flex w-2 shrink-0 cursor-col-resize items-center justify-center group"
+        role="separator"
+        aria-orientation="vertical"
+        aria-label="Redimensionar paneles"
+        aria-valuenow={splitPct}
+        aria-valuemin={20}
+        aria-valuemax={80}
+        tabIndex={0}
+        onMouseDown={() => { isDragging.current = true; setIsResizing(true) }}
+        onKeyDown={(e) => {
+          if (e.key === "ArrowLeft")  setSplitPct((p) => Math.max(p - 2, 20))
+          if (e.key === "ArrowRight") setSplitPct((p) => Math.min(p + 2, 80))
+        }}
+        className="hidden xl:flex w-2 shrink-0 cursor-col-resize items-center justify-center group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dashboard-primary"
       >
         <div className="h-full w-px bg-border group-hover:bg-dashboard-primary group-active:bg-dashboard-primary transition-colors" />
       </div>
