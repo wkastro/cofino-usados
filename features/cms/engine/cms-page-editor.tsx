@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useTransition }        from "react"
+import { useState, useTransition, useRef, useCallback, useEffect } from "react"
 import { useForm, FormProvider }          from "react-hook-form"
 import { zodResolver }                    from "@hookform/resolvers/zod"
 import { toast }                          from "sonner"
@@ -33,6 +33,28 @@ export function CmsPageEditor({ pageSlug, initialContent }: CmsPageEditorProps) 
   )
 
   const [isPending, startTransition] = useTransition()
+
+  const [splitPct, setSplitPct]  = useState(50)
+  const containerRef             = useRef<HTMLDivElement>(null)
+  const isDragging               = useRef(false)
+
+  const onMouseMove = useCallback((e: MouseEvent) => {
+    if (!isDragging.current || !containerRef.current) return
+    const rect  = containerRef.current.getBoundingClientRect()
+    const pct   = ((e.clientX - rect.left) / rect.width) * 100
+    setSplitPct(Math.min(Math.max(pct, 20), 80))
+  }, [])
+
+  const stopDrag = useCallback(() => { isDragging.current = false }, [])
+
+  useEffect(() => {
+    window.addEventListener("mousemove", onMouseMove)
+    window.addEventListener("mouseup",   stopDrag)
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove)
+      window.removeEventListener("mouseup",   stopDrag)
+    }
+  }, [onMouseMove, stopDrag])
 
   const seoDefaults: SeoContent = {
     title: "", description: "", ogTitle: "", ogDescription: "", ogImage: "", canonical: "",
@@ -69,8 +91,12 @@ export function CmsPageEditor({ pageSlug, initialContent }: CmsPageEditorProps) 
   ]
 
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-      <div className="space-y-4 overflow-y-auto">
+    <div
+      ref={containerRef}
+      className="flex gap-0 min-h-0"
+      style={{ userSelect: isDragging.current ? "none" : undefined }}
+    >
+      <div className="space-y-4 overflow-y-auto min-w-0" style={{ width: `${splitPct}%` }}>
         <Tabs defaultValue="contenido">
           <TabsList>
             <TabsTrigger value="contenido">Contenido</TabsTrigger>
@@ -134,7 +160,15 @@ export function CmsPageEditor({ pageSlug, initialContent }: CmsPageEditorProps) 
         </Tabs>
       </div>
 
-      <div className="hidden xl:block">
+      {/* Divider */}
+      <div
+        onMouseDown={() => { isDragging.current = true }}
+        className="hidden xl:flex w-2 shrink-0 cursor-col-resize items-center justify-center group"
+      >
+        <div className="h-full w-px bg-border group-hover:bg-dashboard-primary group-active:bg-dashboard-primary transition-colors" />
+      </div>
+
+      <div className="hidden xl:block overflow-y-auto min-w-0" style={{ width: `${100 - splitPct}%` }}>
         <p className="text-sm text-muted-foreground mb-2">Vista previa en tiempo real</p>
         <CmsPreviewPanel blockKey={activeBlockKey} values={previewValues} />
       </div>
