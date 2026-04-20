@@ -86,8 +86,8 @@ export function CmsPageEditor({ pageSlug, initialContent }: CmsPageEditorProps) 
                   onClick={() => handleBlockChange(block.key)}
                   className={`inline-flex items-center rounded-md px-3 py-1.5 text-sm font-medium border transition-colors ${
                     activeBlockKey === block.key
-                      ? "bg-primary text-primary-foreground border-primary"
-                      : "bg-background text-foreground border-input hover:bg-accent"
+                      ? "bg-dashboard-primary text-dashboard-primary-foreground border-dashboard-primary"
+                      : "bg-background text-foreground border-input hover:bg-muted"
                   }`}
                 >
                   {block.label}
@@ -124,7 +124,7 @@ export function CmsPageEditor({ pageSlug, initialContent }: CmsPageEditorProps) 
                 <button
                   type="submit"
                   disabled={isPending}
-                  className="w-full inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:bg-primary/90 disabled:opacity-50"
+                  className="w-full inline-flex items-center justify-center rounded-md bg-dashboard-primary text-dashboard-primary-foreground px-4 py-2 text-sm font-medium hover:bg-dashboard-primary/90 disabled:opacity-50"
                 >
                   {isPending ? "Guardando..." : "Guardar SEO"}
                 </button>

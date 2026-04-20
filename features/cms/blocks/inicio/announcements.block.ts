@@ -32,23 +32,6 @@ export const announcementsBlock: BlockDefinition<AnnouncementsContent> = {
     },
   ],
   defaultValue: {
-    items: [
-      {
-        imagen:      "/anuncio_toyota.jpg",
-        alt:         "Toyota SUV en campo abierto",
-        titulo:      "Historias que mueven",
-        descripcion: "Conoce a quienes ya confiaron en Cofiño Usados y encontraron su vehículo ideal.",
-        botonTexto:  "Testimonios",
-        enlace:      "/testimonios",
-      },
-      {
-        imagen:      "/anuncio_vende.jpg",
-        alt:         "Vende tu vehículo con Cofiño Usados",
-        titulo:      "¿Querés vender tu vehículo?",
-        descripcion: "Te ayudamos a publicar, negociar y cerrar la venta de forma rápida y segura.",
-        botonTexto:  "Más información",
-        enlace:      "/intercambiar",
-      },
-    ],
+    items: [],
   },
 }

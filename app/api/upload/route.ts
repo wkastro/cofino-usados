@@ -32,7 +32,7 @@ const ROUTE_CONFIG: Record<
   },
   "cms-image": {
     category: "images",
-    types: ["image/jpeg", "image/png", "image/webp", "image/avif"],
+    types: ["image/jpeg", "image/png", "image/webp", "image/avif", "image/svg+xml"],
     maxSize: 5 * 1024 * 1024,
     maxFiles: 1,
     isCms: true,

@@ -17,9 +17,9 @@ export const heroBlock: BlockDefinition<HeroContent> = {
     { key: "posterUrl", label: "Poster",    type: "s3-image",  s3Path: "inicio/hero" },
   ],
   defaultValue: {
-    titulo: "Tu nuevo auto con el respaldo que mereces",
-    subtitulo: "Calidad seguridad y confianza en cada kilómetro",
-    videoUrl: "",
+    titulo:    "",
+    subtitulo: "",
+    videoUrl:  "",
     posterUrl: "",
   },
 }

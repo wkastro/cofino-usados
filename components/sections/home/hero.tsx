@@ -8,8 +8,8 @@ interface HeroProps {
 }
 
 export default function Hero({ content = heroBlock.defaultValue, children }: HeroProps) {
-  const videoSrc  = content.videoUrl  || "/video-bg.mp4"
-  const posterSrc = content.posterUrl || "/video-bg-poster.webp"
+  const videoSrc  = content.videoUrl
+  const posterSrc = content.posterUrl || undefined
 
   return (
     <main className="relative w-full h-dvh min-h-150">

@@ -27,13 +27,6 @@ export const marqueeBlock: BlockDefinition<MarqueeContent> = {
   ],
   defaultValue: {
     titulo: "Marcas aliadas",
-    items: [
-      { nombre: "Toyota",     logoUrl: "/brands/toyota.svg"    },
-      { nombre: "Audi",       logoUrl: "/brands/audi.svg"      },
-      { nombre: "BYD",        logoUrl: "/brands/byd.svg"       },
-      { nombre: "Land Rover", logoUrl: "/brands/landrover.svg" },
-      { nombre: "Lexus",      logoUrl: "/brands/lexus.svg"     },
-      { nombre: "Renault",    logoUrl: "/brands/renault.svg"   },
-    ],
+    items: [],
   },
 }

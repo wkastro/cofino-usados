@@ -9,6 +9,7 @@ const cspHeader = `
   script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""};
   style-src 'self' 'unsafe-inline';
   img-src 'self' blob: data: https:;
+  media-src 'self' https://${S3_HOSTNAME};
   font-src 'self' data:;
   connect-src 'self';
   object-src 'none';

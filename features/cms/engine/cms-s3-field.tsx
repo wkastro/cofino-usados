@@ -13,7 +13,7 @@ const ROUTE_MAP: Record<string, string> = {
 }
 
 const ACCEPT_MAP: Record<string, string> = {
-  "s3-image":    "image/jpeg,image/png,image/webp,image/avif",
+  "s3-image":    "image/jpeg,image/png,image/webp,image/avif,image/svg+xml",
   "s3-video":    "video/mp4,video/webm",
   "s3-document": "application/pdf",
 }
