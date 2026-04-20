@@ -8,7 +8,7 @@ export async function toggleFavorite(
   vehiculoId: string,
 ): Promise<{ isFavorite: boolean }> {
   const session = await auth();
-  if (!session?.user?.id) {
+  if (!session?.user?.id || session.user.role !== "USER") {
     throw new Error("No autenticado");
   }
 
@@ -35,7 +35,7 @@ export async function getFavoriteStatus(): Promise<{
   isAuthenticated: boolean;
 }> {
   const session = await auth();
-  if (!session?.user?.id) return { ids: [], isAuthenticated: false };
+  if (!session?.user?.id || session.user.role !== "USER") return { ids: [], isAuthenticated: false };
 
   const favoritos = await prisma.favorito.findMany({
     where: { userId: session.user.id },
@@ -47,7 +47,7 @@ export async function getFavoriteStatus(): Promise<{
 
 export async function getFavoriteVehiculos(): Promise<Vehiculo[]> {
   const session = await auth();
-  if (!session?.user?.id) return [];
+  if (!session?.user?.id || session.user.role !== "USER") return [];
 
   const favoritos = await prisma.favorito.findMany({
     where: {
