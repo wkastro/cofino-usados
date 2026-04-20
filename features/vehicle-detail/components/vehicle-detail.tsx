@@ -6,6 +6,7 @@ import { VehicleInfo } from "@/features/vehicle-detail/components/vehicle-info";
 import { VehicleSpecs } from "@/features/vehicle-detail/components/vehicle-specs";
 import { LoanCalculator } from "@/features/vehicle-detail/components/loan-calculator";
 import { ReviewsRoot } from "@/features/reviews/components/reviews-root";
+import { getCachedVehicleReviewsSummary } from "@/features/reviews/data/reviews.cached";
 import type { VehicleImage } from "@/types/vehiculo/vehiculo";
 
 // rendering-hoist-jsx: static data hoisted to module level
@@ -24,6 +25,8 @@ export async function VehicleDetail({ params }: VehicleDetailProps): Promise<Rea
   const vehicle = await getCachedVehicleBySlug(slug);
   if (!vehicle) notFound();
 
+  const reviewsSummary = await getCachedVehicleReviewsSummary(vehicle.id);
+
   // server-serialization: pass only needed fields to client components instead of full vehicle object
   return (
     <>
@@ -34,11 +37,14 @@ export async function VehicleDetail({ params }: VehicleDetailProps): Promise<Rea
           vehicleName={vehicle.nombre}
         />
         <VehicleInfo
+          vehiculoId={vehicle.id}
           nombre={vehicle.nombre}
           slug={vehicle.slug}
           precio={vehicle.precio}
           preciodescuento={vehicle.preciodescuento}
           descripcion={vehicle.descripcion}
+          averageRating={reviewsSummary.averageRating}
+          totalReviews={reviewsSummary.totalReviews}
         />
       </div>
 

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Heart, Star, Calculator } from "lucide-react";
+import { Heart, Calculator } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/lib/formatters/vehicle";
 import { useState } from "react";
@@ -12,21 +12,26 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { LoanCalculator } from "./loan-calculator";
-
-const STAR_INDICES = [0, 1, 2, 3, 4];
+import { useFavorites } from "@/features/favoritos/context/favorites-context";
+import { StarRating } from "@/features/reviews/components/star-rating";
 
 // server-serialization: accept only the fields needed instead of full VehicleDetail
 interface VehicleInfoProps {
+  vehiculoId: string;
   nombre: string;
   slug: string;
   precio: number;
   preciodescuento: number | null;
   descripcion: string | null;
+  averageRating: number;
+  totalReviews: number;
 }
 
-export function VehicleInfo({ nombre, slug, precio, preciodescuento, descripcion }: VehicleInfoProps) {
+export function VehicleInfo({ vehiculoId, nombre, slug, precio, preciodescuento, descripcion, averageRating, totalReviews }: VehicleInfoProps) {
   const [calcOpen, setCalcOpen] = useState(false);
   const precioFinal = preciodescuento ?? precio;
+  const { isFavorite, toggleFavorite } = useFavorites();
+  const favorited = isFavorite(vehiculoId);
 
   return (
     <div className="flex flex-col gap-5 bg-white rounded-2xl p-4 md:p-8">
@@ -36,30 +41,30 @@ export function VehicleInfo({ nombre, slug, precio, preciodescuento, descripcion
           <h1 className="text-fs-xl font-semibold tracking-tight">
             {nombre}
           </h1>
-          <div className="flex items-center gap-1.5 mt-1">
-            <div className="flex items-center gap-0.5">
-              {STAR_INDICES.map((i) => (
-                <Star
-                  key={i}
-                  className={cn(
-                    "size-4",
-                    i < 4
-                      ? "fill-amber-400 text-amber-400"
-                      : "fill-transparent text-amber-400",
-                  )}
-                />
-              ))}
+          {totalReviews > 0 ? (
+            <div className="flex items-center gap-1.5 mt-1">
+              <div className="flex items-center gap-0.5">
+                <StarRating rating={Math.round(averageRating)} size="sm" />
+              </div>
+              <span className="text-fs-sm text-muted-foreground">
+                {totalReviews}+ Reseñas
+              </span>
             </div>
-            <span className="text-fs-sm text-muted-foreground">
-              440+ Reseñas
-            </span>
-          </div>
+          ) : null}
         </div>
         <button
-          aria-label="Agregar a favoritos"
+          aria-label={favorited ? "Quitar de favoritos" : "Agregar a favoritos"}
+          onClick={() => toggleFavorite(vehiculoId)}
           className="transition-transform hover:scale-110 active:scale-95 mt-1"
         >
-          <Heart className="size-6 fill-destructive text-destructive" />
+          <Heart
+            className={cn(
+              "size-6",
+              favorited
+                ? "fill-destructive text-destructive"
+                : "fill-transparent text-muted-foreground",
+            )}
+          />
         </button>
       </div>
 
