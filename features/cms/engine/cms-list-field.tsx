@@ -17,6 +17,17 @@ import {
 import { CSS } from "@dnd-kit/utilities"
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
 import { Label } from "@/features/dashboard/components/ui/label"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/features/dashboard/components/ui/alert-dialog"
 import type { FieldDefinition } from "@/features/cms/types/block"
 import { CmsFieldRenderer } from "./cms-field-renderer"
 
@@ -42,13 +53,30 @@ function SortableItem({ id, index, name, itemFields, onRemove }: SortableItemPro
         >
           ⠿ Item {index + 1}
         </span>
-        <button
-          type="button"
-          onClick={onRemove}
-          className="text-sm text-destructive hover:text-destructive/80"
-        >
-          Eliminar
-        </button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <button
+              type="button"
+              className="text-sm text-destructive hover:text-destructive/80"
+            >
+              Eliminar
+            </button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>¿Eliminar este elemento?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Esta acción es irreversible. El elemento será eliminado permanentemente.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+              <AlertDialogAction onClick={onRemove} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                Eliminar
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
       {itemFields.map((subField) => (
         <div key={subField.key} className="space-y-1">

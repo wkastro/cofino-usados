@@ -80,15 +80,6 @@ export function CmsS3Field({ field, name }: CmsS3FieldProps) {
         >
           {uploadLabel}
         </button>
-        {currentUrl && (
-          <button
-            type="button"
-            onClick={() => setValue(name, "", { shouldDirty: true })}
-            className="inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground"
-          >
-            Quitar
-          </button>
-        )}
       </div>
 
       <input
@@ -98,6 +89,12 @@ export function CmsS3Field({ field, name }: CmsS3FieldProps) {
         className="hidden"
         onChange={handleChange}
       />
+
+      {field.imageHint && (
+        <p className="text-xs text-muted-foreground">
+          Tamaño recomendado: {field.imageHint}
+        </p>
+      )}
     </div>
   )
 }

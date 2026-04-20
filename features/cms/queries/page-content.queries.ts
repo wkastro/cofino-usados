@@ -7,6 +7,17 @@ export async function getPageContentRaw(pageSlug: string): Promise<PageContentRe
   return rows as PageContentRecord[]
 }
 
+export async function getBlockContentRaw(
+  pageSlug: string,
+  blockKey: string,
+): Promise<Prisma.JsonValue | null> {
+  const row = await prisma.pageContent.findUnique({
+    where: { pageSlug_blockKey: { pageSlug, blockKey } },
+    select: { value: true },
+  })
+  return row?.value ?? null
+}
+
 export async function upsertPageContent(
   pageSlug: string,
   blockKey: string,

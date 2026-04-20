@@ -21,6 +21,7 @@ export interface FieldDefinition {
   s3Path?: string
   options?: string[]
   itemFields?: FieldDefinition[]
+  imageHint?: string
 }
 
 export interface BlockDefinition<T = Record<string, unknown>> {

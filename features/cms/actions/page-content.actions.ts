@@ -3,11 +3,33 @@
 import { updateTag }                              from "next/cache"
 import { Prisma }                                 from "@/generated/prisma/client"
 import { requireAdmin }                           from "@/lib/auth-guard"
-import { upsertPageContent }                      from "@/features/cms/queries/page-content.queries"
+import { upsertPageContent, getBlockContentRaw }  from "@/features/cms/queries/page-content.queries"
 import { getBlock }                               from "@/features/cms/registry"
 import { buildBlockSchema, seoSchema }            from "@/features/cms/validations/page-content"
 import { SEO_BLOCK_KEY }                          from "@/features/cms/types/block"
+import type { FieldDefinition }                   from "@/features/cms/types/block"
 import { deleteS3Object }                         from "@/features/s3/delete"
+
+const S3_TYPES = new Set(["s3-image", "s3-video", "s3-document"])
+
+function collectS3Urls(fields: FieldDefinition[], value: Record<string, unknown>): string[] {
+  const urls: string[] = []
+  for (const field of fields) {
+    if (S3_TYPES.has(field.type)) {
+      const url = value[field.key]
+      if (typeof url === "string" && url.startsWith("http")) urls.push(url)
+    } else if (field.type === "list" && field.itemFields) {
+      const items = value[field.key]
+      if (Array.isArray(items)) {
+        for (const item of items) {
+          if (item && typeof item === "object" && !Array.isArray(item))
+            urls.push(...collectS3Urls(field.itemFields, item as Record<string, unknown>))
+        }
+      }
+    }
+  }
+  return urls
+}
 
 type ActionResult = { ok: boolean; message: string }
 
@@ -26,6 +48,14 @@ export async function saveBlockContent(
   if (!parsed.success) return { ok: false, message: "Datos inválidos." }
 
   try {
+    const existing = await getBlockContentRaw(pageSlug, blockKey)
+    if (existing && typeof existing === "object" && !Array.isArray(existing)) {
+      const oldUrls = collectS3Urls(block.fields, existing as Record<string, unknown>)
+      const newUrls = new Set(collectS3Urls(block.fields, parsed.data as Record<string, unknown>))
+      const toDelete = oldUrls.filter((url) => !newUrls.has(url))
+      await Promise.all(toDelete.map(deleteS3Object))
+    }
+
     await upsertPageContent(pageSlug, blockKey, parsed.data as Prisma.InputJsonValue)
     updateTag(`cms-${pageSlug}`)
     return { ok: true, message: "Bloque guardado." }

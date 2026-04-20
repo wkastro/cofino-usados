@@ -21,7 +21,7 @@ export const marqueeBlock: BlockDefinition<MarqueeContent> = {
       type: "list",
       itemFields: [
         { key: "nombre",  label: "Nombre",  type: "text"      },
-        { key: "logoUrl", label: "Logo",    type: "s3-image",  s3Path: "inicio/marquee" },
+        { key: "logoUrl", label: "Logo",    type: "s3-image",  s3Path: "inicio/marquee", imageHint: "224×80 px (horizontal, fondo transparente)" },
       ],
     },
   ],

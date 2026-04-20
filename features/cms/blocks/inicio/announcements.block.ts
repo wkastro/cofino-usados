@@ -22,7 +22,7 @@ export const announcementsBlock: BlockDefinition<AnnouncementsContent> = {
       label: "Anuncios",
       type: "list",
       itemFields: [
-        { key: "imagen",      label: "Imagen",          type: "s3-image", s3Path: "inicio/announcements" },
+        { key: "imagen",      label: "Imagen",          type: "s3-image", s3Path: "inicio/announcements", imageHint: "1200×675 px (16:9)" },
         { key: "alt",         label: "Alt (imagen)",    type: "text"      },
         { key: "titulo",      label: "Título",          type: "text",     required: true },
         { key: "descripcion", label: "Descripción",     type: "textarea"  },
