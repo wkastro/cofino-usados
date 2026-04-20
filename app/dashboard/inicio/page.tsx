@@ -5,7 +5,7 @@ import { toContentMap }      from "@/features/cms/types/page-content"
 import { CmsPageEditor }     from "@/features/cms/engine/cms-page-editor"
 
 export const metadata: Metadata = {
-  title: "Inicio | Dashboard",
+  title: "Inicio",
 }
 
 export default async function InicioEditorPage() {
