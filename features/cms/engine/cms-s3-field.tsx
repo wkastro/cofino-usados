@@ -1,10 +1,12 @@
 "use client"
 
-import { useRef, useCallback } from "react"
-import { useFormContext }       from "react-hook-form"
-import { useUploadFiles }       from "@/features/s3/use-upload-files"
-import type { UploadedFile }    from "@/features/s3/use-upload-files"
-import type { FieldDefinition } from "@/features/cms/types/block"
+import { useRef, useCallback, useTransition } from "react"
+import { useFormContext }                       from "react-hook-form"
+import { toast }                               from "sonner"
+import { useUploadFiles }                      from "@/features/s3/use-upload-files"
+import type { UploadedFile }                   from "@/features/s3/use-upload-files"
+import type { FieldDefinition }                from "@/features/cms/types/block"
+import { deleteMediaFromBlock }                from "@/features/cms/actions/page-content.actions"
 
 const ROUTE_MAP: Record<string, string> = {
   "s3-image":    "cms-image",
@@ -24,12 +26,13 @@ interface CmsS3FieldProps {
 }
 
 export function CmsS3Field({ field, name }: CmsS3FieldProps) {
-  const { watch, setValue }   = useFormContext()
-  const inputRef              = useRef<HTMLInputElement>(null)
-  const currentUrl: string    = watch(name) ?? ""
+  const { watch, setValue, getValues } = useFormContext()
+  const inputRef                        = useRef<HTMLInputElement>(null)
+  const currentUrl: string              = watch(name) ?? ""
+  const [isDeleting, startDelete]       = useTransition()
 
-  const s3Path  = field.s3Path ?? "cms"
-  const parts   = s3Path.split("/")
+  const s3Path   = field.s3Path ?? "cms"
+  const parts    = s3Path.split("/")
   const pageSlug = parts[0] ?? "cms"
   const blockKey = parts[1] ?? "block"
 
@@ -52,8 +55,20 @@ export function CmsS3Field({ field, name }: CmsS3FieldProps) {
     e.target.value = ""
   }
 
-  const isImage   = field.type === "s3-image"
-  const progress  = progresses[0]?.progress ?? 0
+  function handleDelete() {
+    startDelete(async () => {
+      const result = await deleteMediaFromBlock(pageSlug, blockKey, name, getValues() as Record<string, unknown>)
+      if (result.ok) {
+        setValue(name, "", { shouldDirty: false })
+        toast.success("Archivo eliminado.")
+      } else {
+        toast.error(result.message)
+      }
+    })
+  }
+
+  const isImage     = field.type === "s3-image"
+  const progress    = progresses[0]?.progress ?? 0
   const uploadLabel = isPending
     ? `Subiendo ${Math.round(progress * 100)}%...`
     : currentUrl ? "Reemplazar" : "Subir archivo"
@@ -74,12 +89,22 @@ export function CmsS3Field({ field, name }: CmsS3FieldProps) {
       <div className="flex items-center gap-2">
         <button
           type="button"
-          disabled={isPending}
+          disabled={isPending || isDeleting}
           onClick={() => inputRef.current?.click()}
           className="inline-flex items-center justify-center rounded-md border border-input bg-background px-3 py-1.5 text-sm font-medium hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {uploadLabel}
         </button>
+        {currentUrl && (
+          <button
+            type="button"
+            disabled={isPending || isDeleting}
+            onClick={handleDelete}
+            className="inline-flex items-center justify-center rounded-md border border-destructive text-destructive px-3 py-1.5 text-sm font-medium hover:bg-destructive/10 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isDeleting ? "Eliminando..." : "Eliminar"}
+          </button>
+        )}
       </div>
 
       <input
