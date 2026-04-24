@@ -69,20 +69,15 @@ export const sidebarItems: NavGroup[] = [
         icon: PanelsTopLeftIcon,
       },
       {
-        title: "Comprar",
-        url: "/dashboard/comprar",
+        title: "Detalle Vehículo",
+        url: "/dashboard/detalle-vehiculo",
         icon: PanelsTopLeftIcon,
       },
       {
         title: "Intercambiar",
         url: "/dashboard/intercambiar",
         icon: PanelsTopLeftIcon,
-      },
-      {
-        title: "Proximamente",
-        url: "/dashboard/proximamente",
-        icon: PanelsTopLeftIcon,
-      },
+      }
     ],
   },
 ];

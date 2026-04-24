@@ -7,6 +7,11 @@ import { VideoShowcase } from "@/features/vehicle-detail/components/video-showca
 import { VehicleDetail } from "@/features/vehicle-detail/components/vehicle-detail";
 import { SimilarVehicles } from "@/features/recommendations/components/similar-vehicles";
 import { VehicleCardSkeletonGrid } from "@/components/global/vehicle-card-skeleton";
+import { getPageContent } from "@/app/actions/page-content.cached";
+import { videoShowcaseBlock } from "@/features/cms/blocks/detalle-vehiculo/video-showcase.block";
+import { calculadoraBlock } from "@/features/cms/blocks/detalle-vehiculo/calculadora.block";
+import type { VideoShowcaseContent } from "@/features/cms/blocks/detalle-vehiculo/video-showcase.block";
+import type { CalculadoraContent } from "@/features/cms/blocks/detalle-vehiculo/calculadora.block";
 
 interface VehiclePageProps {
   params: Promise<{ slug: string }>;
@@ -22,6 +27,13 @@ async function SimilarVehiclesSection({
 }
 
 export default async function VehiclePage({ params }: VehiclePageProps): Promise<React.ReactElement> {
+  const content = await getPageContent("detalle-vehiculo");
+
+  const videoContent     = (content[videoShowcaseBlock.key] ?? videoShowcaseBlock.defaultValue) as unknown as VideoShowcaseContent;
+  const calculadoraContent = (content[calculadoraBlock.key] ?? calculadoraBlock.defaultValue) as unknown as CalculadoraContent;
+
+  const videoUrl = videoContent.videoArchivoUrl || videoContent.videoUrl || videoShowcaseBlock.defaultValue.videoUrl;
+
   return (
     <Container className="py-6 lg:py-10">
       {/* Back link — static shell */}
@@ -46,16 +58,16 @@ export default async function VehiclePage({ params }: VehiclePageProps): Promise
           </div>
         }
       >
-        <VehicleDetail params={params} />
+        <VehicleDetail params={params} calculadora={calculadoraContent} />
       </Suspense>
 
-      {/* Video showcase — static */}
+      {/* Video showcase — from CMS */}
       <div className="mt-10 lg:mt-14">
         <VideoShowcase
-          videoUrl="https://www.youtube.com/watch?v=3ks4cK3lKjE"
-          coverImage="/mechanic_video_cover.jpg"
-          title="¿Porqué comprar con Cofiño Stahl?"
-          subtitle="Aprovechá descuentos exclusivos, financiamiento flexible y garantía certificada."
+          videoUrl={videoUrl}
+          coverImage={videoContent.coverImage || videoShowcaseBlock.defaultValue.coverImage}
+          title={videoContent.titulo || videoShowcaseBlock.defaultValue.titulo}
+          subtitle={videoContent.subtitulo || videoShowcaseBlock.defaultValue.subtitulo}
         />
       </div>
 

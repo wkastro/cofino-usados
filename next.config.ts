@@ -11,7 +11,8 @@ const cspHeader = `
   img-src 'self' blob: data: https:;
   media-src 'self' https://${S3_HOSTNAME};
   font-src 'self' data:;
-  connect-src 'self';
+  connect-src 'self' https://www.youtube-nocookie.com https://www.youtube.com;
+  frame-src https://www.youtube-nocookie.com https://www.youtube.com;
   object-src 'none';
   base-uri 'self';
   form-action 'self';

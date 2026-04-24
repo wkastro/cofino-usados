@@ -16,11 +16,14 @@ const FALLBACK_IMAGES: VehicleImage[] = [
   { id: "img-003", url: "/single/cover_single_vehicle3.jpg", orden: 2 },
 ];
 
+import type { CalculadoraContent } from "@/features/cms/blocks/detalle-vehiculo/calculadora.block"
+
 interface VehicleDetailProps {
-  params: Promise<{ slug: string }>;
+  params:      Promise<{ slug: string }>;
+  calculadora?: CalculadoraContent;
 }
 
-export async function VehicleDetail({ params }: VehicleDetailProps): Promise<React.ReactElement> {
+export async function VehicleDetail({ params, calculadora }: VehicleDetailProps): Promise<React.ReactElement> {
   const { slug } = await params;
   const vehicle = await getCachedVehicleBySlug(slug);
   if (!vehicle) notFound();
@@ -59,7 +62,13 @@ export async function VehicleDetail({ params }: VehicleDetailProps): Promise<Rea
           traccion={vehicle.traccion}
           sucursalNombre={vehicle.sucursal.nombre}
         />
-        <LoanCalculator vehiclePrice={vehicle.preciodescuento ?? vehicle.precio} />
+        <LoanCalculator
+          vehiclePrice={vehicle.preciodescuento ?? vehicle.precio}
+          titulo={calculadora?.titulo}
+          descripcion={calculadora?.descripcion}
+          bancos={calculadora?.bancos}
+          cuotas={calculadora?.cuotas}
+        />
       </div>
 
       <ReviewsRoot vehiculoId={vehicle.id} vehiculoSlug={vehicle.slug} />
