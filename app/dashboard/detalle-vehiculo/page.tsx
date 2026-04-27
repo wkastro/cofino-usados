@@ -21,7 +21,7 @@ export default async function DetalleVehiculoEditorPage() {
           Edita el contenido del video showcase y la calculadora de cuotas.
         </p>
       </div>
-      <CmsPageEditor pageSlug="detalle-vehiculo" initialContent={initialContent} />
+      <CmsPageEditor pageSlug="detalle-vehiculo" initialContent={initialContent} hideSeo />
     </div>
   )
 }

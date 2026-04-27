@@ -23,9 +23,10 @@ import { CmsPreviewPanel } from "./cms-preview-panel"
 interface CmsPageEditorProps {
   pageSlug:       string
   initialContent: PageContentMap
+  hideSeo?:       boolean
 }
 
-export function CmsPageEditor({ pageSlug, initialContent }: CmsPageEditorProps) {
+export function CmsPageEditor({ pageSlug, initialContent, hideSeo = false }: CmsPageEditorProps) {
   const blocks = getPageBlocks(pageSlug)
 
   const [activeBlockKey, setActiveBlockKey] = useState(blocks[0]?.key ?? "")
@@ -105,7 +106,7 @@ export function CmsPageEditor({ pageSlug, initialContent }: CmsPageEditorProps) 
         <Tabs defaultValue="contenido">
           <TabsList>
             <TabsTrigger value="contenido">Contenido</TabsTrigger>
-            <TabsTrigger value="seo">SEO</TabsTrigger>
+            {!hideSeo && <TabsTrigger value="seo">SEO</TabsTrigger>}
           </TabsList>
 
           <TabsContent value="contenido" className="space-y-4 mt-4">
@@ -140,7 +141,7 @@ export function CmsPageEditor({ pageSlug, initialContent }: CmsPageEditorProps) 
             )}
           </TabsContent>
 
-          <TabsContent value="seo" className="mt-4">
+          {!hideSeo && <TabsContent value="seo" className="mt-4">
             <FormProvider {...seoMethods}>
               <form onSubmit={seoMethods.handleSubmit(onSeoSubmit)} className="space-y-4">
                 {SEO_FIELDS.map(({ key, label, type }) => (
@@ -162,7 +163,7 @@ export function CmsPageEditor({ pageSlug, initialContent }: CmsPageEditorProps) 
                 </button>
               </form>
             </FormProvider>
-          </TabsContent>
+          </TabsContent>}
         </Tabs>
       </div>
 
