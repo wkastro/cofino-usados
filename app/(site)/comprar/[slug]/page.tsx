@@ -2,6 +2,7 @@ import type React from "react";
 import { Suspense } from "react";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
+import type { Metadata } from "next";
 import { Container } from "@/components/layout/container";
 import { VideoShowcase } from "@/features/vehicle-detail/components/video-showcase";
 import { VehicleDetail } from "@/features/vehicle-detail/components/vehicle-detail";
@@ -10,9 +11,41 @@ import { VehicleCardSkeletonGrid } from "@/components/global/vehicle-card-skelet
 import { getPageContent } from "@/app/actions/page-content.cached";
 import { videoShowcaseBlock } from "@/features/cms/blocks/detalle-vehiculo/video-showcase.block";
 import type { VideoShowcaseContent } from "@/features/cms/blocks/detalle-vehiculo/video-showcase.block";
+import { getCachedVehicleBySlug } from "@/app/actions/vehiculo.cached";
+import { formatCurrency, formatKilometers } from "@/lib/formatters/vehicle";
 
 interface VehiclePageProps {
   params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({ params }: VehiclePageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const vehicle = await getCachedVehicleBySlug(slug);
+
+  if (!vehicle) return { title: "Vehículo no encontrado", robots: { index: false } };
+
+  const price = vehicle.preciodescuento ?? vehicle.precio;
+  const description = `${vehicle.nombre} ${vehicle.anio} · ${vehicle.transmision} · ${vehicle.combustible} · ${formatKilometers(vehicle.kilometraje)} · ${formatCurrency(price)}`;
+  const image = vehicle.galeria[0]?.url;
+  const url = `/comprar/${slug}`;
+
+  return {
+    title: `${vehicle.nombre} ${vehicle.anio}`,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      title: `${vehicle.nombre} ${vehicle.anio} | Cofiño Usados`,
+      description,
+      url,
+      images: image ? [{ url: image, alt: vehicle.nombre }] : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${vehicle.nombre} ${vehicle.anio} | Cofiño Usados`,
+      description,
+      images: image ? [image] : undefined,
+    },
+  };
 }
 
 async function VideoShowcaseSection(): Promise<React.ReactElement> {
