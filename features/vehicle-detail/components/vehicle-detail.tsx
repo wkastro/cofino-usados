@@ -7,6 +7,9 @@ import { VehicleSpecs } from "@/features/vehicle-detail/components/vehicle-specs
 import { LoanCalculator } from "@/features/vehicle-detail/components/loan-calculator";
 import { ReviewsRoot } from "@/features/reviews/components/reviews-root";
 import { getCachedVehicleReviewsSummary } from "@/features/reviews/data/reviews.cached";
+import { getPageContent } from "@/app/actions/page-content.cached";
+import { calculadoraBlock } from "@/features/cms/blocks/detalle-vehiculo/calculadora.block";
+import type { CalculadoraContent } from "@/features/cms/blocks/detalle-vehiculo/calculadora.block";
 import type { VehicleImage } from "@/types/vehiculo/vehiculo";
 
 // rendering-hoist-jsx: static data hoisted to module level
@@ -16,21 +19,21 @@ const FALLBACK_IMAGES: VehicleImage[] = [
   { id: "img-003", url: "/single/cover_single_vehicle3.jpg", orden: 2 },
 ];
 
-import type { CalculadoraContent } from "@/features/cms/blocks/detalle-vehiculo/calculadora.block"
-
 interface VehicleDetailProps {
-  params:      Promise<{ slug: string }>;
-  calculadora?: CalculadoraContent;
+  params: Promise<{ slug: string }>;
 }
 
-export async function VehicleDetail({ params, calculadora }: VehicleDetailProps): Promise<React.ReactElement> {
+export async function VehicleDetail({ params }: VehicleDetailProps): Promise<React.ReactElement> {
   const { slug } = await params;
-  const vehicle = await getCachedVehicleBySlug(slug);
+  const [vehicle, content] = await Promise.all([
+    getCachedVehicleBySlug(slug),
+    getPageContent("detalle-vehiculo"),
+  ]);
   if (!vehicle) notFound();
 
+  const calculadora = (content[calculadoraBlock.key] ?? calculadoraBlock.defaultValue) as unknown as CalculadoraContent;
   const reviewsSummary = await getCachedVehicleReviewsSummary(vehicle.id);
 
-  // server-serialization: pass only needed fields to client components instead of full vehicle object
   return (
     <>
       {/* Main content */}
@@ -48,6 +51,10 @@ export async function VehicleDetail({ params, calculadora }: VehicleDetailProps)
           descripcion={vehicle.descripcion}
           averageRating={reviewsSummary.averageRating}
           totalReviews={reviewsSummary.totalReviews}
+          calculadoraTitulo={calculadora.titulo}
+          calculadoraDescripcion={calculadora.descripcion}
+          calculadoraBancos={calculadora.bancos}
+          calculadoraCuotas={calculadora.cuotas}
         />
       </div>
 
@@ -64,10 +71,10 @@ export async function VehicleDetail({ params, calculadora }: VehicleDetailProps)
         />
         <LoanCalculator
           vehiclePrice={vehicle.preciodescuento ?? vehicle.precio}
-          titulo={calculadora?.titulo}
-          descripcion={calculadora?.descripcion}
-          bancos={calculadora?.bancos}
-          cuotas={calculadora?.cuotas}
+          titulo={calculadora.titulo}
+          descripcion={calculadora.descripcion}
+          bancos={calculadora.bancos}
+          cuotas={calculadora.cuotas}
         />
       </div>
 

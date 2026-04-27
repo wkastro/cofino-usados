@@ -9,12 +9,25 @@ import { SimilarVehicles } from "@/features/recommendations/components/similar-v
 import { VehicleCardSkeletonGrid } from "@/components/global/vehicle-card-skeleton";
 import { getPageContent } from "@/app/actions/page-content.cached";
 import { videoShowcaseBlock } from "@/features/cms/blocks/detalle-vehiculo/video-showcase.block";
-import { calculadoraBlock } from "@/features/cms/blocks/detalle-vehiculo/calculadora.block";
 import type { VideoShowcaseContent } from "@/features/cms/blocks/detalle-vehiculo/video-showcase.block";
-import type { CalculadoraContent } from "@/features/cms/blocks/detalle-vehiculo/calculadora.block";
 
 interface VehiclePageProps {
   params: Promise<{ slug: string }>;
+}
+
+async function VideoShowcaseSection(): Promise<React.ReactElement> {
+  const content = await getPageContent("detalle-vehiculo");
+  const videoContent = (content[videoShowcaseBlock.key] ?? videoShowcaseBlock.defaultValue) as unknown as VideoShowcaseContent;
+  const videoUrl = videoContent.videoArchivoUrl || videoContent.videoUrl || videoShowcaseBlock.defaultValue.videoUrl;
+
+  return (
+    <VideoShowcase
+      videoUrl={videoUrl}
+      coverImage={videoContent.coverImage || videoShowcaseBlock.defaultValue.coverImage}
+      title={videoContent.titulo || videoShowcaseBlock.defaultValue.titulo}
+      subtitle={videoContent.subtitulo || videoShowcaseBlock.defaultValue.subtitulo}
+    />
+  );
 }
 
 async function SimilarVehiclesSection({
@@ -27,16 +40,8 @@ async function SimilarVehiclesSection({
 }
 
 export default async function VehiclePage({ params }: VehiclePageProps): Promise<React.ReactElement> {
-  const content = await getPageContent("detalle-vehiculo");
-
-  const videoContent     = (content[videoShowcaseBlock.key] ?? videoShowcaseBlock.defaultValue) as unknown as VideoShowcaseContent;
-  const calculadoraContent = (content[calculadoraBlock.key] ?? calculadoraBlock.defaultValue) as unknown as CalculadoraContent;
-
-  const videoUrl = videoContent.videoArchivoUrl || videoContent.videoUrl || videoShowcaseBlock.defaultValue.videoUrl;
-
   return (
     <Container className="py-6 lg:py-10">
-      {/* Back link — static shell */}
       <Link
         href="/comprar"
         className="inline-flex items-center gap-1 text-fs-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
@@ -45,7 +50,6 @@ export default async function VehiclePage({ params }: VehiclePageProps): Promise
         Volver
       </Link>
 
-      {/* Dynamic vehicle data — streams in */}
       <Suspense
         fallback={
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 animate-pulse">
@@ -58,20 +62,13 @@ export default async function VehiclePage({ params }: VehiclePageProps): Promise
           </div>
         }
       >
-        <VehicleDetail params={params} calculadora={calculadoraContent} />
+        <VehicleDetail params={params} />
       </Suspense>
 
-      {/* Video showcase — from CMS */}
       <div className="mt-10 lg:mt-14">
-        <VideoShowcase
-          videoUrl={videoUrl}
-          coverImage={videoContent.coverImage || videoShowcaseBlock.defaultValue.coverImage}
-          title={videoContent.titulo || videoShowcaseBlock.defaultValue.titulo}
-          subtitle={videoContent.subtitulo || videoShowcaseBlock.defaultValue.subtitulo}
-        />
+        <VideoShowcaseSection />
       </div>
 
-      {/* Similar vehicles — streams in */}
       <Suspense fallback={<VehicleCardSkeletonGrid count={3} />}>
         <SimilarVehiclesSection params={params} />
       </Suspense>

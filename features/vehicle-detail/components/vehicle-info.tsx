@@ -14,6 +14,7 @@ import {
 import { LoanCalculator } from "./loan-calculator";
 import { useFavorites } from "@/features/favoritos/context/favorites-context";
 import { StarRating } from "@/features/reviews/components/star-rating";
+import type { BancoItem, CuotaItem } from "@/features/cms/blocks/detalle-vehiculo/calculadora.block";
 
 // server-serialization: accept only the fields needed instead of full VehicleDetail
 interface VehicleInfoProps {
@@ -25,9 +26,13 @@ interface VehicleInfoProps {
   descripcion: string | null;
   averageRating: number;
   totalReviews: number;
+  calculadoraTitulo?: string;
+  calculadoraDescripcion?: string;
+  calculadoraBancos?: BancoItem[];
+  calculadoraCuotas?: CuotaItem[];
 }
 
-export function VehicleInfo({ vehiculoId, nombre, slug, precio, preciodescuento, descripcion, averageRating, totalReviews }: VehicleInfoProps) {
+export function VehicleInfo({ vehiculoId, nombre, slug, precio, preciodescuento, descripcion, averageRating, totalReviews, calculadoraTitulo, calculadoraDescripcion, calculadoraBancos, calculadoraCuotas }: VehicleInfoProps) {
   const [calcOpen, setCalcOpen] = useState(false);
   const precioFinal = preciodescuento ?? precio;
   const { isFavorite, toggleFavorite } = useFavorites();
@@ -103,7 +108,13 @@ export function VehicleInfo({ vehiculoId, nombre, slug, precio, preciodescuento,
             <DialogHeader>
               <DialogTitle className="sr-only">Calculadora de cuotas</DialogTitle>
             </DialogHeader>
-            <LoanCalculator vehiclePrice={precioFinal} />
+            <LoanCalculator
+              vehiclePrice={precioFinal}
+              titulo={calculadoraTitulo}
+              descripcion={calculadoraDescripcion}
+              bancos={calculadoraBancos}
+              cuotas={calculadoraCuotas}
+            />
           </DialogContent>
         </Dialog>
       </div>

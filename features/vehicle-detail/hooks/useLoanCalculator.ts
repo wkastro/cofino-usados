@@ -30,7 +30,10 @@ export function useLoanCalculator(
   const [installments, setInstallments] = useState("");
 
   const banks = useMemo<readonly BancoItem[]>(
-    () => bancosConfig?.length ? bancosConfig : DEFAULT_BANKS,
+    () => {
+      const valid = bancosConfig?.filter((b) => b.id && b.nombre)
+      return valid?.length ? valid : DEFAULT_BANKS
+    },
     [bancosConfig],
   );
 
