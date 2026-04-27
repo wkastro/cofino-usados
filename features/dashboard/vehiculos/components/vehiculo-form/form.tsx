@@ -148,6 +148,7 @@ export function VehiculoForm({
             {currentStep === 4 && (
               <StepGaleria
                 vehiculoId={vehiculo?.id ?? null}
+                initialPortada={vehiculo?.portada ?? null}
                 initialImages={vehiculo?.galeria ?? []}
               />
             )}

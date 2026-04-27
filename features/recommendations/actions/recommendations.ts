@@ -32,6 +32,7 @@ const RECOMMENDATION_SELECT = {
   marca: { select: { id: true, nombre: true } },
   categoria: { select: { id: true, nombre: true } },
   sucursal: { select: { id: true, nombre: true } },
+  portada: true,
   etiquetaComercial: {
     select: { nombre: true, slug: true },
   },
@@ -55,6 +56,7 @@ type PrismaVehicleRow = {
   transmision: { nombre: string };
   combustible: { nombre: string };
   color_exterior: string | null;
+  portada: string | null;
   marca: { id: string; nombre: string };
   categoria: { id: string; nombre: string };
   sucursal: { id: string; nombre: string };

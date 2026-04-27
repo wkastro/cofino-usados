@@ -139,6 +139,7 @@ model Vehiculo {
   sucursal            Sucursal           @relation(fields: [sucursalId], references: [id])
   categoria           Categoria          @relation(fields: [categoriaId], references: [id])
   etiquetaComercialId String?            @db.Char(36)
+  portada             String?
   etiquetaComercial   EtiquetaComercial? @relation(fields: [etiquetaComercialId], references: [id])
   galeria             Galeria[]
   favoritos           Favorito[]

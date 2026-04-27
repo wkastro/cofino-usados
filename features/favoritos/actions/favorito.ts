@@ -72,6 +72,7 @@ export async function getFavoriteVehiculos(): Promise<Vehiculo[]> {
           marca: { select: { id: true, nombre: true } },
           categoria: { select: { id: true, nombre: true } },
           sucursal: { select: { id: true, nombre: true } },
+          portada: true,
           etiquetaComercial: {
             select: { nombre: true, slug: true },
           },

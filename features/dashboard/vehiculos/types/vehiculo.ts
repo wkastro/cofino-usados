@@ -57,6 +57,7 @@ export interface VehiculoAdmin {
   color_interior: string | null
   color_exterior: string | null
   descripcion: string | null
+  portada: string | null
   marcaId: string
   sucursalId: string
   categoriaId: string

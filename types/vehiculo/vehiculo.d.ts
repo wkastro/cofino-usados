@@ -19,6 +19,7 @@ export interface Vehiculo {
   color_exterior: string;
   transmision: string;
   combustible: string;
+  portada: string | null;
   sucursal: VehicleRelation;
   marca: VehicleRelation;
   categoria: VehicleRelation;

@@ -36,8 +36,8 @@ export function VehicleCard({ vehicle }: VehicleCardProps): React.ReactElement {
   const favorited = isFavorite(vehicle.id);
   const [imgError, setImgError] = useState(false);
 
-  const hasGaleria = !imgError && vehicle.galeria[0]?.url != null;
-  const imgSrc = hasGaleria ? vehicle.galeria[0].url : "/car.png";
+  const hasPortada = !imgError && vehicle.portada != null;
+  const imgSrc = hasPortada ? vehicle.portada! : "/car.png";
 
   return (
     <article className="group space-y-2 relative w-full max-w-[24rem] rounded-lg bg-card text-card-foreground border border-border p-6 pb-4 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.06)] flex flex-col justify-between overflow-hidden">
@@ -92,7 +92,7 @@ export function VehicleCard({ vehicle }: VehicleCardProps): React.ReactElement {
           alt={`Vehículo usado ${vehicle.marca.nombre} del año ${vehicle.anio} a la venta`}
           fill
           sizes="(max-width: 768px) 100vw, 384px"
-          className={hasGaleria ? "object-cover rounded-lg" : "object-contain mix-blend-multiply dark:mix-blend-normal"}
+          className={hasPortada ? "object-cover rounded-lg" : "object-contain mix-blend-multiply dark:mix-blend-normal"}
           loading="lazy"
           onError={() => setImgError(true)}
         />

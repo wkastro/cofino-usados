@@ -113,6 +113,7 @@ export async function getCachedVehiculoAdminById(id: string): Promise<VehiculoAd
       sucursalId: true,
       categoriaId: true,
       etiquetaComercialId: true,
+      portada: true,
       createdAt: true,
       updatedAt: true,
       galeria: {

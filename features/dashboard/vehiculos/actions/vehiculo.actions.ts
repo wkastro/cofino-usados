@@ -183,6 +183,31 @@ export async function deleteVehiculo(id: string): Promise<ActionResult> {
   return { ok: true, message: "Vehículo eliminado." }
 }
 
+// ─── Portada ─────────────────────────────────────────────────────────────────
+
+export async function updateVehiculoPortada(
+  vehiculoId: string,
+  url: string | null,
+): Promise<ActionResult> {
+  await requireAdmin()
+
+  let slug: string | undefined
+  try {
+    const vehiculo = await prisma.vehiculo.update({
+      where: { id: vehiculoId },
+      data: { portada: url },
+      select: { slug: true },
+    })
+    slug = vehiculo.slug
+  } catch (error) {
+    console.error("[updateVehiculoPortada]", error)
+    return { ok: false, message: "Error al actualizar la portada." }
+  }
+
+  revalidateVehiculoCaches(slug, vehiculoId)
+  return { ok: true, message: url ? "Portada actualizada." : "Portada eliminada." }
+}
+
 // ─── Galería ─────────────────────────────────────────────────────────────────
 
 export async function addGaleriaImage(

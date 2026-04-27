@@ -38,6 +38,7 @@ export async function getVehiculos(
         marca: { select: { id: true, nombre: true } },
         categoria: { select: { id: true, nombre: true } },
         sucursal: { select: { id: true, nombre: true } },
+        portada: true,
         etiquetaComercial: {
           select: { nombre: true, slug: true },
         },
@@ -96,6 +97,7 @@ export async function getVehicleBySlug(
       marca: { select: { id: true, nombre: true } },
       categoria: { select: { id: true, nombre: true } },
       sucursal: { select: { id: true, nombre: true } },
+      portada: true,
       etiquetaComercial: {
         select: { nombre: true, slug: true },
       },

@@ -16,7 +16,7 @@ import {
   arrayMove,
 } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import { ImageIcon, TrashIcon, GripVertical, UploadIcon } from "lucide-react"
+import { ImageIcon, TrashIcon, GripVertical, UploadIcon, XIcon } from "lucide-react"
 import { toast } from "sonner"
 import Image from "next/image"
 import { useUploadFiles } from "@/features/s3/use-upload-files"
@@ -34,11 +34,12 @@ import {
   addGaleriaImage,
   removeGaleriaImage,
   reorderGaleriaImages,
+  updateVehiculoPortada,
 } from "../../../actions/vehiculo.actions"
 import { UPLOAD_ROUTES } from "@/features/s3"
 import type { GaleriaItem } from "../../../types/vehiculo"
 
-// ─── Subcomponent ─────────────────────────────────────────────────────────────
+// ─── Sortable gallery item ────────────────────────────────────────────────────
 
 interface SortableGaleriaItemProps {
   img: GaleriaItem
@@ -78,9 +79,7 @@ function SortableGaleriaItem({
         />
       </div>
 
-      {/* Hover overlay */}
       <div className="absolute inset-0 flex items-start justify-between p-1.5 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100 bg-black/30">
-        {/* Drag handle */}
         <button
           type="button"
           className="flex size-8 cursor-grab items-center justify-center rounded-md bg-white/20 text-white backdrop-blur-sm hover:bg-white/30 disabled:cursor-not-allowed disabled:opacity-50 active:cursor-grabbing"
@@ -92,7 +91,6 @@ function SortableGaleriaItem({
           <GripVertical className="size-4" aria-hidden="true" />
         </button>
 
-        {/* Delete button */}
         <button
           type="button"
           className="flex size-8 items-center justify-center rounded-md bg-destructive text-destructive-foreground shadow hover:bg-destructive/90 disabled:pointer-events-none disabled:opacity-50 transition-colors"
@@ -117,13 +115,16 @@ function SortableGaleriaItem({
 
 interface StepGaleriaProps {
   vehiculoId: string | null
+  initialPortada: string | null
   initialImages: GaleriaItem[]
 }
 
-export function StepGaleria({ vehiculoId, initialImages }: StepGaleriaProps) {
+export function StepGaleria({ vehiculoId, initialPortada, initialImages }: StepGaleriaProps) {
+  const [portada, setPortada] = useState<string | null>(initialPortada)
   const [images, setImages] = useState<GaleriaItem[]>(initialImages)
   const [imageToDelete, setImageToDelete] = useState<GaleriaItem | null>(null)
   const [isDragging, setIsDragging] = useState(false)
+  const [isDraggingPortada, setIsDraggingPortada] = useState(false)
   const [isPending, startTransition] = useTransition()
 
   const nextOrdenRef = useRef(initialImages.length)
@@ -131,6 +132,62 @@ export function StepGaleria({ vehiculoId, initialImages }: StepGaleriaProps) {
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
   )
+
+  // ─── Portada upload ───────────────────────────────────────────────────────
+
+  const { upload: uploadPortada, progresses: portadaProgresses, isPending: isUploadingPortada } = useUploadFiles({
+    route: UPLOAD_ROUTES.vehiculoImages,
+    onUploadComplete: ({ files }) => {
+      const url = files[0]?.objectInfo.url
+      if (!url) return
+
+      if (!vehiculoId) {
+        setPortada(url)
+        return
+      }
+
+      startTransition(async () => {
+        const result = await updateVehiculoPortada(vehiculoId, url)
+        if (result.ok) {
+          setPortada(url)
+          toast.success(result.message)
+        } else {
+          toast.error(result.message)
+        }
+      })
+    },
+    onUploadFail: ({ failedFiles }) => {
+      failedFiles.forEach((f) => toast.error(`Error al subir ${f.name}: ${f.error.message}`))
+    },
+  })
+
+  function handlePortadaDrop(e: React.DragEvent<HTMLLabelElement>) {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsDraggingPortada(false)
+    if (isPortadaBusy || !vehiculoId) return
+    const files = e.dataTransfer.files
+    if (!files?.length) return
+    uploadPortada(files, { metadata: { vehiculoId } })
+  }
+
+  function handleRemovePortada() {
+    if (!vehiculoId) {
+      setPortada(null)
+      return
+    }
+    startTransition(async () => {
+      const result = await updateVehiculoPortada(vehiculoId, null)
+      if (result.ok) {
+        setPortada(null)
+        toast.success(result.message)
+      } else {
+        toast.error(result.message)
+      }
+    })
+  }
+
+  // ─── Gallery upload ───────────────────────────────────────────────────────
 
   const { upload, progresses, isPending: isUploading } = useUploadFiles({
     route: UPLOAD_ROUTES.vehiculoImages,
@@ -162,9 +219,7 @@ export function StepGaleria({ vehiculoId, initialImages }: StepGaleriaProps) {
       })
     },
     onUploadFail: ({ failedFiles }) => {
-      failedFiles.forEach((f) => {
-        toast.error(`Error al subir ${f.name}: ${f.error.message}`)
-      })
+      failedFiles.forEach((f) => toast.error(`Error al subir ${f.name}: ${f.error.message}`))
     },
   })
 
@@ -173,7 +228,6 @@ export function StepGaleria({ vehiculoId, initialImages }: StepGaleriaProps) {
     const target = imageToDelete
     setImageToDelete(null)
 
-    // pending images (no vehiculoId) — remove locally only
     if (!vehiculoId || target.id.startsWith("pending-")) {
       setImages((prev) => prev.filter((img) => img.id !== target.id))
       return
@@ -217,9 +271,10 @@ export function StepGaleria({ vehiculoId, initialImages }: StepGaleriaProps) {
     })
   }
 
+  const isPortadaBusy = isUploadingPortada || isPending
   const isBusy = isUploading || isPending
 
-  function handleDrop(e: React.DragEvent<HTMLLabelElement>) {
+  function handleGalleryDrop(e: React.DragEvent<HTMLLabelElement>) {
     e.preventDefault()
     e.stopPropagation()
     setIsDragging(false)
@@ -230,86 +285,160 @@ export function StepGaleria({ vehiculoId, initialImages }: StepGaleriaProps) {
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      {/* File picker */}
-      {!vehiculoId ? (
-        <div className="flex h-32 flex-col items-center justify-center rounded-lg border border-dashed gap-2 text-muted-foreground opacity-60">
-          <UploadIcon className="size-6" aria-hidden="true" />
-          <p className="text-sm">Al guardar serás redirigido aquí para añadir imágenes</p>
-        </div>
-      ) : (
-        <label
-          htmlFor="gallery-upload"
-          onDragOver={(e) => { e.preventDefault(); e.stopPropagation() }}
-          onDragEnter={(e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(true) }}
-          onDragLeave={(e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(false) }}
-          onDrop={handleDrop}
-          className={`flex h-32 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed gap-2 text-muted-foreground transition-colors hover:bg-muted/50 has-[:disabled]:pointer-events-none has-[:disabled]:opacity-50${isDragging ? " bg-muted/70 border-primary" : ""}`}
-        >
-          <UploadIcon className="size-6" aria-hidden="true" />
-          <p className="text-sm">{isDragging ? "Suelta para subir" : "Haz clic o arrastra imágenes aquí"}</p>
-          <p className="text-xs">PNG, JPG, WEBP · máx. 5 MB por imagen</p>
-          <input
-            id="gallery-upload"
-            type="file"
-            accept="image/*"
-            multiple
-            className="sr-only"
-            disabled={isBusy}
-            onChange={(e) => {
-              if (!e.target.files?.length) return
-              upload(e.target.files, { metadata: { vehiculoId } })
-              e.target.value = ""
-            }}
-          />
-        </label>
-      )}
+    <div className="flex flex-col gap-6">
 
-      {/* Per-file upload progress */}
-      {isUploading && progresses.length > 0 && (
-        <ul className="flex flex-col gap-1" aria-label="Progreso de subida">
-          {progresses.map((file) => (
-            <li
-              key={file.name}
-              className="flex items-center gap-2 text-sm text-muted-foreground"
-            >
-              <span className="flex-1 truncate">{file.name}</span>
-              <span>{Math.round(file.progress * 100)}%</span>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      {/* Gallery grid */}
-      {images.length === 0 ? (
-        <div className="flex h-24 flex-col items-center justify-center gap-2 rounded-lg border border-dashed text-muted-foreground">
-          <ImageIcon className="size-6" aria-hidden="true" />
-          <p className="text-sm">No hay imágenes todavía</p>
+      {/* ── Portada ── */}
+      <div className="flex flex-col gap-3">
+        <div>
+          <p className="text-sm font-medium">Imagen de portada</p>
+          <p className="text-xs text-muted-foreground">PNG con fondo transparente · se muestra en la tarjeta del vehículo</p>
         </div>
-      ) : (
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext
-            items={images.map((img) => img.id)}
-            strategy={rectSortingStrategy}
-          >
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-              {images.map((img, index) => (
-                <SortableGaleriaItem
-                  key={img.id}
-                  img={img}
-                  index={index}
-                  isBusy={isBusy}
-                  onDeleteRequest={setImageToDelete}
-                />
-              ))}
+
+        {portada ? (
+          <div className="relative w-48 overflow-hidden rounded-lg border bg-[url('/checkerboard.png')] bg-repeat">
+            <div className="relative aspect-square">
+              <Image
+                src={portada}
+                alt="Portada del vehículo"
+                fill
+                className="object-contain"
+                sizes="192px"
+              />
             </div>
-          </SortableContext>
-        </DndContext>
-      )}
+            <button
+              type="button"
+              onClick={handleRemovePortada}
+              disabled={isPortadaBusy}
+              aria-label="Eliminar portada"
+              className="absolute right-1 top-1 flex size-7 items-center justify-center rounded-md bg-destructive text-destructive-foreground shadow hover:bg-destructive/90 disabled:pointer-events-none disabled:opacity-50 transition-colors"
+            >
+              <XIcon className="size-3.5" aria-hidden="true" />
+            </button>
+          </div>
+        ) : !vehiculoId ? (
+          <div className="flex h-24 flex-col items-center justify-center rounded-lg border border-dashed gap-1.5 text-muted-foreground opacity-60">
+            <UploadIcon className="size-5" aria-hidden="true" />
+            <p className="text-xs">Guarda el vehículo primero para subir la portada</p>
+          </div>
+        ) : (
+          <label
+            htmlFor="portada-upload"
+            onDragOver={(e) => { e.preventDefault(); e.stopPropagation() }}
+            onDragEnter={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingPortada(true) }}
+            onDragLeave={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingPortada(false) }}
+            onDrop={handlePortadaDrop}
+            className={`flex h-24 w-48 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed gap-1.5 text-muted-foreground transition-colors hover:bg-muted/50 has-[:disabled]:pointer-events-none has-[:disabled]:opacity-50${isDraggingPortada ? " bg-muted/70 border-primary" : ""}`}
+          >
+            <UploadIcon className="size-5" aria-hidden="true" />
+            <p className="text-xs text-center px-2">{isDraggingPortada ? "Suelta para subir" : "Haz clic o arrastra la portada"}</p>
+            <input
+              id="portada-upload"
+              type="file"
+              accept="image/png,image/webp,image/*"
+              className="sr-only"
+              disabled={isPortadaBusy}
+              onChange={(e) => {
+                if (!e.target.files?.length) return
+                uploadPortada(e.target.files, { metadata: { vehiculoId } })
+                e.target.value = ""
+              }}
+            />
+          </label>
+        )}
+
+        {isUploadingPortada && portadaProgresses.length > 0 && (
+          <p className="text-xs text-muted-foreground">
+            Subiendo portada… {Math.round(portadaProgresses[0]!.progress * 100)}%
+          </p>
+        )}
+      </div>
+
+      <div className="border-t border-border" />
+
+      {/* ── Galería ── */}
+      <div className="flex flex-col gap-3">
+        <div>
+          <p className="text-sm font-medium">Galería de imágenes</p>
+          <p className="text-xs text-muted-foreground">Fotos del vehículo · se muestran en la página de detalle</p>
+        </div>
+
+        {!vehiculoId ? (
+          <div className="flex h-32 flex-col items-center justify-center rounded-lg border border-dashed gap-2 text-muted-foreground opacity-60">
+            <UploadIcon className="size-6" aria-hidden="true" />
+            <p className="text-sm">Al guardar serás redirigido aquí para añadir imágenes</p>
+          </div>
+        ) : (
+          <label
+            htmlFor="gallery-upload"
+            onDragOver={(e) => { e.preventDefault(); e.stopPropagation() }}
+            onDragEnter={(e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(true) }}
+            onDragLeave={(e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(false) }}
+            onDrop={handleGalleryDrop}
+            className={`flex h-32 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed gap-2 text-muted-foreground transition-colors hover:bg-muted/50 has-[:disabled]:pointer-events-none has-[:disabled]:opacity-50${isDragging ? " bg-muted/70 border-primary" : ""}`}
+          >
+            <UploadIcon className="size-6" aria-hidden="true" />
+            <p className="text-sm">{isDragging ? "Suelta para subir" : "Haz clic o arrastra imágenes aquí"}</p>
+            <p className="text-xs">PNG, JPG, WEBP · máx. 5 MB por imagen</p>
+            <input
+              id="gallery-upload"
+              type="file"
+              accept="image/*"
+              multiple
+              className="sr-only"
+              disabled={isBusy}
+              onChange={(e) => {
+                if (!e.target.files?.length) return
+                upload(e.target.files, { metadata: { vehiculoId } })
+                e.target.value = ""
+              }}
+            />
+          </label>
+        )}
+
+        {isUploading && progresses.length > 0 && (
+          <ul className="flex flex-col gap-1" aria-label="Progreso de subida">
+            {progresses.map((file) => (
+              <li
+                key={file.name}
+                className="flex items-center gap-2 text-sm text-muted-foreground"
+              >
+                <span className="flex-1 truncate">{file.name}</span>
+                <span>{Math.round(file.progress * 100)}%</span>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {images.length === 0 ? (
+          <div className="flex h-24 flex-col items-center justify-center gap-2 rounded-lg border border-dashed text-muted-foreground">
+            <ImageIcon className="size-6" aria-hidden="true" />
+            <p className="text-sm">No hay imágenes todavía</p>
+          </div>
+        ) : (
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={images.map((img) => img.id)}
+              strategy={rectSortingStrategy}
+            >
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                {images.map((img, index) => (
+                  <SortableGaleriaItem
+                    key={img.id}
+                    img={img}
+                    index={index}
+                    isBusy={isBusy}
+                    onDeleteRequest={setImageToDelete}
+                  />
+                ))}
+              </div>
+            </SortableContext>
+          </DndContext>
+        )}
+      </div>
 
       {/* Delete confirmation dialog */}
       <AlertDialog
