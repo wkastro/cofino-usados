@@ -3,6 +3,7 @@
 @import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
+@custom-variant aria-invalid (&[aria-invalid="true"]);
 
 @theme inline {
   --color-background: var(--background);
@@ -285,4 +286,12 @@
 @keyframes marquee-reverse {
   from { transform: translateX(-50%); }
   to   { transform: translateX(0); }
+}
+
+/* Form field error state — unlayered CSS overrides all Tailwind utilities */
+input[aria-invalid="true"],
+textarea[aria-invalid="true"],
+[data-slot="select-trigger"][aria-invalid="true"] {
+  border-color: var(--color-destructive);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-destructive) 20%, transparent);
 }

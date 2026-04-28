@@ -2,6 +2,7 @@
 
 import { Controller } from "react-hook-form"
 import type { Control, FieldErrors } from "react-hook-form"
+import { cn } from "@/features/dashboard/lib/utils"
 import { Label } from "@/features/dashboard/components/ui/label"
 import {
   Select,
@@ -34,13 +35,17 @@ export function StepEspecificaciones({
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
       <div className="flex flex-col gap-1.5">
-        <Label className="text-xs uppercase tracking-wide text-muted-foreground">Transmisión *</Label>
+        <Label className={cn("text-xs uppercase tracking-wide", errors.transmisionId ? "text-destructive" : "text-muted-foreground")}>
+          Transmisión *
+        </Label>
         <Controller
           name="transmisionId"
           control={control}
           render={({ field }) => (
             <Select value={field.value} onValueChange={field.onChange}>
-              <SelectTrigger><SelectValue placeholder="Seleccionar" /></SelectTrigger>
+              <SelectTrigger className="w-full" aria-invalid={!!errors.transmisionId}>
+                <SelectValue placeholder="Seleccionar" />
+              </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
                   {transmisiones.map((t) => (
@@ -57,13 +62,17 @@ export function StepEspecificaciones({
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <Label className="text-xs uppercase tracking-wide text-muted-foreground">Combustible *</Label>
+        <Label className={cn("text-xs uppercase tracking-wide", errors.combustibleId ? "text-destructive" : "text-muted-foreground")}>
+          Combustible *
+        </Label>
         <Controller
           name="combustibleId"
           control={control}
           render={({ field }) => (
             <Select value={field.value} onValueChange={field.onChange}>
-              <SelectTrigger><SelectValue placeholder="Seleccionar" /></SelectTrigger>
+              <SelectTrigger className="w-full" aria-invalid={!!errors.combustibleId}>
+                <SelectValue placeholder="Seleccionar" />
+              </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
                   {combustibles.map((c) => (
@@ -80,13 +89,17 @@ export function StepEspecificaciones({
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <Label className="text-xs uppercase tracking-wide text-muted-foreground">Tracción *</Label>
+        <Label className={cn("text-xs uppercase tracking-wide", errors.traccionId ? "text-destructive" : "text-muted-foreground")}>
+          Tracción *
+        </Label>
         <Controller
           name="traccionId"
           control={control}
           render={({ field }) => (
             <Select value={field.value} onValueChange={field.onChange}>
-              <SelectTrigger><SelectValue placeholder="Seleccionar" /></SelectTrigger>
+              <SelectTrigger className="w-full" aria-invalid={!!errors.traccionId}>
+                <SelectValue placeholder="Seleccionar" />
+              </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
                   {tracciones.map((t) => (
@@ -103,13 +116,17 @@ export function StepEspecificaciones({
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <Label className="text-xs uppercase tracking-wide text-muted-foreground">Estado</Label>
+        <Label className={cn("text-xs uppercase tracking-wide", errors.estadoId ? "text-destructive" : "text-muted-foreground")}>
+          Estado *
+        </Label>
         <Controller
           name="estadoId"
           control={control}
           render={({ field }) => (
             <Select value={field.value} onValueChange={field.onChange}>
-              <SelectTrigger><SelectValue placeholder="Seleccionar" /></SelectTrigger>
+              <SelectTrigger className="w-full" aria-invalid={!!errors.estadoId}>
+                <SelectValue placeholder="Seleccionar" />
+              </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
                   {estados.map((e) => (
@@ -120,6 +137,9 @@ export function StepEspecificaciones({
             </Select>
           )}
         />
+        {errors.estadoId && (
+          <p className="text-xs text-destructive">{errors.estadoId.message}</p>
+        )}
       </div>
     </div>
   )

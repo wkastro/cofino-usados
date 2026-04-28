@@ -20,10 +20,25 @@ function revalidateVehiculoCaches(slug?: string, id?: string): void {
   if (id) updateTag(`admin-vehiculo-${id}`)
 }
 
+// ─── Check Placa ─────────────────────────────────────────────────────────────
+
+export async function checkPlacaDisponible(
+  placa: string,
+  excludeId?: string,
+): Promise<{ disponible: boolean }> {
+  await requireAdmin()
+  const existing = await prisma.vehiculo.findFirst({
+    where: { placa, ...(excludeId ? { NOT: { id: excludeId } } : {}) },
+    select: { id: true },
+  })
+  return { disponible: !existing }
+}
+
 // ─── Create ──────────────────────────────────────────────────────────────────
 
 export async function createVehiculo(
   input: VehiculoInput,
+  galeria?: { portada?: string | null; images?: { url: string; orden: number }[] },
 ): Promise<ActionResult<{ id: string; slug: string }>> {
   await requireAdmin()
 
@@ -38,11 +53,18 @@ export async function createVehiculo(
 
   const data = parsed.data
 
-  const marca = await prisma.marca.findUnique({
-    where: { id: data.marcaId },
-    select: { nombre: true },
-  })
+  const [marca, placaExistente] = await Promise.all([
+    prisma.marca.findUnique({ where: { id: data.marcaId }, select: { nombre: true } }),
+    prisma.vehiculo.findUnique({ where: { placa: data.placa }, select: { id: true } }),
+  ])
   if (!marca) return { ok: false, message: "La marca seleccionada no existe." }
+  if (placaExistente) {
+    return {
+      ok: false,
+      message: "La placa ingresada ya está registrada.",
+      fieldErrors: { placa: ["Esta placa ya está registrada en el sistema."] },
+    }
+  }
 
   let slug = generateVehiculoSlug(data.nombre, marca.nombre, data.anio, data.placa)
   const existing = await prisma.vehiculo.findUnique({ where: { slug }, select: { id: true } })
@@ -59,19 +81,23 @@ export async function createVehiculo(
         precio: data.precio,
         preciodescuento: data.preciodescuento ?? null,
         kilometraje: data.kilometraje,
-        motor: data.motor ?? null,
+        motor: data.motor,
         anio: data.anio,
         estadoId: data.estadoId,
         transmisionId: data.transmisionId,
         combustibleId: data.combustibleId,
         traccionId: data.traccionId,
-        color_interior: data.color_interior ?? null,
-        color_exterior: data.color_exterior ?? null,
-        descripcion: data.descripcion ?? null,
+        color_interior: data.color_interior,
+        color_exterior: data.color_exterior,
+        descripcion: data.descripcion,
         marcaId: data.marcaId,
         sucursalId: data.sucursalId,
         categoriaId: data.categoriaId,
         etiquetaComercialId: data.etiquetaComercialId ?? null,
+        portada: galeria?.portada ?? null,
+        galeria: galeria?.images?.length
+          ? { create: galeria.images.map((img) => ({ url: img.url, orden: img.orden })) }
+          : undefined,
       },
       select: { id: true, slug: true },
     })
@@ -103,8 +129,18 @@ export async function updateVehiculo(
 
   const data = parsed.data
 
-  const current = await prisma.vehiculo.findUnique({ where: { id }, select: { slug: true } })
+  const [current, placaExistente] = await Promise.all([
+    prisma.vehiculo.findUnique({ where: { id }, select: { slug: true } }),
+    prisma.vehiculo.findFirst({ where: { placa: data.placa, NOT: { id } }, select: { id: true } }),
+  ])
   if (!current) return { ok: false, message: "Vehículo no encontrado." }
+  if (placaExistente) {
+    return {
+      ok: false,
+      message: "La placa ingresada ya está registrada.",
+      fieldErrors: { placa: ["Esta placa ya está registrada en el sistema."] },
+    }
+  }
 
   try {
     await prisma.vehiculo.update({
@@ -116,15 +152,15 @@ export async function updateVehiculo(
         precio: data.precio,
         preciodescuento: data.preciodescuento ?? null,
         kilometraje: data.kilometraje,
-        motor: data.motor ?? null,
+        motor: data.motor,
         anio: data.anio,
         estadoId: data.estadoId,
         transmisionId: data.transmisionId,
         combustibleId: data.combustibleId,
         traccionId: data.traccionId,
-        color_interior: data.color_interior ?? null,
-        color_exterior: data.color_exterior ?? null,
-        descripcion: data.descripcion ?? null,
+        color_interior: data.color_interior,
+        color_exterior: data.color_exterior,
+        descripcion: data.descripcion,
         marcaId: data.marcaId,
         sucursalId: data.sucursalId,
         categoriaId: data.categoriaId,

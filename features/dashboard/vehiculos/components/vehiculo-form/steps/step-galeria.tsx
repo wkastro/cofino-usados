@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState, useTransition } from "react"
+import { useEffect, useRef, useState, useTransition } from "react"
 import {
   DndContext,
   closestCenter,
@@ -117,9 +117,10 @@ interface StepGaleriaProps {
   vehiculoId: string | null
   initialPortada: string | null
   initialImages: GaleriaItem[]
+  onGaleriaChange?: (portada: string | null, images: GaleriaItem[]) => void
 }
 
-export function StepGaleria({ vehiculoId, initialPortada, initialImages }: StepGaleriaProps) {
+export function StepGaleria({ vehiculoId, initialPortada, initialImages, onGaleriaChange }: StepGaleriaProps) {
   const [portada, setPortada] = useState<string | null>(initialPortada)
   const [images, setImages] = useState<GaleriaItem[]>(initialImages)
   const [imageToDelete, setImageToDelete] = useState<GaleriaItem | null>(null)
@@ -128,6 +129,13 @@ export function StepGaleria({ vehiculoId, initialPortada, initialImages }: StepG
   const [isPending, startTransition] = useTransition()
 
   const nextOrdenRef = useRef(initialImages.length)
+  const onGaleriaChangeRef = useRef(onGaleriaChange)
+  onGaleriaChangeRef.current = onGaleriaChange
+
+  useEffect(() => {
+    if (vehiculoId) return
+    onGaleriaChangeRef.current?.(portada, images)
+  }, [portada, images, vehiculoId])
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
@@ -165,10 +173,10 @@ export function StepGaleria({ vehiculoId, initialPortada, initialImages }: StepG
     e.preventDefault()
     e.stopPropagation()
     setIsDraggingPortada(false)
-    if (isPortadaBusy || !vehiculoId) return
+    if (isPortadaBusy) return
     const files = e.dataTransfer.files
     if (!files?.length) return
-    uploadPortada(files, { metadata: { vehiculoId } })
+    uploadPortada(files, vehiculoId ? { metadata: { vehiculoId } } : undefined)
   }
 
   function handleRemovePortada() {
@@ -278,10 +286,10 @@ export function StepGaleria({ vehiculoId, initialPortada, initialImages }: StepG
     e.preventDefault()
     e.stopPropagation()
     setIsDragging(false)
-    if (isBusy || !vehiculoId) return
+    if (isBusy) return
     const files = e.dataTransfer.files
     if (!files?.length) return
-    upload(files, { metadata: { vehiculoId } })
+    upload(files, vehiculoId ? { metadata: { vehiculoId } } : undefined)
   }
 
   return (
@@ -292,6 +300,7 @@ export function StepGaleria({ vehiculoId, initialPortada, initialImages }: StepG
         <div>
           <p className="text-sm font-medium">Imagen de portada</p>
           <p className="text-xs text-muted-foreground">PNG con fondo transparente · se muestra en la tarjeta del vehículo</p>
+          <p className="text-xs text-muted-foreground">Tamaño recomendado: <span className="font-medium text-foreground">800 × 450 px</span> (16:9) · máx. 200 KB</p>
         </div>
 
         {portada ? (
@@ -315,11 +324,6 @@ export function StepGaleria({ vehiculoId, initialPortada, initialImages }: StepG
               <XIcon className="size-3.5" aria-hidden="true" />
             </button>
           </div>
-        ) : !vehiculoId ? (
-          <div className="flex h-24 flex-col items-center justify-center rounded-lg border border-dashed gap-1.5 text-muted-foreground opacity-60">
-            <UploadIcon className="size-5" aria-hidden="true" />
-            <p className="text-xs">Guarda el vehículo primero para subir la portada</p>
-          </div>
         ) : (
           <label
             htmlFor="portada-upload"
@@ -339,7 +343,7 @@ export function StepGaleria({ vehiculoId, initialPortada, initialImages }: StepG
               disabled={isPortadaBusy}
               onChange={(e) => {
                 if (!e.target.files?.length) return
-                uploadPortada(e.target.files, { metadata: { vehiculoId } })
+                uploadPortada(e.target.files, vehiculoId ? { metadata: { vehiculoId } } : undefined)
                 e.target.value = ""
               }}
             />
@@ -360,40 +364,34 @@ export function StepGaleria({ vehiculoId, initialPortada, initialImages }: StepG
         <div>
           <p className="text-sm font-medium">Galería de imágenes</p>
           <p className="text-xs text-muted-foreground">Fotos del vehículo · se muestran en la página de detalle</p>
+          <p className="text-xs text-muted-foreground">Tamaño recomendado: <span className="font-medium text-foreground">1200 × 900 px</span> (4:3) · máx. 500 KB por imagen</p>
         </div>
 
-        {!vehiculoId ? (
-          <div className="flex h-32 flex-col items-center justify-center rounded-lg border border-dashed gap-2 text-muted-foreground opacity-60">
-            <UploadIcon className="size-6" aria-hidden="true" />
-            <p className="text-sm">Al guardar serás redirigido aquí para añadir imágenes</p>
-          </div>
-        ) : (
-          <label
-            htmlFor="gallery-upload"
-            onDragOver={(e) => { e.preventDefault(); e.stopPropagation() }}
-            onDragEnter={(e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(true) }}
-            onDragLeave={(e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(false) }}
-            onDrop={handleGalleryDrop}
-            className={`flex h-32 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed gap-2 text-muted-foreground transition-colors hover:bg-muted/50 has-[:disabled]:pointer-events-none has-[:disabled]:opacity-50${isDragging ? " bg-muted/70 border-primary" : ""}`}
-          >
-            <UploadIcon className="size-6" aria-hidden="true" />
-            <p className="text-sm">{isDragging ? "Suelta para subir" : "Haz clic o arrastra imágenes aquí"}</p>
-            <p className="text-xs">PNG, JPG, WEBP · máx. 5 MB por imagen</p>
-            <input
-              id="gallery-upload"
-              type="file"
-              accept="image/*"
-              multiple
-              className="sr-only"
-              disabled={isBusy}
-              onChange={(e) => {
-                if (!e.target.files?.length) return
-                upload(e.target.files, { metadata: { vehiculoId } })
-                e.target.value = ""
-              }}
-            />
-          </label>
-        )}
+        <label
+          htmlFor="gallery-upload"
+          onDragOver={(e) => { e.preventDefault(); e.stopPropagation() }}
+          onDragEnter={(e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(true) }}
+          onDragLeave={(e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(false) }}
+          onDrop={handleGalleryDrop}
+          className={`flex h-32 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed gap-2 text-muted-foreground transition-colors hover:bg-muted/50 has-[:disabled]:pointer-events-none has-[:disabled]:opacity-50${isDragging ? " bg-muted/70 border-primary" : ""}`}
+        >
+          <UploadIcon className="size-6" aria-hidden="true" />
+          <p className="text-sm">{isDragging ? "Suelta para subir" : "Haz clic o arrastra imágenes aquí"}</p>
+          <p className="text-xs">PNG, JPG, WEBP · máx. 5 MB por imagen</p>
+          <input
+            id="gallery-upload"
+            type="file"
+            accept="image/*"
+            multiple
+            className="sr-only"
+            disabled={isBusy}
+            onChange={(e) => {
+              if (!e.target.files?.length) return
+              upload(e.target.files, vehiculoId ? { metadata: { vehiculoId } } : undefined)
+              e.target.value = ""
+            }}
+          />
+        </label>
 
         {isUploading && progresses.length > 0 && (
           <ul className="flex flex-col gap-1" aria-label="Progreso de subida">

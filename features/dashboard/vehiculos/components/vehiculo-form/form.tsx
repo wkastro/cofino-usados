@@ -1,5 +1,7 @@
 "use client";
 
+import { useCallback, useRef } from "react";
+import { useFormState } from "react-hook-form";
 import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/features/dashboard/components/ui/button";
@@ -20,6 +22,7 @@ import { StepGaleria } from "./steps/step-galeria";
 import type {
   VehiculoAdmin,
   VehiculoRelationOptions,
+  GaleriaItem,
 } from "../../types/vehiculo";
 
 const STEPS = [
@@ -52,6 +55,15 @@ export function VehiculoForm({
   options,
   initialStep,
 }: VehiculoFormProps) {
+  const galeriaRef = useRef<{ portada: string | null; images: GaleriaItem[] }>({
+    portada: vehiculo?.portada ?? null,
+    images: vehiculo?.galeria ?? [],
+  })
+
+  const handleGaleriaChange = useCallback((portada: string | null, images: GaleriaItem[]) => {
+    galeriaRef.current = { portada, images }
+  }, [])
+
   const {
     form,
     onSubmit,
@@ -61,13 +73,16 @@ export function VehiculoForm({
     goPrev,
     isFirstStep,
     isLastStep,
-  } = useVehiculoFormWizard({ mode, vehiculo, initialStep });
+    notifyPlacaDuplicada,
+  } = useVehiculoFormWizard({
+    mode,
+    vehiculo,
+    initialStep,
+    getGaleria: () => galeriaRef.current,
+  });
 
-  const {
-    register,
-    control,
-    formState: { errors },
-  } = form;
+  const { register, control } = form;
+  const { errors } = useFormState({ control });
 
   return (
     <div className="flex flex-col gap-6">
@@ -123,7 +138,12 @@ export function VehiculoForm({
           </CardHeader>
           <CardContent className="pt-5">
             {currentStep === 0 && (
-              <StepInfoGeneral register={register} errors={errors} />
+              <StepInfoGeneral
+                register={register}
+                errors={errors}
+                vehiculoId={vehiculo?.id}
+                onPlacaDuplicada={notifyPlacaDuplicada}
+              />
             )}
             {currentStep === 1 && (
               <StepEspecificaciones
@@ -150,6 +170,7 @@ export function VehiculoForm({
                 vehiculoId={vehiculo?.id ?? null}
                 initialPortada={vehiculo?.portada ?? null}
                 initialImages={vehiculo?.galeria ?? []}
+                onGaleriaChange={mode === "create" ? handleGaleriaChange : undefined}
               />
             )}
           </CardContent>
